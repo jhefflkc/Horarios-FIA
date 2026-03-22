@@ -434,6 +434,71 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
 .ses-L{background:rgba(200,100,50,0.2);color:#f4b090;font-size:0.59rem;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0}
 .ses-S{background:rgba(40,140,110,0.2);color:#70d0b0;font-size:0.59rem;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0}
 
+/* ═══ MOBILE ══════════════════════════════════════════ */
+.mob-tabs{display:none}
+
+@media(max-width:720px){
+  /* Header compact */
+  header{height:52px;padding:0 0.9rem}
+  .header-mid{display:none}
+  .logo-sub{display:none}
+  .logo-gem{width:46px;height:32px;font-size:13px}
+  .logo-text{font-size:0.88rem}
+  #theme-label{display:none}
+  .hbtn{padding:7px 9px}
+
+  /* Layout: stack panels, show only active */
+  .app{overflow:hidden}
+  .sidebar{
+    width:100%;position:absolute;top:52px;left:0;right:0;bottom:52px;
+    border-right:none;z-index:50;display:none;
+  }
+  .sidebar.mob-active{display:flex}
+  .main{
+    position:absolute;top:52px;left:0;right:0;bottom:52px;
+    display:none;flex-direction:column;overflow:hidden;
+  }
+  .main.mob-active{display:flex}
+
+  /* Tab bar */
+  .mob-tabs{
+    display:flex;position:fixed;bottom:0;left:0;right:0;height:52px;
+    background:var(--panel);border-top:1.5px solid var(--line2);z-index:200;
+  }
+  .mob-tab{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:3px;font-size:0.6rem;font-weight:700;font-family:'JetBrains Mono',monospace;
+    letter-spacing:0.8px;text-transform:uppercase;color:var(--tx3);
+    background:none;border:none;cursor:pointer;transition:color 0.15s;
+  }
+  .mob-tab.on{color:var(--accent3)}
+  .mob-tab.on svg{color:var(--accent3)}
+  .mob-tab svg{transition:color 0.15s}
+
+  /* Topbar compact */
+  .topbar{padding:0.45rem 0.75rem;min-height:44px;gap:6px}
+  .tags-zone{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}
+  .tags-zone::-webkit-scrollbar{display:none}
+  .action-btns .btn-clear{display:none!important}
+
+  /* Stats compact */
+  .stats{flex-wrap:wrap;gap:0.25rem 0.8rem;padding:0.35rem 0.75rem}
+  .stat{font-size:0.64rem}
+
+  /* Schedule area */
+  .sched-area{padding:0.7rem 0.5rem}
+
+  /* Chips bar scrollable */
+  .chips-bar{flex-wrap:nowrap;overflow-x:auto;padding:0.5rem 0.9rem}
+  .chips-bar::-webkit-scrollbar{display:none}
+
+  /* Sidebar top padding */
+  .sidebar-top{padding:0.8rem 0.9rem 0.7rem}
+
+  /* Buttons in header smaller */
+  .btn{padding:6px 12px;font-size:0.75rem}
+}
+
 /* ═══ TOAST ════════════════════════════════════════════ */
 .toast{
   position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;
@@ -580,6 +645,25 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
   </div>
 </div>
 
+<!-- Mobile bottom tab bar -->
+<div class="mob-tabs">
+  <button class="mob-tab mob-active on" id="mob-tab-courses" onclick="showMobTab('courses')">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+      <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+    </svg>
+    Cursos
+  </button>
+  <button class="mob-tab" id="mob-tab-schedule" onclick="showMobTab('schedule')">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="3" y="4" width="18" height="18" rx="2"/>
+      <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+      <line x1="3" y1="10" x2="21" y2="10"/>
+    </svg>
+    Horario
+  </button>
+</div>
+
 <!-- Section picker modal -->
 <div class="overlay" id="modal" style="display:none" onclick="closeModal(event)">
   <div class="modal">
@@ -602,6 +686,29 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
 <div class="toast" id="toast"><div class="tdot"></div><span id="tmsg"></span></div>
 
 <script>
+/* ── Mobile tab navigation ─────────────────────────── */
+function showMobTab(tab){
+  const sidebar=document.querySelector('.sidebar');
+  const main=document.querySelector('.main');
+  const tCourses=document.getElementById('mob-tab-courses');
+  const tSched=document.getElementById('mob-tab-schedule');
+  if(tab==='courses'){
+    sidebar.classList.add('mob-active');
+    main.classList.remove('mob-active');
+    tCourses.classList.add('on');
+    tSched.classList.remove('on');
+  } else {
+    main.classList.add('mob-active');
+    sidebar.classList.remove('mob-active');
+    tSched.classList.add('on');
+    tCourses.classList.remove('on');
+  }
+}
+/* Init mobile panels */
+if(window.innerWidth<=720){
+  document.querySelector('.sidebar').classList.add('mob-active');
+}
+
 const DAYS=["LU","MA","MI","JU","VI","SA"];
 const DN={LU:"Lunes",MA:"Martes",MI:"Mi\u00e9rcoles",JU:"Jueves",VI:"Viernes",SA:"S\u00e1bado"};
 const TN={T:"Teor\u00eda",P:"Pr\u00e1ctica",L:"Laboratorio",S:"Seminario"};
@@ -672,6 +779,7 @@ function pick(sec,cod){
   if(!pal[cod]){pal[cod]=PAL[palIdx%PAL.length];palIdx++;}
   sel[cod]=sec;
   document.getElementById("modal").style.display="none";
+  if(window.innerWidth<=720) showMobTab('schedule');
   sync();
 }
 
