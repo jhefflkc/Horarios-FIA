@@ -616,6 +616,8 @@ body.light .c-conf-tag-soft,body.stitch-light .c-conf-tag-soft{color:#7a5200;bac
 @media(max-width:720px){
   /* Use dynamic viewport height so browser chrome doesn't shift layout */
   body{height:100dvh}
+  /* Fill gesture-nav area below viewport with tab bar color so it blends */
+  html{background:var(--panel)}
 
   /* Header compact — respects status bar in standalone/PWA mode */
   header{
