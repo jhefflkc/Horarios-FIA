@@ -1040,6 +1040,12 @@ function downloadPDF(){
 function toast(msg,type){
   const t=document.getElementById("toast");
   document.getElementById("tmsg").textContent=msg;
+  const tabs=document.querySelector(".mob-tabs");
+  if(tabs&&tabs.offsetHeight>0){
+    t.style.bottom=(tabs.offsetHeight+12)+"px";
+  } else {
+    t.style.bottom="";
+  }
   t.className="toast on "+(type||"ok");
   clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove("on");},3500);
 }
