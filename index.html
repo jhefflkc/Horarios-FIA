@@ -932,15 +932,21 @@ function clearAll(){sel={};pal={};palIdx=0;sync();}
 function downloadPDF(){
   const el=document.getElementById("printable");
   if(!el){toast("Primero selecciona cursos para generar el horario","er");return;}
+  const isLight=document.body.classList.contains("light");
+  const bgCanvas=isLight?"#fdf6ee":"#07080f";
+  const bgOuter=isLight?[253,246,238]:[7,8,15];
+  const bgInner=isLight?[255,250,244]:[20,22,35];
+  const txtPri=isLight?[90,58,24]:[200,150,100];
+  const txtSec=isLight?[138,98,72]:[110,100,80];
   toast("Generando PDF\u2026","ok");
-  html2canvas(el,{backgroundColor:"#07080f",scale:2.8,useCORS:true,logging:false}).then(function(canvas){
+  html2canvas(el,{backgroundColor:bgCanvas,scale:2.8,useCORS:true,logging:false}).then(function(canvas){
     const W=canvas.width/2.8, H=canvas.height/2.8;
     const pdf=new window.jspdf.jsPDF({orientation:W>H?"landscape":"portrait",unit:"px",format:[W+56,H+72]});
-    pdf.setFillColor(7,8,15);pdf.rect(0,0,W+56,H+72,"F");
-    pdf.setFillColor(20,22,35);pdf.roundedRect(28,16,W,H+28,6,6,"F");
-    pdf.setTextColor(165,148,253);pdf.setFontSize(9);pdf.setFont("helvetica","bold");
+    pdf.setFillColor(...bgOuter);pdf.rect(0,0,W+56,H+72,"F");
+    pdf.setFillColor(...bgInner);pdf.roundedRect(28,16,W,H+28,6,6,"F");
+    pdf.setTextColor(...txtPri);pdf.setFontSize(9);pdf.setFont("helvetica","bold");
     pdf.text("FIA \u00b7 UNI",36,28);
-    pdf.setTextColor(110,106,144);pdf.setFontSize(7);pdf.setFont("helvetica","normal");
+    pdf.setTextColor(...txtSec);pdf.setFontSize(7);pdf.setFont("helvetica","normal");
     pdf.text("HORARIO 2026-1  \u00b7  Generado desde Horarios FIA 2026-1",36,36);
     pdf.addImage(canvas.toDataURL("image/png"),"PNG",28,44,W,H);
     pdf.save("horario-fia-2026-1.pdf");
