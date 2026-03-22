@@ -29,6 +29,36 @@
   --accent3:#c4baff;
   --glow:rgba(124,109,250,0.35);
 }
+body.light{
+  --bg:#f0eeff;
+  --panel:#fafafa;
+  --surface:#f5f3ff;
+  --surface2:#ede9ff;
+  --card:#e5e1ff;
+  --card2:#dbd5ff;
+  --line:rgba(0,0,0,0.08);
+  --line2:rgba(0,0,0,0.12);
+  --line3:rgba(0,0,0,0.22);
+  --tx:#15122b;
+  --tx2:#3b3660;
+  --tx3:#6b65a0;
+  --tx4:#9e9ac0;
+}
+body.light header{background:rgba(245,243,255,0.95)}
+body.light .c-row:hover{background:rgba(0,0,0,0.03)}
+body.light table.sch tbody tr:nth-child(odd) td:not(:first-child) .cell-mt{background:rgba(0,0,0,0.018)}
+body.light table.sch tbody tr:nth-child(even) td:not(:first-child) .cell-mt{background:rgba(0,0,0,0.008)}
+body.light table.sch tbody tr:hover .cell-mt{background:rgba(0,0,0,0.04)}
+body.light .overlay{background:rgba(200,195,240,0.7)}
+body.light .logo-text{color:var(--tx)}
+body.light .p0{background:rgba(109,97,255,0.14);color:#4337cc}
+body.light .p1{background:rgba(20,184,166,0.14);color:#0d7a6e}
+body.light .p2{background:rgba(249,115,22,0.14);color:#b84e04}
+body.light .p3{background:rgba(236,72,153,0.14);color:#9e1b66}
+body.light .p4{background:rgba(59,130,246,0.14);color:#1d58c0}
+body.light .p5{background:rgba(168,85,247,0.14);color:#7022b8}
+body.light .p6{background:rgba(16,185,129,0.14);color:#0a6e4d}
+body.light .p7{background:rgba(234,179,8,0.14);color:#8a6500}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tx);height:100vh;display:flex;flex-direction:column;overflow:hidden}
 
 /* ═══ HEADER ═════════════════════════════════════════ */
@@ -432,10 +462,23 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
   </div>
   <div class="header-mid">
     <div class="header-mid-dot"></div>
-    Facultad de Ingenier&iacute;a El&eacute;ctrica y Electr&oacute;nica
+    Facultad de Ingenier&iacute;a Ambiental
     <div class="header-mid-dot"></div>
   </div>
-  <div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <button class="hbtn" id="theme-btn" onclick="toggleTheme()" title="Cambiar tema">
+      <svg id="theme-icon-dark" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:none">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <svg id="theme-icon-light" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <span id="theme-label">Modo Claro</span>
+    </button>
     <button class="hbtn" onclick="downloadPDF()">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -859,7 +902,23 @@ function loadExcel(event){
   reader.readAsBinaryString(file);
 }
 
-window.addEventListener("DOMContentLoaded",function(){boot(FIA_DATA);});
+window.addEventListener("DOMContentLoaded",function(){
+  if(localStorage.getItem("theme")==="light"){
+    document.body.classList.add("light");
+    document.getElementById("theme-icon-dark").style.display="";
+    document.getElementById("theme-icon-light").style.display="none";
+    document.getElementById("theme-label").textContent="Modo Oscuro";
+  }
+  boot(FIA_DATA);
+});
+
+function toggleTheme(){
+  var isLight=document.body.classList.toggle("light");
+  localStorage.setItem("theme",isLight?"light":"dark");
+  document.getElementById("theme-icon-dark").style.display=isLight?"":"none";
+  document.getElementById("theme-icon-light").style.display=isLight?"none":"";
+  document.getElementById("theme-label").textContent=isLight?"Modo Oscuro":"Modo Claro";
+}
 
 </script>
 </body>
