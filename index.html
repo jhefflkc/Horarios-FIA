@@ -98,14 +98,14 @@ body.stitch-dark table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0
 body.stitch-dark .overlay{background:rgba(0,0,0,0.65)}
 body.stitch-dark .logo-text{color:#f5f5f7}
 body.stitch-dark .sched-legend{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.08)}
-body.stitch-dark .p0{background:rgba(99,142,247,0.18);color:#90b8ff}
-body.stitch-dark .p1{background:rgba(52,199,89,0.15);color:#5dd67a}
-body.stitch-dark .p2{background:rgba(255,214,10,0.14);color:#ffd60a}
-body.stitch-dark .p3{background:rgba(255,69,58,0.15);color:#ff8a82}
-body.stitch-dark .p4{background:rgba(100,210,255,0.15);color:#64d2ff}
-body.stitch-dark .p5{background:rgba(94,92,230,0.18);color:#b8b2ff}
-body.stitch-dark .p6{background:rgba(255,159,10,0.15);color:#ffa843}
-body.stitch-dark .p7{background:rgba(48,209,88,0.14);color:#64dd8a}
+body.stitch-dark .p0{background:rgba(99,142,247,0.18);border-left-color:#4f8ef7;color:#90b8ff}
+body.stitch-dark .p1{background:rgba(52,199,89,0.15);border-left-color:#34c759;color:#5dd67a}
+body.stitch-dark .p2{background:rgba(255,214,10,0.14);border-left-color:#ffd60a;color:#ffd60a}
+body.stitch-dark .p3{background:rgba(255,69,58,0.15);border-left-color:#ff453a;color:#ff8a82}
+body.stitch-dark .p4{background:rgba(100,210,255,0.15);border-left-color:#64d2ff;color:#64d2ff}
+body.stitch-dark .p5{background:rgba(94,92,230,0.18);border-left-color:#5e5ce6;color:#b8b2ff}
+body.stitch-dark .p6{background:rgba(255,159,10,0.15);border-left-color:#ff9f0a;color:#ffa843}
+body.stitch-dark .p7{background:rgba(48,209,88,0.14);border-left-color:#30d158;color:#64dd8a}
 
 /* ── Stitch Light (Glacial) ──────────────────────────────── */
 body.stitch-light{
@@ -140,14 +140,37 @@ body.stitch-light table.sch tbody tr:nth-child(even) td:not(:first-child) .cell-
 body.stitch-light table.sch tbody tr:hover .cell-mt{background:rgba(0,0,0,0.04)}
 body.stitch-light .overlay{background:rgba(100,120,180,0.4)}
 body.stitch-light .sched-legend{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.08)}
-body.stitch-light .p0{background:rgba(37,99,235,0.12);color:#1d4ed8}
-body.stitch-light .p1{background:rgba(22,163,74,0.12);color:#166534}
-body.stitch-light .p2{background:rgba(202,138,4,0.12);color:#92400e}
-body.stitch-light .p3{background:rgba(220,38,38,0.12);color:#991b1b}
-body.stitch-light .p4{background:rgba(8,145,178,0.12);color:#0e7490}
-body.stitch-light .p5{background:rgba(124,58,237,0.12);color:#5b21b6}
-body.stitch-light .p6{background:rgba(234,88,12,0.12);color:#9a3412}
-body.stitch-light .p7{background:rgba(5,150,105,0.12);color:#065f46}
+body.stitch-light .p0{background:rgba(37,99,235,0.12);border-left-color:#2563eb;color:#1d4ed8}
+body.stitch-light .p1{background:rgba(22,163,74,0.12);border-left-color:#16a34a;color:#166534}
+body.stitch-light .p2{background:rgba(202,138,4,0.12);border-left-color:#d97706;color:#92400e}
+body.stitch-light .p3{background:rgba(220,38,38,0.12);border-left-color:#dc2626;color:#991b1b}
+body.stitch-light .p4{background:rgba(8,145,178,0.12);border-left-color:#0891b2;color:#0e7490}
+body.stitch-light .p5{background:rgba(124,58,237,0.12);border-left-color:#7c3aed;color:#5b21b6}
+body.stitch-light .p6{background:rgba(234,88,12,0.12);border-left-color:#ea580c;color:#9a3412}
+body.stitch-light .p7{background:rgba(5,150,105,0.12);border-left-color:#059669;color:#065f46}
+
+/* ── Stitch: transparent panels so dot background shows ── */
+body.stitch-dark .sched-area,body.stitch-light .sched-area{background:transparent}
+body.stitch-dark .topbar,body.stitch-light .topbar{background:transparent;border-bottom:none}
+body.stitch-dark .stats,body.stitch-light .stats{background:transparent;border-top:none}
+/* Floating action buttons panel */
+body.stitch-dark .action-btns,body.stitch-light .action-btns{
+  position:fixed;bottom:1.4rem;right:1.4rem;z-index:150;
+  display:flex;align-items:center;gap:8px;
+  padding:8px 10px;border-radius:14px;border:1px solid var(--line2);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+}
+body.stitch-dark .action-btns{
+  background:rgba(28,28,30,0.82);
+  box-shadow:0 8px 32px rgba(0,0,0,0.5),0 1px 0 rgba(255,255,255,0.07) inset;
+}
+body.stitch-light .action-btns{
+  background:rgba(255,255,255,0.86);
+  box-shadow:0 8px 32px rgba(0,0,0,0.13),0 1px 0 rgba(255,255,255,0.9) inset;
+}
+/* Keep sched area bottom padding so content isn't hidden behind floating buttons */
+body.stitch-dark .sched-area,body.stitch-light .sched-area{padding-bottom:5rem}
+
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tx);height:100vh;display:flex;flex-direction:column;overflow:hidden}
 
 /* ═══ HEADER ═════════════════════════════════════════ */
@@ -1285,11 +1308,12 @@ function downloadPDF(){
   const el=document.getElementById("printable");
   if(!el){toast("Primero selecciona cursos para generar el horario","er");return;}
   const isLight=document.body.classList.contains("light");
-  const bgCanvas=isLight?"#fdf6ee":"#0c0905";
-  const bgOuter=isLight?[253,246,238]:[12,9,5];
-  const bgInner=isLight?[255,250,244]:[19,14,8];
-  const txtPri=isLight?[90,58,24]:[200,150,100];
-  const txtSec=isLight?[138,98,72]:[110,100,80];
+  const isGlacial=document.body.classList.contains("stitch-light");
+  const bgCanvas=isGlacial?"#f2f2f7":(isLight?"#fdf6ee":"#0c0905");
+  const bgOuter=isGlacial?[242,242,247]:(isLight?[253,246,238]:[12,9,5]);
+  const bgInner=isGlacial?[255,255,255]:(isLight?[255,250,244]:[19,14,8]);
+  const txtPri=isGlacial?[28,28,30]:(isLight?[90,58,24]:[200,150,100]);
+  const txtSec=isGlacial?[99,99,102]:(isLight?[138,98,72]:[110,100,80]);
   toast("Generando PDF\u2026","ok");
   /* Temporarily remove sticky positioning so html2canvas captures the full table correctly */
   const thead=el.querySelector("thead th");
