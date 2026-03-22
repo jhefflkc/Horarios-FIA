@@ -814,19 +814,19 @@ function drawList(){
   });
   el.innerHTML=h;
   el.querySelectorAll(".c-row").forEach(function(r){
-    r.addEventListener("click",function(){toggle(r.dataset.cod);});
+    r.addEventListener("click",function(e){toggle(r.dataset.cod,e.target.closest(".cbox")!==null);});
   });
 }
 
-function toggle(cod){
+function toggle(cod,fromCbox){
   if(sel[cod]){delete sel[cod];delete pal[cod];sync();return;}
   const c=courses.find(function(x){return x.cod===cod;});
   if(!c) return;
-  if(c.secs.length===1) pick(c.secs[0],cod);
+  if(c.secs.length===1) pick(c.secs[0],cod,fromCbox);
   else openModal(c);
 }
 
-function pick(sec,cod){
+function pick(sec,cod,stayOnCourses){
   _pendingCod=null;_pendingSec=null;
   var cf=checkSectionConflict(sec);
   if(cf.hasPractice){
@@ -837,7 +837,7 @@ function pick(sec,cod){
   if(!pal[cod]){pal[cod]=PAL[palIdx%PAL.length];palIdx++;}
   sel[cod]=sec;
   document.getElementById("modal").style.display="none";
-  if(window.innerWidth<=720) showMobTab('schedule');
+  if(window.innerWidth<=720&&!stayOnCourses) showMobTab('schedule');
   if(cf.hasTheory) toast("Cruce de teoría con "+cf.theoryWith.join(", ")+" — aparecerán juntos","warn");
   sync();
 }
