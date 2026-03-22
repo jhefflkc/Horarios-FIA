@@ -379,6 +379,13 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
 }
 .blk-room{font-size:0.55rem;opacity:0.55;margin-top:1px;line-height:1.1;color:inherit}
 
+/* Side-by-side conflict blocks */
+.cell-blocks{display:flex;gap:2px;height:100%;width:100%}
+.cell-blocks .blk{flex:1;min-width:0;padding:3px 5px}
+.cell-blocks .blk .blk-cod{font-size:0.54rem}
+.cell-blocks .blk .blk-type{font-size:0.46rem;padding:1px 3px}
+.cell-blocks .blk .blk-room{display:none}
+
 /* 8 earthy warm palettes */
 .p0{background:rgba(200,100,50,0.22);border-left-color:#c86432;color:#f4c4a0}
 .p1{background:rgba(70,140,60,0.20);border-left-color:#46883c;color:#a0d090}
@@ -423,10 +430,13 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
   padding:12px 15px;margin-bottom:9px;cursor:pointer;transition:all 0.15s;
 }
 .sec:hover{border-color:var(--accent2);background:var(--surface2);transform:translateY(-1px);box-shadow:0 4px 20px rgba(200,120,58,0.15)}
-.sec.conf{opacity:0.4}
+.sec.conf{opacity:0.4;pointer-events:none}
+.sec.soft-conf{border-color:rgba(245,158,11,0.35);background:rgba(245,158,11,0.04)}
+.sec.soft-conf:hover{border-color:rgba(245,158,11,0.6);box-shadow:0 4px 20px rgba(245,158,11,0.15)}
 .sec-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
 .sec-name{font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:800;color:var(--accent3)}
 .sec-conf{font-size:0.62rem;color:#fca5a5;background:rgba(239,68,68,0.12);padding:2px 8px;border-radius:5px;border:1px solid rgba(239,68,68,0.25)}
+.sec-warn{color:#fcd34d;background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.35)}
 .sec-doc{font-size:0.68rem;color:var(--tx3);margin-bottom:7px;line-height:1.4}
 .ses{display:flex;align-items:center;gap:7px;padding:3px 0;font-size:0.71rem;color:var(--tx2)}
 .ses-T{background:rgba(200,150,40,0.2);color:#f0c870;font-size:0.59rem;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0}
@@ -529,6 +539,7 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
 .tdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .toast.ok .tdot{background:#10b981;box-shadow:0 0 10px rgba(16,185,129,0.7)}
 .toast.er .tdot{background:#f43f5e;box-shadow:0 0 10px rgba(244,63,94,0.7)}
+.toast.warn .tdot{background:#f59e0b;box-shadow:0 0 10px rgba(245,158,11,0.7)}
 
 </style>
 </head>
@@ -560,15 +571,6 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
       </svg>
       <span id="theme-label">Modo Claro</span>
-    </button>
-    <button class="hbtn" onclick="downloadPDF()">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-        <polyline points="14 2 14 8 20 8"/>
-        <line x1="12" x2="12" y1="12" y2="18"/>
-        <polyline points="9 15 12 18 15 15"/>
-      </svg>
-      Descargar PDF
     </button>
   </div>
 </header>
@@ -766,7 +768,8 @@ function drawList(){
   let h="";
   list.forEach(function(c){
     const isSel=!!sel[c.cod];
-    const isConf=!isSel&&allConflict(c);
+    const isConf=!isSel&&allHardConflict(c);
+    const isSoft=!isSel&&!isConf&&anySoftConflict(c);
     const ss=sel[c.cod];
     const meta=ss?"Secc. "+ss.secc+" \u00b7 "+ss.ss.length+" ses.":c.secs.length+(c.secs.length>1?" secc.":"\u00a0secc.");
     h+="<div class=\"c-row cy"+c.esp+(isSel?" sel":"")+(isConf?" conf":"")+"\" data-cod=\""+c.cod+"\">";
@@ -774,7 +777,8 @@ function drawList(){
     h+="<div class=\"c-info\">";
     h+="<div class=\"c-name\">"+c.curso+"</div>";
     h+="<div class=\"c-meta\"><span class=\"c-cod\">"+c.cod+"</span><span class=\"c-secs\">"+meta+"</span>";
-    if(isConf) h+="<span class=\"c-conf-tag\">conflicto</span>";
+    if(isConf) h+="<span class=\"c-conf-tag\">práctica bloqueada</span>";
+    else if(isSoft) h+="<span class=\"c-conf-tag\" style=\"background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.35);color:#fcd34d\">cruce teoría</span>";
     h+="</div></div></div>";
   });
   el.innerHTML=h;
@@ -792,22 +796,45 @@ function toggle(cod){
 }
 
 function pick(sec,cod){
+  var cf=checkSectionConflict(sec);
+  if(cf.hasPractice){
+    toast("No se puede agregar "+cod+": cruza práctica con "+cf.practiceWith.join(", "),"er");
+    document.getElementById("modal").style.display="none";
+    return;
+  }
   if(!pal[cod]){pal[cod]=PAL[palIdx%PAL.length];palIdx++;}
   sel[cod]=sec;
   document.getElementById("modal").style.display="none";
   if(window.innerWidth<=720) showMobTab('schedule');
+  if(cf.hasTheory) toast("Cruce de teoría con "+cf.theoryWith.join(", ")+" — aparecerán juntos","warn");
   sync();
 }
 
 function sync(){drawList();drawSched();drawTags();}
 
-function allConflict(c){return c.secs.every(function(s){return secConflicts(s);});}
-function secConflicts(sec){
-  return sec.ss.some(function(ss){
-    return Object.values(sel).some(function(s){
-      return s.ss.some(function(x){return x.d===ss.d&&!(ss.h1<=x.h0||ss.h0>=x.h1);});
+/* Returns {hasPractice, hasTheory, practiceWith, theoryWith} for a given section */
+function checkSectionConflict(sec){
+  var practiceWith=[],theoryWith=[];
+  sec.ss.forEach(function(ss){
+    Object.keys(sel).forEach(function(cod){
+      sel[cod].ss.forEach(function(x){
+        if(x.d===ss.d&&!(ss.h1<=x.h0||ss.h0>=x.h1)){
+          if(ss.t==='P'||x.t==='P'){if(!practiceWith.includes(cod)) practiceWith.push(cod);}
+          else{if(!theoryWith.includes(cod)) theoryWith.push(cod);}
+        }
+      });
     });
   });
+  return{hasPractice:practiceWith.length>0,hasTheory:theoryWith.length>0,practiceWith:practiceWith,theoryWith:theoryWith};
+}
+/* True if ALL sections of course c are blocked by a practice conflict */
+function allHardConflict(c){
+  return c.secs.every(function(s){return checkSectionConflict(s).hasPractice;});
+}
+/* True if at least one section has a theory overlap (no practice block) */
+function anySoftConflict(c){
+  if(allHardConflict(c)) return false;
+  return c.secs.some(function(s){var cf=checkSectionConflict(s);return cf.hasTheory&&!cf.hasPractice;});
 }
 
 function openModal(c){
@@ -816,10 +843,12 @@ function openModal(c){
   const body=document.getElementById("mbody");
   let h="";
   c.secs.forEach(function(sec,i){
-    const cf=secConflicts(sec);
-    h+="<div class=\"sec"+(cf?" conf":"")+"\" data-i=\""+i+"\">";
+    const cf=checkSectionConflict(sec);
+    const isPractice=cf.hasPractice;const isTheory=!cf.hasPractice&&cf.hasTheory;
+    h+="<div class=\"sec"+(isPractice?" conf":isTheory?" soft-conf":"")+"\" data-i=\""+i+"\">";
     h+="<div class=\"sec-top\"><span class=\"sec-name\">Secci\u00f3n "+sec.secc+"</span>";
-    if(cf) h+="<span class=\"sec-conf\">Conflicto</span>";
+    if(isPractice) h+="<span class=\"sec-conf\">Práctica bloqueada</span>";
+    else if(isTheory) h+="<span class=\"sec-conf sec-warn\">Cruce de teoría</span>";
     h+="</div>";
     if(sec.docente) h+="<div class=\"sec-doc\">"+sec.docente+"</div>";
     sec.ss.forEach(function(s){
@@ -873,21 +902,29 @@ function drawSched(){
     dp.innerHTML="<div class=\"empty\"><div class=\"empty-box\"><svg width=\"36\" height=\"36\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\" opacity=\"0.3\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"18\" rx=\"2\"/><line x1=\"16\" x2=\"16\" y1=\"2\" y2=\"6\"/><line x1=\"8\" x2=\"8\" y1=\"2\" y2=\"6\"/><line x1=\"3\" x2=\"21\" y1=\"10\" y2=\"10\"/></svg></div><h3>Tu horario aparecer\u00e1 aqu\u00ed</h3><p>Selecciona tus cursos del panel izquierdo para comenzar.</p></div>";
     return;
   }
-  const cells={};const conflicts=[];
+  const cells={};
   keys.forEach(function(cod){
     const s=sel[cod];const p=pal[cod]||"p0";
     s.ss.forEach(function(x){
       for(let h=x.h0;h<x.h1;h++){
         const k=x.d+"-"+h;
-        if(cells[k]&&cells[k].cod!==cod) conflicts.push(cells[k].cod+" y "+cod+" \u2014 "+(DN[x.d]||x.d)+" "+h+":00");
-        cells[k]={cod:cod,sec:s.secc,tipo:x.t,rm:x.rm,p:p};
+        if(!cells[k]) cells[k]=[];
+        if(!cells[k].find(function(e){return e.cod===cod;}))
+          cells[k].push({cod:cod,sec:s.secc,tipo:x.t,rm:x.rm,p:p});
       }
     });
+  });
+  const conflicts=[];
+  Object.keys(cells).forEach(function(k){
+    if(cells[k].length>1){
+      const parts=k.split("-");const d=parts[0];const hr=parts[1];
+      conflicts.push(cells[k].map(function(e){return e.cod;}).join(" y ")+" \u2014 "+(DN[d]||d)+" "+hr+":00");
+    }
   });
   const ca=document.getElementById("conf");
   if(conflicts.length){
     ca.classList.add("on");
-    document.getElementById("cmsg").textContent="Conflicto: "+conflicts[0]+(conflicts.length>1?" (+"+(conflicts.length-1)+" m\u00e1s)":"");
+    document.getElementById("cmsg").textContent="Cruce de teor\u00eda: "+conflicts[0]+(conflicts.length>1?" (+"+(conflicts.length-1)+" m\u00e1s)":"");
   } else ca.classList.remove("on");
 
   const allH=[];
@@ -908,13 +945,25 @@ function drawSched(){
   hrs.forEach(function(hr){
     h+="<tr><td>"+hr+":00</td>";
     DAYS.forEach(function(d){
-      const c=cells[d+"-"+hr];
-      if(!c){h+="<td><div class=\"cell-mt\"></div></td>";return;}
-      h+="<td><div class=\"blk "+c.p+"\">";
-      h+="<div class=\"blk-cod\">"+c.cod+" <span class=\"blk-secc\">"+c.sec+"</span></div>";
-      h+="<div class=\"blk-type\">"+(TN[c.tipo]||c.tipo)+"</div>";
-      if(c.rm) h+="<div class=\"blk-room\">"+c.rm+"</div>";
-      h+="</div></td>";
+      const arr=cells[d+"-"+hr];
+      if(!arr||!arr.length){h+="<td><div class=\"cell-mt\"></div></td>";return;}
+      if(arr.length===1){
+        const c=arr[0];
+        h+="<td><div class=\"blk "+c.p+"\">";
+        h+="<div class=\"blk-cod\">"+c.cod+" <span class=\"blk-secc\">"+c.sec+"</span></div>";
+        h+="<div class=\"blk-type\">"+(TN[c.tipo]||c.tipo)+"</div>";
+        if(c.rm) h+="<div class=\"blk-room\">"+c.rm+"</div>";
+        h+="</div></td>";
+      } else {
+        h+="<td><div class=\"cell-blocks\">";
+        arr.forEach(function(c){
+          h+="<div class=\"blk "+c.p+"\">";
+          h+="<div class=\"blk-cod\">"+c.cod+" <span class=\"blk-secc\">"+c.sec+"</span></div>";
+          h+="<div class=\"blk-type\">"+(TN[c.tipo]||c.tipo)+"</div>";
+          h+="</div>";
+        });
+        h+="</div></td>";
+      }
     });
     h+="</tr>";
   });
