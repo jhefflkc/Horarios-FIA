@@ -910,7 +910,7 @@ function openModal(c){
   });
   body.innerHTML=h;
   body.querySelectorAll(".sec").forEach(function(el){
-    el.addEventListener("click",function(){pick(c.secs[parseInt(el.dataset.i)],c.cod);});
+    el.addEventListener("click",function(){pick(c.secs[parseInt(el.dataset.i)],c.cod,true);});
   });
   document.getElementById("modal").style.display="flex";
 }
