@@ -396,6 +396,23 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
 .p6{background:rgba(180,130,30,0.20);border-left-color:#b4821e;color:#e8cc7a}
 .p7{background:rgba(80,130,50,0.20);border-left-color:#508232;color:#b0d490}
 
+/* ═══ LEGEND ══════════════════════════════════════════ */
+.sched-legend{
+  display:flex;flex-wrap:wrap;gap:6px 18px;
+  margin-top:14px;padding:10px 14px;
+  border-radius:8px;
+  background:rgba(255,255,255,0.035);
+  border:1px solid rgba(255,255,255,0.07);
+}
+body.light .sched-legend{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.08)}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:0.65rem}
+.leg-dot{
+  width:10px;height:10px;border-radius:2px;flex-shrink:0;
+  border-left:3px solid transparent;
+}
+.leg-cod{font-family:'JetBrains Mono',monospace;font-weight:700;opacity:0.9}
+.leg-name{opacity:0.6;white-space:nowrap}
+
 /* ═══ MODAL ═══════════════════════════════════════════ */
 .overlay{
   position:fixed;inset:0;z-index:500;
@@ -967,7 +984,18 @@ function drawSched(){
     });
     h+="</tr>";
   });
-  h+="</tbody></table></div>";
+  h+="</tbody></table>";
+  h+="<div class=\"sched-legend\">";
+  keys.forEach(function(cod){
+    const s=sel[cod];
+    const p=pal[cod]||"p0";
+    h+="<div class=\"leg-item\">";
+    h+="<div class=\"leg-dot "+p+"\"></div>";
+    h+="<span class=\"leg-cod\">"+cod+"</span>";
+    h+="<span class=\"leg-name\">"+s.curso+"</span>";
+    h+="</div>";
+  });
+  h+="</div></div>";
   dp.innerHTML=h;
 }
 
