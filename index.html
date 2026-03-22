@@ -274,6 +274,16 @@ header::after{
   transform:translateY(-1px);
 }
 .btn-dl svg{filter:drop-shadow(0 0 4px rgba(255,255,255,0.4))}
+.btn-cal{
+  background:linear-gradient(135deg,#1a73e8,#0f5bba);
+  color:#fff;border-color:transparent;
+  box-shadow:0 2px 20px rgba(26,115,232,0.4),0 0 0 1px rgba(255,255,255,0.1) inset;
+}
+.btn-cal:hover{
+  background:linear-gradient(135deg,#2a83f8,#1a6bca);
+  box-shadow:0 4px 28px rgba(26,115,232,0.55),0 0 0 1px rgba(255,255,255,0.15) inset;
+  transform:translateY(-1px);
+}
 
 /* Conflict alert */
 .conf-bar{
@@ -650,6 +660,15 @@ body.light .sched-legend{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.0
             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
           </svg>
           Limpiar todo
+        </button>
+        <button class="btn btn-cal" onclick="exportICS()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          Exportar Calendario
         </button>
         <button class="btn btn-dl" onclick="downloadPDF()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -1188,6 +1207,46 @@ function downloadPDF(){
     pdf.save("horario-"+facultyLabel.split(" \u00b7 ")[0].toLowerCase()+"-"+getPeriod()+".pdf");
     toast("\u2713 PDF descargado correctamente","ok");
   }).catch(function(e){stickyEls.forEach(function(th){th.style.position="";});toast("Error al generar: "+e.message,"er");});
+}
+
+function exportICS(){
+  var keys=Object.keys(sel);
+  if(!keys.length){toast("Primero selecciona cursos para exportar el horario","er");return;}
+  var dayMap={LU:"MO",MA:"TU",MI:"WE",JU:"TH",VI:"FR",SA:"SA"};
+  var dayIdx={LU:1,MA:2,MI:3,JU:4,VI:5,SA:6};
+  function pad(n){return String(n).padStart(2,"0");}
+  function nextWeekday(code){
+    var today=new Date();today.setHours(0,0,0,0);
+    var diff=dayIdx[code]-today.getDay();
+    if(diff<=0)diff+=7;
+    var d=new Date(today);d.setDate(today.getDate()+diff);
+    return d;
+  }
+  function fmtDT(date,hour){
+    return date.getFullYear()+pad(date.getMonth()+1)+pad(date.getDate())+"T"+pad(hour)+"0000";
+  }
+  var lines=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Horarios FIA//ES","CALSCALE:GREGORIAN","X-WR-CALNAME:Horario FIA "+getPeriod()];
+  keys.forEach(function(cod){
+    var s=sel[cod];
+    s.ss.forEach(function(x,i){
+      var d=nextWeekday(x.d);
+      lines.push("BEGIN:VEVENT");
+      lines.push("UID:"+cod+"-"+x.d+"-"+x.h0+"-"+i+"@horarios-fia");
+      lines.push("DTSTART:"+fmtDT(d,x.h0));
+      lines.push("DTEND:"+fmtDT(d,x.h1));
+      lines.push("RRULE:FREQ=WEEKLY;BYDAY="+dayMap[x.d]);
+      lines.push("SUMMARY:"+(s.curso||cod)+" ("+s.secc+") \u2013 "+(TN[x.t]||x.t));
+      if(x.rm)lines.push("LOCATION:"+x.rm);
+      lines.push("DESCRIPTION:Docente: "+(s.docente||"\u2013")+"\\nC\u00f3digo: "+cod);
+      lines.push("END:VEVENT");
+    });
+  });
+  lines.push("END:VCALENDAR");
+  var blob=new Blob([lines.join("\r\n")],{type:"text/calendar;charset=utf-8"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");a.href=url;a.download="horario-fia-"+getPeriod()+".ics";a.click();
+  URL.revokeObjectURL(url);
+  toast("\u2713 Archivo .ics descargado \u2014 \u00e1brelo para importar a tu calendario","ok");
 }
 
 function toast(msg,type){
