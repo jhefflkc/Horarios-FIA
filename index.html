@@ -900,11 +900,6 @@ function drawSched(){
 
   let selCount=keys.length;
   let h="<div class=\"sched-wrap\" id=\"printable\">";
-  h+="<div class=\"sched-hdr\">";
-  h+="<div class=\"sched-hdr-title\">&#9654; HORARIO SEMANAL 2026-1</div>";
-  h+="<div class=\"sched-hdr-line\"></div>";
-  h+="<div class=\"sched-hdr-badge\">"+selCount+" CURSO"+(selCount!==1?"S":"")+"</div>";
-  h+="</div>";
   h+="<table class=\"sch\"><thead><tr><th></th>";
   DAYS.forEach(function(d){
     h+="<th><div class=\"dhead"+(d===todayKey?" now":"")+"\">"+(DN[d]||d)+"</div></th>";
