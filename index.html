@@ -333,6 +333,7 @@ header::after{
 }
 .c-secs{font-size:0.67rem;color:var(--tx3)}
 .c-conf-tag{font-size:0.6rem;color:#fca5a5;background:rgba(239,68,68,0.12);padding:1px 6px;border-radius:10px;border:1px solid rgba(239,68,68,0.25)}
+.c-conf-tag-soft{color:#fcd34d;background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.35)}
 
 /* cod color by specialty */
 .cyCB .c-cod{color:#d4a030;background:rgba(212,160,48,0.15)}
@@ -597,6 +598,16 @@ body.light .sched-legend{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.0
 .ses-P{background:rgba(70,140,60,0.2);color:#98d888;font-size:0.59rem;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0}
 .ses-L{background:rgba(200,100,50,0.2);color:#f4b090;font-size:0.59rem;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0}
 .ses-S{background:rgba(40,140,110,0.2);color:#70d0b0;font-size:0.59rem;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0}
+
+/* ── Light themes: fix label contrast ── */
+body.light .ses-T,body.stitch-light .ses-T{color:#7a5400;background:rgba(160,100,0,0.13)}
+body.light .ses-P,body.stitch-light .ses-P{color:#286020;background:rgba(40,110,20,0.13)}
+body.light .ses-L,body.stitch-light .ses-L{color:#904010;background:rgba(160,70,20,0.13)}
+body.light .ses-S,body.stitch-light .ses-S{color:#0e6850;background:rgba(20,100,70,0.13)}
+body.light .sec-conf,body.stitch-light .sec-conf{color:#a81818;background:rgba(180,20,20,0.1);border-color:rgba(180,20,20,0.25)}
+body.light .sec-warn,body.stitch-light .sec-warn{color:#7a5200;background:rgba(160,100,0,0.12);border-color:rgba(160,100,0,0.3)}
+body.light .c-conf-tag,body.stitch-light .c-conf-tag{color:#a81818;background:rgba(180,20,20,0.1);border-color:rgba(180,20,20,0.25)}
+body.light .c-conf-tag-soft,body.stitch-light .c-conf-tag-soft{color:#7a5200;background:rgba(160,100,0,0.12);border-color:rgba(160,100,0,0.3)}
 
 /* ═══ MOBILE ══════════════════════════════════════════ */
 .mob-tabs{display:none}
@@ -997,7 +1008,7 @@ function drawList(){
     h+="<div class=\"c-name\">"+c.curso+"</div>";
     h+="<div class=\"c-meta\"><span class=\"c-cod\">"+c.cod+"</span><span class=\"c-secs\">"+meta+"</span>";
     if(isConf) h+="<span class=\"c-conf-tag\">práctica bloqueada</span>";
-    else if(isSoft) h+="<span class=\"c-conf-tag\" style=\"background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.35);color:#fcd34d\">cruce teoría</span>";
+    else if(isSoft) h+="<span class=\"c-conf-tag c-conf-tag-soft\">cruce teor\u00eda</span>";
     h+="</div></div></div>";
   });
   el.innerHTML=h;
