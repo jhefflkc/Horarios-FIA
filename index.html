@@ -920,21 +920,42 @@ body.light .c-conf-tag-soft,body.stitch-light .c-conf-tag-soft{color:#7a5200;bac
 <div id="sab-probe" style="position:fixed;bottom:0;left:0;width:0;height:env(safe-area-inset-bottom,0px);pointer-events:none;visibility:hidden"></div>
 
 <script>
-/* ── Safe-area-inset-bottom fix (iOS Safari initial load) ──────────────────
-   env() values may not be ready on first paint; we read the probe element's
-   height (forces sync layout) and push the value as --sab, then listen for
-   orientationchange / resize so it stays accurate after rotation.
+/* ── Mobile viewport + safe-area fix (iOS Safari) ─────────────────────────
+   Two bugs on iOS first load:
+   1. 100dvh may differ from window.innerHeight → body height wrong → gap below tab bar
+   2. env(safe-area-inset-bottom) not ready before first layout → --sab = 0
+   Fix: set body height and --sab from JS, update on resize/orientationchange.
 ────────────────────────────────────────────────────────────────────────── */
 (function(){
   var probe=document.getElementById('sab-probe');
+
   function applySAB(){
     if(!probe) return;
     var h=probe.getBoundingClientRect().height||0;
     document.documentElement.style.setProperty('--sab', h+'px');
   }
-  applySAB();
-  window.addEventListener('resize', applySAB);
-  window.addEventListener('orientationchange', function(){ setTimeout(applySAB,200); });
+
+  function fixBodyHeight(){
+    if(window.innerWidth<=720){
+      document.body.style.height=window.innerHeight+'px';
+    } else {
+      document.body.style.height='';
+    }
+  }
+
+  function fixAll(){
+    fixBodyHeight();
+    applySAB();
+  }
+
+  /* Run after first layout (double rAF ensures browser has computed env()) */
+  requestAnimationFrame(function(){ requestAnimationFrame(fixAll); });
+  window.addEventListener('load', fixAll);
+  window.addEventListener('resize', fixAll);
+  window.addEventListener('orientationchange', function(){
+    setTimeout(fixAll, 100);
+    setTimeout(fixAll, 400);
+  });
 })();
 
 /* ── Mobile tab navigation ─────────────────────────── */
@@ -1500,10 +1521,14 @@ document.addEventListener("mousemove",function(e){
 var THEME_ORDER=["dark","stitch-dark","light","stitch-light"];
 var THEME_LABELS={dark:"Ámbar",["stitch-dark"]:"Grafito",light:"Crema",["stitch-light"]:"Glacial"};
 var THEME_IS_DARK={dark:true,["stitch-dark"]:true,light:false,["stitch-light"]:false};
+/* Panel colors per theme — must match CSS --panel values.
+   html { background } can't inherit --panel from body, so we set it directly. */
+var THEME_PANEL={dark:"#130e08",["stitch-dark"]:"#1c1c1e",light:"#fffaf4",["stitch-light"]:"#ffffff"};
 
 function applyTheme(t){
   document.body.classList.remove("light","stitch-dark","stitch-light");
   if(t!=="dark") document.body.classList.add(t);
+  document.documentElement.style.background=THEME_PANEL[t]||"#130e08";
   localStorage.setItem("theme",t);
   var dark=THEME_IS_DARK[t];
   var stitch=t==="stitch-dark"||t==="stitch-light";
