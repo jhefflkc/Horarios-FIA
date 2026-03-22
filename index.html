@@ -780,6 +780,7 @@ const FIA_DATA=[{"esp":"IS","cod":"AA215","secc":"E","curso":"GEOLOGIA","docente
 let courses=[], sel={}, pal={}, palIdx=0;
 let _pendingCod=null, _pendingSec=null;
 let periodYear="2026", periodNum="1";
+let facultyName="Fac. Ing. Ambiental";
 function getPeriod(){return periodYear+"-"+periodNum;}
 function updatePeriodUI(){
   var p=getPeriod();
@@ -888,7 +889,7 @@ function anySoftConflict(c){
 
 function openModal(c){
   document.getElementById("mttl").textContent=c.curso;
-  document.getElementById("msub").textContent=c.cod+" \u00b7 "+fmtEsps(c)+" \u00b7 Elige una secci\u00f3n";
+  document.getElementById("msub").textContent=c.cod+" \u00b7 "+facultyName+" \u00b7 Elige una secci\u00f3n";
   const body=document.getElementById("mbody");
   let h="";
   c.secs.forEach(function(sec,i){
@@ -921,40 +922,65 @@ function modalClose(){
 function closeModal(e){if(e.target===document.getElementById("modal")) modalClose();}
 
 function openPeriodModal(){
-  document.getElementById("mttl").textContent="Per\u00edodo acad\u00e9mico";
-  document.getElementById("msub").textContent="Edita el a\u00f1o y semestre que aparecer\u00e1 en el horario";
+  document.getElementById("mttl").textContent="Informaci\u00f3n del horario";
+  document.getElementById("msub").textContent="Facultad, a\u00f1o y semestre que aparecer\u00e1n en el horario";
   var inp="background:var(--surface);border:1.5px solid var(--line2);border-radius:9px;"+
+    "padding:10px 14px;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;font-weight:600;"+
+    "color:var(--tx);outline:none;width:100%;transition:border-color 0.2s;box-sizing:border-box";
+  var inpMono="background:var(--surface);border:1.5px solid var(--line2);border-radius:9px;"+
     "padding:11px 14px;font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:800;"+
     "color:var(--tx);outline:none;width:100%;text-align:center;transition:border-color 0.2s;box-sizing:border-box";
   var lbl="font-size:0.6rem;font-family:'JetBrains Mono',monospace;color:var(--tx3);"+
     "letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;display:block";
+  var presets=[
+    {label:"FIA \u00b7 UNI",value:"Fac. Ing. Ambiental"},
+    {label:"FIC \u00b7 UNI",value:"Fac. Ing. Civil"},
+    {label:"FIEECS \u00b7 UNI",value:"Fac. Ing. Eléctrica"},
+    {label:"FIIS \u00b7 UNI",value:"Fac. Ing. Industrial"}
+  ];
+  var presetBtns=presets.map(function(p){
+    return "<button onclick=\"document.getElementById('p-faculty').value='"+p.value+"'\" "+
+      "style=\"background:var(--surface);border:1.5px solid var(--line2);border-radius:7px;"+
+      "padding:5px 10px;font-size:0.68rem;font-weight:700;color:var(--tx2);cursor:pointer;"+
+      "font-family:'JetBrains Mono',monospace;white-space:nowrap;transition:all 0.15s\""+
+      " onmouseover=\"this.style.borderColor='var(--accent2)';this.style.color='var(--accent3)'\""+
+      " onmouseout=\"this.style.borderColor='var(--line2)';this.style.color='var(--tx2)'\">"+
+      p.label+"</button>";
+  }).join("");
   document.getElementById("mbody").innerHTML=
+    "<div style=\"margin-bottom:16px\">"+
+      "<span style=\""+lbl+"\">Facultad</span>"+
+      "<input id=\"p-faculty\" type=\"text\" value=\""+facultyName+"\" style=\""+inp+"\" placeholder=\"Ej: Fac. Ing. Ambiental\""+
+      " onfocus=\"this.style.borderColor='var(--accent)'\" onblur=\"this.style.borderColor='var(--line2)'\">"+
+      "<div style=\"display:flex;gap:6px;flex-wrap:wrap;margin-top:8px\">"+presetBtns+"</div>"+
+    "</div>"+
     "<div style=\"display:flex;align-items:flex-end;gap:10px;margin-bottom:16px\">"+
       "<div style=\"flex:2\">"+
         "<span style=\""+lbl+"\">A\u00f1o</span>"+
-        "<input id=\"p-year\" type=\"text\" maxlength=\"4\" value=\""+periodYear+"\" style=\""+inp+"\""+
+        "<input id=\"p-year\" type=\"text\" maxlength=\"4\" value=\""+periodYear+"\" style=\""+inpMono+"\""+
         " onfocus=\"this.style.borderColor='var(--accent)'\" onblur=\"this.style.borderColor='var(--line2)'\">"+
       "</div>"+
       "<div style=\"color:var(--tx3);font-size:1.4rem;font-weight:300;padding-bottom:10px;flex-shrink:0\">&mdash;</div>"+
       "<div style=\"flex:1\">"+
         "<span style=\""+lbl+"\">Per\u00edodo</span>"+
-        "<input id=\"p-num\" type=\"text\" maxlength=\"1\" value=\""+periodNum+"\" style=\""+inp+"\""+
+        "<input id=\"p-num\" type=\"text\" maxlength=\"1\" value=\""+periodNum+"\" style=\""+inpMono+"\""+
         " onfocus=\"this.style.borderColor='var(--accent)'\" onblur=\"this.style.borderColor='var(--line2)'\">"+
       "</div>"+
     "</div>"+
     "<button class=\"btn btn-dl\" style=\"width:100%;justify-content:center\" onclick=\"savePeriod()\">Guardar</button>";
   document.getElementById("modal").style.display="flex";
-  setTimeout(function(){document.getElementById("p-year").focus();},100);
+  setTimeout(function(){document.getElementById("p-faculty").focus();},100);
 }
 
 function savePeriod(){
+  var f=document.getElementById("p-faculty").value.trim();
   var y=document.getElementById("p-year").value.trim();
   var n=document.getElementById("p-num").value.trim();
-  if(!y||!n){toast("Completa el a\u00f1o y el per\u00edodo","er");return;}
-  periodYear=y;periodNum=n;
+  if(!f||!y||!n){toast("Completa todos los campos","er");return;}
+  facultyName=f;periodYear=y;periodNum=n;
   updatePeriodUI();
   modalClose();
-  toast("Per\u00edodo actualizado a "+getPeriod(),"ok");
+  toast("Per\u00edodo actualizado: "+facultyName+" \u00b7 "+getPeriod(),"ok");
 }
 
 function blkInfo(e){
@@ -968,7 +994,7 @@ function openInfoModal(cod){
   const sec=sel[cod];
   if(!c||!sec) return;
   document.getElementById("mttl").textContent=c.curso;
-  document.getElementById("msub").textContent=cod+" \u00b7 "+fmtEsps(c)+" \u00b7 Secci\u00f3n "+sec.secc;
+  document.getElementById("msub").textContent=cod+" \u00b7 "+facultyName+" \u00b7 Secci\u00f3n "+sec.secc;
   const body=document.getElementById("mbody");
   const p=pal[cod]||"p0";
   let h="<div class=\"sec\" style=\"cursor:default;pointer-events:none\">";
