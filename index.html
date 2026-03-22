@@ -983,7 +983,12 @@ function downloadPDF(){
   const txtPri=isLight?[90,58,24]:[200,150,100];
   const txtSec=isLight?[138,98,72]:[110,100,80];
   toast("Generando PDF\u2026","ok");
-  html2canvas(el,{backgroundColor:bgCanvas,scale:2.8,useCORS:true,logging:false}).then(function(canvas){
+  /* Temporarily remove sticky positioning so html2canvas captures the full table correctly */
+  const thead=el.querySelector("thead th");
+  const stickyEls=el.querySelectorAll("thead th");
+  stickyEls.forEach(function(th){th.style.position="static";});
+  html2canvas(el,{backgroundColor:bgCanvas,scale:2.8,useCORS:true,logging:false,scrollX:0,scrollY:0}).then(function(canvas){
+    stickyEls.forEach(function(th){th.style.position="";});
     const W=canvas.width/2.8, H=canvas.height/2.8;
     const pdf=new window.jspdf.jsPDF({orientation:W>H?"landscape":"portrait",unit:"px",format:[W+56,H+72]});
     pdf.setFillColor(...bgOuter);pdf.rect(0,0,W+56,H+72,"F");
@@ -995,7 +1000,7 @@ function downloadPDF(){
     pdf.addImage(canvas.toDataURL("image/png"),"PNG",28,44,W,H);
     pdf.save("horario-fia-2026-1.pdf");
     toast("\u2713 PDF descargado correctamente","ok");
-  }).catch(function(e){toast("Error al generar: "+e.message,"er");});
+  }).catch(function(e){stickyEls.forEach(function(th){th.style.position="";});toast("Error al generar: "+e.message,"er");});
 }
 
 function toast(msg,type){
