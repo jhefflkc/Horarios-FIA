@@ -637,7 +637,7 @@ body.light .c-conf-tag-soft,body.stitch-light .c-conf-tag-soft{color:#7a5200;bac
   .sidebar{
     width:100%;position:absolute;
     top:calc(52px + env(safe-area-inset-top,0px));left:0;right:0;
-    bottom:calc(52px + env(safe-area-inset-bottom,0px));
+    bottom:calc(52px + var(--sab,0px));
     border-right:none;z-index:50;display:none;
   }
   .sidebar.mob-active{display:flex}
@@ -650,7 +650,7 @@ body.light .c-conf-tag-soft,body.stitch-light .c-conf-tag-soft{color:#7a5200;bac
   .main{
     position:absolute;
     top:calc(52px + env(safe-area-inset-top,0px));left:0;right:0;
-    bottom:calc(52px + env(safe-area-inset-bottom,0px));
+    bottom:calc(52px + var(--sab,0px));
     display:none;flex-direction:column;overflow:hidden;
   }
   .main.mob-active{display:flex}
@@ -665,8 +665,8 @@ body.light .c-conf-tag-soft,body.stitch-light .c-conf-tag-soft{color:#7a5200;bac
   /* Tab bar: always visible, respects home-indicator area */
   .mob-tabs{
     display:flex;position:fixed;bottom:0;left:0;right:0;
-    height:calc(52px + env(safe-area-inset-bottom,0px));
-    padding-bottom:env(safe-area-inset-bottom,0px);
+    height:calc(52px + var(--sab,0px));
+    padding-bottom:var(--sab,0px);
     background:var(--panel);border-top:1.5px solid var(--line2);z-index:9999;
   }
   .mob-tab{
@@ -679,7 +679,7 @@ body.light .c-conf-tag-soft,body.stitch-light .c-conf-tag-soft{color:#7a5200;bac
   }
   .mob-tab.on{color:var(--accent3)}
   .toast{
-    bottom:calc(52px + env(safe-area-inset-bottom,0px) + 14px);
+    bottom:calc(52px + var(--sab,0px) + 14px);
     right:1rem;left:1rem;
     justify-content:center;
     z-index:99999;
@@ -916,7 +916,27 @@ body.light .c-conf-tag-soft,body.stitch-light .c-conf-tag-soft{color:#7a5200;bac
 <!-- Toast -->
 <div class="toast" id="toast"><div class="tdot"></div><span id="tmsg"></span></div>
 
+<!-- SAB probe: used by JS to read the real env(safe-area-inset-bottom) value -->
+<div id="sab-probe" style="position:fixed;bottom:0;left:0;width:0;height:env(safe-area-inset-bottom,0px);pointer-events:none;visibility:hidden"></div>
+
 <script>
+/* ── Safe-area-inset-bottom fix (iOS Safari initial load) ──────────────────
+   env() values may not be ready on first paint; we read the probe element's
+   height (forces sync layout) and push the value as --sab, then listen for
+   orientationchange / resize so it stays accurate after rotation.
+────────────────────────────────────────────────────────────────────────── */
+(function(){
+  var probe=document.getElementById('sab-probe');
+  function applySAB(){
+    if(!probe) return;
+    var h=probe.getBoundingClientRect().height||0;
+    document.documentElement.style.setProperty('--sab', h+'px');
+  }
+  applySAB();
+  window.addEventListener('resize', applySAB);
+  window.addEventListener('orientationchange', function(){ setTimeout(applySAB,200); });
+})();
+
 /* ── Mobile tab navigation ─────────────────────────── */
 function showMobTab(tab){
   const sidebar=document.querySelector('.sidebar');
