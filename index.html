@@ -84,10 +84,8 @@ body.stitch-dark{
   --accent2:#76aaff;
   --accent3:#a0c4ff;
   --glow:rgba(79,142,247,0.3);
-  background-image:
-    radial-gradient(circle 260px at var(--dot-x) var(--dot-y),rgba(255,255,255,0.16) 0%,transparent 100%),
-    radial-gradient(circle,rgba(255,255,255,0.045) 1px,transparent 1px);
-  background-size:100% 100%,22px 22px;
+  background-image:radial-gradient(circle,rgba(255,255,255,0.035) 1px,transparent 1px);
+  background-size:22px 22px;
 }
 body.stitch-dark header{background:rgba(17,17,17,0.96)}
 body.stitch-dark header::after{background:linear-gradient(90deg,transparent,#4f8ef7 50%,transparent);opacity:0.5}
@@ -126,10 +124,8 @@ body.stitch-light{
   --accent2:#3b82f6;
   --accent3:#60a5fa;
   --glow:rgba(37,99,235,0.18);
-  background-image:
-    radial-gradient(circle 260px at var(--dot-x) var(--dot-y),rgba(0,0,0,0.1) 0%,transparent 100%),
-    radial-gradient(circle,rgba(0,0,0,0.09) 1px,transparent 1px);
-  background-size:100% 100%,22px 22px;
+  background-image:radial-gradient(circle,rgba(0,0,0,0.065) 1px,transparent 1px);
+  background-size:22px 22px;
 }
 body.stitch-light header{background:rgba(255,255,255,0.96)}
 body.stitch-light header::after{background:linear-gradient(90deg,transparent,#2563eb 50%,transparent);opacity:0.45}
@@ -153,25 +149,30 @@ body.stitch-light .p7{background:rgba(5,150,105,0.12);border-left-color:#059669;
 body.stitch-dark .sched-area,body.stitch-light .sched-area{background:transparent}
 body.stitch-dark .topbar,body.stitch-light .topbar{background:transparent;border-bottom:none}
 body.stitch-dark .stats,body.stitch-light .stats{background:transparent;border-top:none}
-/* Floating action buttons panel */
+/* Action buttons as floating glass card (stays in topbar position) */
 body.stitch-dark .action-btns,body.stitch-light .action-btns{
-  position:fixed;bottom:1.4rem;right:1.4rem;z-index:150;
-  display:flex;align-items:center;gap:8px;
-  padding:8px 10px;border-radius:14px;border:1px solid var(--line2);
+  padding:7px 10px;border-radius:14px;border:1px solid var(--line2);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
 }
 body.stitch-dark .action-btns{
   background:rgba(28,28,30,0.82);
-  box-shadow:0 8px 32px rgba(0,0,0,0.5),0 1px 0 rgba(255,255,255,0.07) inset;
+  box-shadow:0 6px 24px rgba(0,0,0,0.45),0 1px 0 rgba(255,255,255,0.07) inset;
 }
 body.stitch-light .action-btns{
   background:rgba(255,255,255,0.86);
-  box-shadow:0 8px 32px rgba(0,0,0,0.13),0 1px 0 rgba(255,255,255,0.9) inset;
+  box-shadow:0 6px 24px rgba(0,0,0,0.12),0 1px 0 rgba(255,255,255,0.9) inset;
 }
-/* Keep sched area bottom padding so content isn't hidden behind floating buttons */
-body.stitch-dark .sched-area,body.stitch-light .sched-area{padding-bottom:5rem}
+/* Dot spotlight: intense dots revealed only near cursor via CSS mask */
+body.stitch-dark::before,body.stitch-light::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background-size:22px 22px;
+  mask-image:radial-gradient(circle 130px at var(--dot-x,-9999px) var(--dot-y,-9999px),black 0%,transparent 100%);
+  -webkit-mask-image:radial-gradient(circle 130px at var(--dot-x,-9999px) var(--dot-y,-9999px),black 0%,transparent 100%);
+}
+body.stitch-dark::before{background-image:radial-gradient(circle,rgba(255,255,255,0.32) 1px,transparent 1px)}
+body.stitch-light::before{background-image:radial-gradient(circle,rgba(0,0,0,0.26) 1px,transparent 1px)}
 
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tx);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tx);height:100vh;display:flex;flex-direction:column;overflow:hidden;position:relative}
 
 /* ═══ HEADER ═════════════════════════════════════════ */
 header{
