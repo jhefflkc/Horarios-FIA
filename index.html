@@ -1059,8 +1059,13 @@ function drawTags(){
   Object.values(sel).forEach(function(s){s.ss.forEach(function(x){hrs+=x.h1-x.h0;});});
   document.getElementById("sn").textContent=keys.length;
   document.getElementById("sh").textContent=hrs;
-  const cy=[...new Set(courses.filter(function(c){return sel[c.cod];}).map(function(c){return c.esp;}))].sort(function(a,b){return ESP_ORDER.indexOf(a)-ESP_ORDER.indexOf(b);});
-  document.getElementById("sc").textContent=cy.map(function(n){return ESP_SH[n]||n;}).join(", ");
+  const isFIA=facultyName==="Fac. Ing. Ambiental";
+  const scEl=document.getElementById("sc").parentElement;
+  scEl.style.display=isFIA?"":"none";
+  if(isFIA){
+    const cy=[...new Set(Object.keys(sel).map(function(cod){return sel[cod].esp;}).filter(Boolean))].sort(function(a,b){return ESP_ORDER.indexOf(a)-ESP_ORDER.indexOf(b);});
+    document.getElementById("sc").textContent=cy.map(function(n){return ESP_SH[n]||n;}).join(", ")||"\u2014";
+  }
 }
 
 function drawSched(){
