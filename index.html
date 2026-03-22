@@ -575,7 +575,7 @@ body.light .sched-legend{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.0
     <div class="logo-gem">&#x1F331;&#x1F477;&#x1F3FB;&#x200D;&#x2640;&#xFE0F;&#x1F4A7;</div>
     <div>
       <div class="logo-text">FIA <span>&middot;</span> UNI</div>
-      <div class="logo-sub">Generador de Horarios &middot; 2026-1</div>
+      <div class="logo-sub" id="logo-sub-period">Generador de Horarios &middot; 2026-1</div>
     </div>
   </div>
   <div class="header-mid">
@@ -605,7 +605,17 @@ body.light .sched-legend{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.0
   <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-top">
-      <span class="sidebar-label">&#9670; Cursos disponibles &mdash; 2026-1</span>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem">
+        <span class="sidebar-label" id="period-label" style="margin-bottom:0;display:inline">&#9670; Cursos disponibles &mdash; 2026-1</span>
+        <button onclick="openPeriodModal()" title="Editar per&iacute;odo"
+          style="background:none;border:none;cursor:pointer;color:var(--tx3);padding:2px;opacity:0.55;transition:opacity 0.15s;flex-shrink:0"
+          onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.55">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+        </button>
+      </div>
       <div class="search-box">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
@@ -769,6 +779,13 @@ const FIA_DATA=[{"esp":"IS","cod":"AA215","secc":"E","curso":"GEOLOGIA","docente
 
 let courses=[], sel={}, pal={}, palIdx=0;
 let _pendingCod=null, _pendingSec=null;
+let periodYear="2026", periodNum="1";
+function getPeriod(){return periodYear+"-"+periodNum;}
+function updatePeriodUI(){
+  var p=getPeriod();
+  document.getElementById("period-label").textContent="\u25c6 Cursos disponibles \u2014 "+p;
+  document.getElementById("logo-sub-period").textContent="Generador de Horarios \u00b7 "+p;
+}
 
 function boot(rows){
   const map={};
@@ -902,6 +919,43 @@ function modalClose(){
   document.getElementById("modal").style.display="none";
 }
 function closeModal(e){if(e.target===document.getElementById("modal")) modalClose();}
+
+function openPeriodModal(){
+  document.getElementById("mttl").textContent="Per\u00edodo acad\u00e9mico";
+  document.getElementById("msub").textContent="Edita el a\u00f1o y semestre que aparecer\u00e1 en el horario";
+  var inp="background:var(--surface);border:1.5px solid var(--line2);border-radius:9px;"+
+    "padding:11px 14px;font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:800;"+
+    "color:var(--tx);outline:none;width:100%;text-align:center;transition:border-color 0.2s;box-sizing:border-box";
+  var lbl="font-size:0.6rem;font-family:'JetBrains Mono',monospace;color:var(--tx3);"+
+    "letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;display:block";
+  document.getElementById("mbody").innerHTML=
+    "<div style=\"display:flex;align-items:flex-end;gap:10px;margin-bottom:16px\">"+
+      "<div style=\"flex:2\">"+
+        "<span style=\""+lbl+"\">A\u00f1o</span>"+
+        "<input id=\"p-year\" type=\"text\" maxlength=\"4\" value=\""+periodYear+"\" style=\""+inp+"\""+
+        " onfocus=\"this.style.borderColor='var(--accent)'\" onblur=\"this.style.borderColor='var(--line2)'\">"+
+      "</div>"+
+      "<div style=\"color:var(--tx3);font-size:1.4rem;font-weight:300;padding-bottom:10px;flex-shrink:0\">&mdash;</div>"+
+      "<div style=\"flex:1\">"+
+        "<span style=\""+lbl+"\">Per\u00edodo</span>"+
+        "<input id=\"p-num\" type=\"text\" maxlength=\"1\" value=\""+periodNum+"\" style=\""+inp+"\""+
+        " onfocus=\"this.style.borderColor='var(--accent)'\" onblur=\"this.style.borderColor='var(--line2)'\">"+
+      "</div>"+
+    "</div>"+
+    "<button class=\"btn btn-dl\" style=\"width:100%;justify-content:center\" onclick=\"savePeriod()\">Guardar</button>";
+  document.getElementById("modal").style.display="flex";
+  setTimeout(function(){document.getElementById("p-year").focus();},100);
+}
+
+function savePeriod(){
+  var y=document.getElementById("p-year").value.trim();
+  var n=document.getElementById("p-num").value.trim();
+  if(!y||!n){toast("Completa el a\u00f1o y el per\u00edodo","er");return;}
+  periodYear=y;periodNum=n;
+  updatePeriodUI();
+  modalClose();
+  toast("Per\u00edodo actualizado a "+getPeriod(),"ok");
+}
 
 function blkInfo(e){
   e.stopPropagation();
@@ -1095,9 +1149,9 @@ function downloadPDF(){
     pdf.setTextColor(...txtPri);pdf.setFontSize(9);pdf.setFont("helvetica","bold");
     pdf.text("FIA \u00b7 UNI",36,28);
     pdf.setTextColor(...txtSec);pdf.setFontSize(7);pdf.setFont("helvetica","normal");
-    pdf.text("HORARIO 2026-1  \u00b7  Generado desde Horarios FIA 2026-1",36,36);
+    pdf.text("HORARIO "+getPeriod()+"  \u00b7  Generado desde Horarios FIA "+getPeriod(),36,36);
     pdf.addImage(canvas.toDataURL("image/png"),"PNG",28,44,W,H);
-    pdf.save("horario-fia-2026-1.pdf");
+    pdf.save("horario-fia-"+getPeriod()+".pdf");
     toast("\u2713 PDF descargado correctamente","ok");
   }).catch(function(e){stickyEls.forEach(function(th){th.style.position="";});toast("Error al generar: "+e.message,"er");});
 }
