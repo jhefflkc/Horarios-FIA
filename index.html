@@ -14,6 +14,8 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
+  --dot-x:-9999px;
+  --dot-y:-9999px;
   --bg:#0c0905;
   --panel:#130e08;
   --surface:#1b160f;
@@ -82,8 +84,10 @@ body.stitch-dark{
   --accent2:#76aaff;
   --accent3:#a0c4ff;
   --glow:rgba(79,142,247,0.3);
-  background-image:radial-gradient(circle,rgba(255,255,255,0.055) 1px,transparent 1px);
-  background-size:22px 22px;
+  background-image:
+    radial-gradient(circle 260px at var(--dot-x) var(--dot-y),rgba(255,255,255,0.16) 0%,transparent 100%),
+    radial-gradient(circle,rgba(255,255,255,0.045) 1px,transparent 1px);
+  background-size:100% 100%,22px 22px;
 }
 body.stitch-dark header{background:rgba(17,17,17,0.96)}
 body.stitch-dark header::after{background:linear-gradient(90deg,transparent,#4f8ef7 50%,transparent);opacity:0.5}
@@ -122,6 +126,10 @@ body.stitch-light{
   --accent2:#3b82f6;
   --accent3:#60a5fa;
   --glow:rgba(37,99,235,0.18);
+  background-image:
+    radial-gradient(circle 260px at var(--dot-x) var(--dot-y),rgba(0,0,0,0.1) 0%,transparent 100%),
+    radial-gradient(circle,rgba(0,0,0,0.09) 1px,transparent 1px);
+  background-size:100% 100%,22px 22px;
 }
 body.stitch-light header{background:rgba(255,255,255,0.96)}
 body.stitch-light header::after{background:linear-gradient(90deg,transparent,#2563eb 50%,transparent);opacity:0.45}
@@ -1405,6 +1413,11 @@ function loadExcel(event){
   };
   reader.readAsBinaryString(file);
 }
+
+document.addEventListener("mousemove",function(e){
+  document.documentElement.style.setProperty("--dot-x",e.clientX+"px");
+  document.documentElement.style.setProperty("--dot-y",e.clientY+"px");
+});
 
 var THEME_ORDER=["dark","stitch-dark","light","stitch-light"];
 var THEME_LABELS={dark:"Ámbar",["stitch-dark"]:"Grafito",light:"Crema",["stitch-light"]:"Glacial"};
