@@ -1011,9 +1011,9 @@ function downloadPDF(){
   const el=document.getElementById("printable");
   if(!el){toast("Primero selecciona cursos para generar el horario","er");return;}
   const isLight=document.body.classList.contains("light");
-  const bgCanvas=isLight?"#fdf6ee":"#07080f";
-  const bgOuter=isLight?[253,246,238]:[7,8,15];
-  const bgInner=isLight?[255,250,244]:[20,22,35];
+  const bgCanvas=isLight?"#fdf6ee":"#0c0905";
+  const bgOuter=isLight?[253,246,238]:[12,9,5];
+  const bgInner=isLight?[255,250,244]:[19,14,8];
   const txtPri=isLight?[90,58,24]:[200,150,100];
   const txtSec=isLight?[138,98,72]:[110,100,80];
   toast("Generando PDF\u2026","ok");
