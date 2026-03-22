@@ -768,7 +768,7 @@ const TN={T:"Teor\u00eda",P:"Pr\u00e1ctica",L:"Laboratorio",S:"Seminario"};
 const PAL=["p0","p1","p2","p3","p4","p5","p6","p7"];
 const ESP_ORDER=["CB","IA","IS","IH"];
 const ESP_LAB={CB:"CIENCIAS B\u00c1SICAS",IA:"INGENIER\u00cdA AMBIENTAL",IS:"INGENIER\u00cdA SANITARIA",IH:"ING. HIGIENE Y SEGURIDAD"};
-const ESP_SH={CB:"B\u00e1sicas",IA:"I. Ambiental",IS:"I. Sanitaria",IH:"Higiene y Seg."};
+const ESP_SH={CB:"B\u00e1sicas",IA:"I. Ambiental",IS:"I. Sanitaria",IH:"I. Higiene y Seg."};
 function fmtEsps(c){
   var list=c.esps&&c.esps.length?c.esps:[c.esp];
   return list.map(function(e){return ESP_SH[e]||e;}).join(" \u00b7 ");
