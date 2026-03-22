@@ -2,7 +2,10 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>FIA-Horarios</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -480,8 +483,11 @@ body.light .sched-legend{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.0
   /* Use dynamic viewport height so browser chrome doesn't shift layout */
   body{height:100dvh}
 
-  /* Header compact */
-  header{height:52px;padding:0 0.9rem}
+  /* Header compact — respects status bar in standalone/PWA mode */
+  header{
+    height:calc(52px + env(safe-area-inset-top,0px));
+    padding:env(safe-area-inset-top,0px) 0.9rem 0;
+  }
   .header-mid{display:none}
   .logo-sub{display:none}
   .logo-gem{width:55px;height:32px;font-size:13px}
@@ -492,13 +498,15 @@ body.light .sched-legend{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.0
   /* Layout: panels fill space between header and tab bar */
   .app{overflow:hidden}
   .sidebar{
-    width:100%;position:absolute;top:52px;left:0;right:0;
+    width:100%;position:absolute;
+    top:calc(52px + env(safe-area-inset-top,0px));left:0;right:0;
     bottom:calc(52px + env(safe-area-inset-bottom,0px));
     border-right:none;z-index:50;display:none;
   }
   .sidebar.mob-active{display:flex}
   .main{
-    position:absolute;top:52px;left:0;right:0;
+    position:absolute;
+    top:calc(52px + env(safe-area-inset-top,0px));left:0;right:0;
     bottom:calc(52px + env(safe-area-inset-bottom,0px));
     display:none;flex-direction:column;overflow:hidden;
   }
