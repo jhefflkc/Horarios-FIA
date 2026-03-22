@@ -438,6 +438,9 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
 .mob-tabs{display:none}
 
 @media(max-width:720px){
+  /* Use dynamic viewport height so browser chrome doesn't shift layout */
+  body{height:100dvh}
+
   /* Header compact */
   header{height:52px;padding:0 0.9rem}
   .header-mid{display:none}
@@ -447,29 +450,42 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
   #theme-label{display:none}
   .hbtn{padding:7px 9px}
 
-  /* Layout: stack panels, show only active */
+  /* Layout: panels fill space between header and tab bar */
   .app{overflow:hidden}
   .sidebar{
-    width:100%;position:absolute;top:52px;left:0;right:0;bottom:52px;
+    width:100%;position:absolute;top:52px;left:0;right:0;
+    bottom:calc(52px + env(safe-area-inset-bottom,0px));
     border-right:none;z-index:50;display:none;
   }
   .sidebar.mob-active{display:flex}
   .main{
-    position:absolute;top:52px;left:0;right:0;bottom:52px;
+    position:absolute;top:52px;left:0;right:0;
+    bottom:calc(52px + env(safe-area-inset-bottom,0px));
     display:none;flex-direction:column;overflow:hidden;
   }
   .main.mob-active{display:flex}
 
-  /* Tab bar */
+  /* Prevent inner scroll from propagating to page (hides tab bar) */
+  .course-scroll{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+  .sched-area{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+
+  /* Fix iOS zoom on input focus: font-size must be >= 16px */
+  .search-box input{font-size:16px}
+
+  /* Tab bar: always visible, respects home-indicator area */
   .mob-tabs{
-    display:flex;position:fixed;bottom:0;left:0;right:0;height:52px;
-    background:var(--panel);border-top:1.5px solid var(--line2);z-index:200;
+    display:flex;position:fixed;bottom:0;left:0;right:0;
+    height:calc(52px + env(safe-area-inset-bottom,0px));
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    background:var(--panel);border-top:1.5px solid var(--line2);z-index:9999;
   }
   .mob-tab{
     flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
     gap:3px;font-size:0.6rem;font-weight:700;font-family:'JetBrains Mono',monospace;
     letter-spacing:0.8px;text-transform:uppercase;color:var(--tx3);
     background:none;border:none;cursor:pointer;transition:color 0.15s;
+    /* Larger tap target */
+    -webkit-tap-highlight-color:transparent;touch-action:manipulation;
   }
   .mob-tab.on{color:var(--accent3)}
   .mob-tab.on svg{color:var(--accent3)}
