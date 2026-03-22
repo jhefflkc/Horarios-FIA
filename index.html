@@ -33,6 +33,10 @@
   --accent2:#dc9a52;
   --accent3:#f0b870;
   --glow:rgba(200,120,58,0.35);
+  --float-bg:rgba(19,14,8,0.92);
+  --float-shadow:0 12px 40px rgba(0,0,0,0.55),0 1px 0 rgba(255,180,80,0.06) inset;
+  --float-btn-bg:rgba(19,14,8,0.92);
+  --float-btn-shadow:0 6px 24px rgba(0,0,0,0.5),0 1px 0 rgba(255,180,80,0.07) inset;
 }
 body.light{
   --bg:#fdf6ee;
@@ -48,6 +52,10 @@ body.light{
   --tx2:#5a3a18;
   --tx3:#8a6248;
   --tx4:#b89070;
+  --float-bg:rgba(255,250,244,0.92);
+  --float-shadow:0 8px 32px rgba(0,0,0,0.12),0 1px 0 rgba(255,255,255,0.8) inset;
+  --float-btn-bg:rgba(255,250,244,0.92);
+  --float-btn-shadow:0 6px 24px rgba(0,0,0,0.1),0 1px 0 rgba(255,255,255,0.9) inset;
 }
 body.light header{background:rgba(255,250,244,0.95)}
 body.light .c-row:hover{background:rgba(0,0,0,0.03)}
@@ -84,6 +92,10 @@ body.stitch-dark{
   --accent2:#76aaff;
   --accent3:#a0c4ff;
   --glow:rgba(79,142,247,0.3);
+  --float-bg:rgba(28,28,30,0.88);
+  --float-shadow:0 12px 40px rgba(0,0,0,0.55),0 1px 0 rgba(255,255,255,0.07) inset;
+  --float-btn-bg:rgba(28,28,30,0.82);
+  --float-btn-shadow:0 6px 24px rgba(0,0,0,0.45),0 1px 0 rgba(255,255,255,0.07) inset;
   background-image:radial-gradient(circle,rgba(255,255,255,0.035) 1px,transparent 1px);
   background-size:22px 22px;
 }
@@ -124,6 +136,10 @@ body.stitch-light{
   --accent2:#3b82f6;
   --accent3:#60a5fa;
   --glow:rgba(37,99,235,0.18);
+  --float-bg:rgba(255,255,255,0.88);
+  --float-shadow:0 8px 32px rgba(0,0,0,0.13),0 1px 0 rgba(255,255,255,0.95) inset;
+  --float-btn-bg:rgba(255,255,255,0.86);
+  --float-btn-shadow:0 6px 24px rgba(0,0,0,0.12),0 1px 0 rgba(255,255,255,0.9) inset;
   background-image:radial-gradient(circle,rgba(0,0,0,0.065) 1px,transparent 1px);
   background-size:22px 22px;
 }
@@ -145,41 +161,8 @@ body.stitch-light .p5{background:rgba(124,58,237,0.12);border-left-color:#7c3aed
 body.stitch-light .p6{background:rgba(234,88,12,0.12);border-left-color:#ea580c;color:#9a3412}
 body.stitch-light .p7{background:rgba(5,150,105,0.12);border-left-color:#059669;color:#065f46}
 
-/* ── Stitch: transparent panels so dot background shows ── */
+/* ── Stitch: transparent sched-area so dot background shows ── */
 body.stitch-dark .sched-area,body.stitch-light .sched-area{background:transparent}
-body.stitch-dark .topbar,body.stitch-light .topbar{background:transparent;border-bottom:none}
-body.stitch-dark .stats,body.stitch-light .stats{background:transparent;border-top:none}
-/* Action buttons as floating glass card (stays in topbar position) */
-body.stitch-dark .action-btns,body.stitch-light .action-btns{
-  padding:7px 10px;border-radius:14px;border:1px solid var(--line2);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-}
-body.stitch-dark .action-btns{
-  background:rgba(28,28,30,0.82);
-  box-shadow:0 6px 24px rgba(0,0,0,0.45),0 1px 0 rgba(255,255,255,0.07) inset;
-}
-body.stitch-light .action-btns{
-  background:rgba(255,255,255,0.86);
-  box-shadow:0 6px 24px rgba(0,0,0,0.12),0 1px 0 rgba(255,255,255,0.9) inset;
-}
-/* ── Stitch: floating sidebar card ── */
-body.stitch-dark .sidebar,
-body.stitch-light .sidebar{
-  margin:10px 0 10px 10px;
-  border-radius:18px;
-  border:1px solid var(--line2);
-  border-right:1px solid var(--line2);
-  overflow:hidden;
-  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-}
-body.stitch-dark .sidebar{
-  background:rgba(28,28,30,0.88);
-  box-shadow:0 12px 40px rgba(0,0,0,0.55),0 1px 0 rgba(255,255,255,0.07) inset;
-}
-body.stitch-light .sidebar{
-  background:rgba(255,255,255,0.88);
-  box-shadow:0 8px 32px rgba(0,0,0,0.13),0 1px 0 rgba(255,255,255,0.95) inset;
-}
 
 /* Dot spotlight: intense dots revealed only near cursor via CSS mask */
 body.stitch-dark::before,body.stitch-light::before{
@@ -237,7 +220,11 @@ header::after{
 /* ═══ LEFT PANEL ══════════════════════════════════════ */
 .sidebar{
   width:348px;flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;
-  background:var(--panel);border-right:1px solid var(--line2);
+  background:var(--float-bg);
+  margin:10px 0 10px 10px;
+  border-radius:18px;border:1px solid var(--line2);
+  box-shadow:var(--float-shadow);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
 }
 
 /* Search + upload area */
@@ -368,7 +355,7 @@ header::after{
 .topbar{
   display:flex;align-items:center;gap:8px;flex-shrink:0;
   padding:0.65rem 1.4rem;
-  background:var(--panel);border-bottom:1px solid var(--line2);min-height:56px;
+  background:transparent;border-bottom:none;min-height:56px;
 }
 .tags-zone{flex:1;display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0}
 .ph{font-size:0.8rem;color:var(--tx4);font-style:italic}
@@ -384,7 +371,13 @@ header::after{
   font-style:normal;font-size:0.72rem;opacity:0.6;transition:opacity 0.15s;
 }
 .tag-x:hover{opacity:1}
-.action-btns{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.action-btns{
+  display:flex;align-items:center;gap:8px;flex-shrink:0;
+  padding:7px 10px;border-radius:14px;border:1px solid var(--line2);
+  background:var(--float-btn-bg);
+  box-shadow:var(--float-btn-shadow);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+}
 
 /* Buttons */
 .btn{
@@ -448,7 +441,7 @@ header::after{
 /* Stats */
 .stats{
   display:flex;gap:2rem;padding:0.55rem 1.4rem;
-  background:var(--panel);border-top:1px solid var(--line);flex-shrink:0;
+  background:transparent;border-top:none;flex-shrink:0;
 }
 .stat{display:flex;align-items:center;gap:7px;font-size:0.72rem;color:var(--tx3)}
 .stat-n{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:0.8rem;color:var(--accent3)}
@@ -633,10 +626,11 @@ body.light .sched-legend{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.0
     border-right:none;z-index:50;display:none;
   }
   .sidebar.mob-active{display:flex}
-  /* Cancel floating sidebar on mobile for stitch themes */
-  body.stitch-dark .sidebar,body.stitch-light .sidebar{
+  /* Cancel floating sidebar on mobile for all themes */
+  .sidebar{
     margin:0;border-radius:0;border:none;
     box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;
+    background:var(--panel);
   }
   .main{
     position:absolute;
