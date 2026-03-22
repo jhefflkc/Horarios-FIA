@@ -793,11 +793,11 @@ function downloadPDF(){
     pdf.setFillColor(7,8,15);pdf.rect(0,0,W+56,H+72,"F");
     pdf.setFillColor(20,22,35);pdf.roundedRect(28,16,W,H+28,6,6,"F");
     pdf.setTextColor(165,148,253);pdf.setFontSize(9);pdf.setFont("helvetica","bold");
-    pdf.text("FIEE \u00b7 UNI",36,28);
+    pdf.text("FIA \u00b7 UNI",36,28);
     pdf.setTextColor(110,106,144);pdf.setFontSize(7);pdf.setFont("helvetica","normal");
     pdf.text("HORARIO 2026-1  \u00b7  Generado desde Horarios FIA 2026-1",36,36);
     pdf.addImage(canvas.toDataURL("image/png"),"PNG",28,44,W,H);
-    pdf.save("horario-fiee-2026-1.pdf");
+    pdf.save("horario-fia-2026-1.pdf");
     toast("\u2713 PDF descargado correctamente","ok");
   }).catch(function(e){toast("Error al generar: "+e.message,"er");});
 }
