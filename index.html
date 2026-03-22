@@ -1254,7 +1254,9 @@ function loadExcel(event){
 }
 
 window.addEventListener("DOMContentLoaded",function(){
-  if(localStorage.getItem("theme")==="light"){
+  var saved=localStorage.getItem("theme");
+  var preferLight=saved?saved==="light":window.matchMedia("(prefers-color-scheme: light)").matches;
+  if(preferLight){
     document.body.classList.add("light");
     document.getElementById("theme-icon-dark").style.display="";
     document.getElementById("theme-icon-light").style.display="none";
