@@ -781,6 +781,13 @@ let courses=[], sel={}, pal={}, palIdx=0;
 let _pendingCod=null, _pendingSec=null;
 let periodYear="2026", periodNum="1";
 let facultyName="Fac. Ing. Ambiental";
+let facultyLabel="FIA \u00b7 UNI";
+const FACULTY_PRESETS=[
+  {label:"FIA \u00b7 UNI",value:"Fac. Ing. Ambiental"},
+  {label:"FIC \u00b7 UNI",value:"Fac. Ing. Civil"},
+  {label:"FIEECS \u00b7 UNI",value:"Fac. Ing. El\u00e9ctrica"},
+  {label:"FIIS \u00b7 UNI",value:"Fac. Ing. Industrial"}
+];
 function getPeriod(){return periodYear+"-"+periodNum;}
 function updatePeriodUI(){
   var p=getPeriod();
@@ -932,13 +939,7 @@ function openPeriodModal(){
     "color:var(--tx);outline:none;width:100%;text-align:center;transition:border-color 0.2s;box-sizing:border-box";
   var lbl="font-size:0.6rem;font-family:'JetBrains Mono',monospace;color:var(--tx3);"+
     "letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;display:block";
-  var presets=[
-    {label:"FIA \u00b7 UNI",value:"Fac. Ing. Ambiental"},
-    {label:"FIC \u00b7 UNI",value:"Fac. Ing. Civil"},
-    {label:"FIEECS \u00b7 UNI",value:"Fac. Ing. Eléctrica"},
-    {label:"FIIS \u00b7 UNI",value:"Fac. Ing. Industrial"}
-  ];
-  var presetBtns=presets.map(function(p){
+  var presetBtns=FACULTY_PRESETS.map(function(p){
     return "<button onclick=\"document.getElementById('p-faculty').value='"+p.value+"'\" "+
       "style=\"background:var(--surface);border:1.5px solid var(--line2);border-radius:7px;"+
       "padding:5px 10px;font-size:0.68rem;font-weight:700;color:var(--tx2);cursor:pointer;"+
@@ -978,6 +979,8 @@ function savePeriod(){
   var n=document.getElementById("p-num").value.trim();
   if(!f||!y||!n){toast("Completa todos los campos","er");return;}
   facultyName=f;periodYear=y;periodNum=n;
+  var match=FACULTY_PRESETS.find(function(p){return p.value===f;});
+  facultyLabel=match?match.label:f;
   updatePeriodUI();
   modalClose();
   toast("Per\u00edodo actualizado: "+facultyName+" \u00b7 "+getPeriod(),"ok");
@@ -1178,11 +1181,11 @@ function downloadPDF(){
     pdf.setFillColor(...bgOuter);pdf.rect(0,0,W+56,H+72,"F");
     pdf.setFillColor(...bgInner);pdf.roundedRect(28,16,W,H+28,6,6,"F");
     pdf.setTextColor(...txtPri);pdf.setFontSize(9);pdf.setFont("helvetica","bold");
-    pdf.text("FIA \u00b7 UNI",36,28);
+    pdf.text(facultyLabel,36,28);
     pdf.setTextColor(...txtSec);pdf.setFontSize(7);pdf.setFont("helvetica","normal");
     pdf.text("HORARIO "+getPeriod()+"  \u00b7  Generado desde Horarios FIA "+getPeriod(),36,36);
     pdf.addImage(canvas.toDataURL("image/png"),"PNG",28,44,W,H);
-    pdf.save("horario-fia-"+getPeriod()+".pdf");
+    pdf.save("horario-"+facultyLabel.split(" \u00b7 ")[0].toLowerCase()+"-"+getPeriod()+".pdf");
     toast("\u2713 PDF descargado correctamente","ok");
   }).catch(function(e){stickyEls.forEach(function(th){th.style.position="";});toast("Error al generar: "+e.message,"er");});
 }
