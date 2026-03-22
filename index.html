@@ -62,6 +62,84 @@ body.light .p4{background:rgba(120,140,40,0.14);color:#4a5c18}
 body.light .p5{background:rgba(40,140,110,0.14);color:#186850}
 body.light .p6{background:rgba(180,130,30,0.14);color:#7a5208}
 body.light .p7{background:rgba(80,130,50,0.14);color:#285a10}
+
+/* ── Stitch Dark (Grafito) ───────────────────────────────── */
+body.stitch-dark{
+  --bg:#111111;
+  --panel:#1c1c1e;
+  --surface:#242426;
+  --surface2:#2c2c2e;
+  --card:#3a3a3c;
+  --card2:#48484a;
+  --line:rgba(255,255,255,0.05);
+  --line2:rgba(255,255,255,0.09);
+  --line3:rgba(255,255,255,0.16);
+  --tx:#f5f5f7;
+  --tx2:#aeaeb2;
+  --tx3:#636366;
+  --tx4:#3a3a3c;
+  --accent:#4f8ef7;
+  --accent2:#76aaff;
+  --accent3:#a0c4ff;
+  --glow:rgba(79,142,247,0.3);
+  background-image:radial-gradient(circle,rgba(255,255,255,0.055) 1px,transparent 1px);
+  background-size:22px 22px;
+}
+body.stitch-dark header{background:rgba(17,17,17,0.96)}
+body.stitch-dark header::after{background:linear-gradient(90deg,transparent,#4f8ef7 50%,transparent);opacity:0.5}
+body.stitch-dark .c-row:hover{background:rgba(255,255,255,0.04)}
+body.stitch-dark table.sch tbody tr:nth-child(odd) td:not(:first-child) .cell-mt{background:rgba(255,255,255,0.025)}
+body.stitch-dark table.sch tbody tr:nth-child(even) td:not(:first-child) .cell-mt{background:rgba(255,255,255,0.01)}
+body.stitch-dark table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.05)}
+body.stitch-dark .overlay{background:rgba(0,0,0,0.65)}
+body.stitch-dark .logo-text{color:#f5f5f7}
+body.stitch-dark .sched-legend{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.08)}
+body.stitch-dark .p0{background:rgba(99,142,247,0.18);color:#90b8ff}
+body.stitch-dark .p1{background:rgba(52,199,89,0.15);color:#5dd67a}
+body.stitch-dark .p2{background:rgba(255,214,10,0.14);color:#ffd60a}
+body.stitch-dark .p3{background:rgba(255,69,58,0.15);color:#ff8a82}
+body.stitch-dark .p4{background:rgba(100,210,255,0.15);color:#64d2ff}
+body.stitch-dark .p5{background:rgba(94,92,230,0.18);color:#b8b2ff}
+body.stitch-dark .p6{background:rgba(255,159,10,0.15);color:#ffa843}
+body.stitch-dark .p7{background:rgba(48,209,88,0.14);color:#64dd8a}
+
+/* ── Stitch Light (Glacial) ──────────────────────────────── */
+body.stitch-light{
+  --bg:#f2f2f7;
+  --panel:#ffffff;
+  --surface:#f2f2f7;
+  --surface2:#e5e5ea;
+  --card:#d1d1d6;
+  --card2:#c7c7cc;
+  --line:rgba(0,0,0,0.07);
+  --line2:rgba(0,0,0,0.11);
+  --line3:rgba(0,0,0,0.20);
+  --tx:#1c1c1e;
+  --tx2:#3a3a3c;
+  --tx3:#8e8e93;
+  --tx4:#c7c7cc;
+  --accent:#2563eb;
+  --accent2:#3b82f6;
+  --accent3:#60a5fa;
+  --glow:rgba(37,99,235,0.18);
+}
+body.stitch-light header{background:rgba(255,255,255,0.96)}
+body.stitch-light header::after{background:linear-gradient(90deg,transparent,#2563eb 50%,transparent);opacity:0.45}
+body.stitch-light .logo-text{color:var(--tx)}
+body.stitch-light .c-row:hover{background:rgba(0,0,0,0.03)}
+body.stitch-light table.sch tbody tr:nth-child(odd) td:not(:first-child) .cell-mt{background:rgba(0,0,0,0.018)}
+body.stitch-light table.sch tbody tr:nth-child(even) td:not(:first-child) .cell-mt{background:rgba(0,0,0,0.008)}
+body.stitch-light table.sch tbody tr:hover .cell-mt{background:rgba(0,0,0,0.04)}
+body.stitch-light .overlay{background:rgba(100,120,180,0.4)}
+body.stitch-light .sched-legend{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.08)}
+body.stitch-light .p0{background:rgba(37,99,235,0.12);color:#1d4ed8}
+body.stitch-light .p1{background:rgba(22,163,74,0.12);color:#166534}
+body.stitch-light .p2{background:rgba(202,138,4,0.12);color:#92400e}
+body.stitch-light .p3{background:rgba(220,38,38,0.12);color:#991b1b}
+body.stitch-light .p4{background:rgba(8,145,178,0.12);color:#0e7490}
+body.stitch-light .p5{background:rgba(124,58,237,0.12);color:#5b21b6}
+body.stitch-light .p6{background:rgba(234,88,12,0.12);color:#9a3412}
+body.stitch-light .p7{background:rgba(5,150,105,0.12);color:#065f46}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tx);height:100vh;display:flex;flex-direction:column;overflow:hidden}
 
 /* ═══ HEADER ═════════════════════════════════════════ */
@@ -610,10 +688,18 @@ body.light .sched-legend{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.0
         <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
         <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
       </svg>
-      <svg id="theme-icon-light" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <svg id="theme-icon-light" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:none">
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
       </svg>
-      <span id="theme-label">Modo Claro</span>
+      <svg id="theme-icon-stitch" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <circle cx="12" cy="12" r="10"/>
+        <circle cx="12" cy="12" r="3"/>
+        <line x1="12" y1="2" x2="12" y2="6"/>
+        <line x1="12" y1="18" x2="12" y2="22"/>
+        <line x1="2" y1="12" x2="6" y2="12"/>
+        <line x1="18" y1="12" x2="22" y2="12"/>
+      </svg>
+      <span id="theme-label">Ámbar</span>
     </button>
   </div>
 </header>
@@ -1320,24 +1406,35 @@ function loadExcel(event){
   reader.readAsBinaryString(file);
 }
 
+var THEME_ORDER=["dark","stitch-dark","light","stitch-light"];
+var THEME_LABELS={dark:"Ámbar",["stitch-dark"]:"Grafito",light:"Crema",["stitch-light"]:"Glacial"};
+var THEME_IS_DARK={dark:true,["stitch-dark"]:true,light:false,["stitch-light"]:false};
+
+function applyTheme(t){
+  document.body.classList.remove("light","stitch-dark","stitch-light");
+  if(t!=="dark") document.body.classList.add(t);
+  localStorage.setItem("theme",t);
+  var dark=THEME_IS_DARK[t];
+  var stitch=t==="stitch-dark"||t==="stitch-light";
+  document.getElementById("theme-icon-dark").style.display=(!dark&&!stitch)?"":"none";
+  document.getElementById("theme-icon-light").style.display=(dark&&!stitch)?"":"none";
+  document.getElementById("theme-icon-stitch").style.display=stitch?"":"none";
+  document.getElementById("theme-label").textContent=THEME_LABELS[t]||t;
+}
+
 window.addEventListener("DOMContentLoaded",function(){
   var saved=localStorage.getItem("theme");
-  var preferLight=saved?saved==="light":window.matchMedia("(prefers-color-scheme: light)").matches;
-  if(preferLight){
-    document.body.classList.add("light");
-    document.getElementById("theme-icon-dark").style.display="";
-    document.getElementById("theme-icon-light").style.display="none";
-    document.getElementById("theme-label").textContent="Modo Oscuro";
+  if(!saved){
+    saved=window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";
   }
+  applyTheme(saved);
   boot(FIA_DATA);
 });
 
 function toggleTheme(){
-  var isLight=document.body.classList.toggle("light");
-  localStorage.setItem("theme",isLight?"light":"dark");
-  document.getElementById("theme-icon-dark").style.display=isLight?"":"none";
-  document.getElementById("theme-icon-light").style.display=isLight?"none":"";
-  document.getElementById("theme-label").textContent=isLight?"Modo Oscuro":"Modo Claro";
+  var cur=localStorage.getItem("theme")||"dark";
+  var idx=THEME_ORDER.indexOf(cur);
+  applyTheme(THEME_ORDER[(idx+1)%THEME_ORDER.length]);
 }
 
 </script>
