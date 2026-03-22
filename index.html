@@ -819,7 +819,7 @@ function checkSectionConflict(sec){
     Object.keys(sel).forEach(function(cod){
       sel[cod].ss.forEach(function(x){
         if(x.d===ss.d&&!(ss.h1<=x.h0||ss.h0>=x.h1)){
-          if(ss.t==='P'||x.t==='P'){if(!practiceWith.includes(cod)) practiceWith.push(cod);}
+          if(ss.t==='P'&&x.t==='P'){if(!practiceWith.includes(cod)) practiceWith.push(cod);}
           else{if(!theoryWith.includes(cod)) theoryWith.push(cod);}
         }
       });
