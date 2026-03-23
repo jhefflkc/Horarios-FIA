@@ -1,16 +1,29 @@
 """
-Convierte horarios_uni_completo.xlsx → actualiza FIA_DATA en index.html
+Detecta archivos {SIGLA}{AÑO}-{PERIODO}.xlsx → genera ALL_DATA en index.html
 Uso: python build_data.py
 """
 import json
 import re
 import sys
+import glob as globmod
 import openpyxl
 
-XLSX_PATH = "FIA2026-1.xlsx"
 HTML_PATH = "index.html"
 
-# Mapeo sección → especialidad (actualizar si cambia en cada periodo)
+FACULTY_MAP = {
+    "FIEECS": {"label": "FIEECS \u00b7 UNI", "fullName": "Fac. Ing. El\u00e9ctrica y Electr\u00f3nica"},
+    "FIGMM":  {"label": "FIGMM \u00b7 UNI",  "fullName": "Fac. Ing. Geol\u00f3gica, Minera y Metal\u00fargica"},
+    "FIQT":   {"label": "FIQT \u00b7 UNI",   "fullName": "Fac. Ing. Qu\u00edmica y Textil"},
+    "FIIS":   {"label": "FIIS \u00b7 UNI",   "fullName": "Fac. Ing. Industrial y Sistemas"},
+    "FIEE":   {"label": "FIEE \u00b7 UNI",   "fullName": "Fac. Ing. El\u00e9ctrica y Electr\u00f3nica"},
+    "FIPP":   {"label": "FIPP \u00b7 UNI",   "fullName": "Fac. Ing. Petr\u00f3leo, Gas Natural y Petroqu\u00edmica"},
+    "FIM":    {"label": "FIM \u00b7 UNI",    "fullName": "Fac. Ing. Mec\u00e1nica"},
+    "FIC":    {"label": "FIC \u00b7 UNI",    "fullName": "Fac. Ing. Civil"},
+    "FIA":    {"label": "FIA \u00b7 UNI",    "fullName": "Fac. Ing. Ambiental"},
+    "FC":     {"label": "FC \u00b7 UNI",     "fullName": "Fac. de Ciencias"},
+}
+
+# Mapeo sección → especialidad (FIA)
 SECC_ESP = {
     "E": "IS",
     "F": "IH",
@@ -47,15 +60,14 @@ def get_ciclo(cod):
     return int(c) if c.isdigit() else 11
 
 
-def load_rows():
-    wb = openpyxl.load_workbook(XLSX_PATH, read_only=True, data_only=True)
+def load_rows(xlsx_path):
+    wb = openpyxl.load_workbook(xlsx_path, read_only=True, data_only=True)
     rows = []
 
     for sheet_name in wb.sheetnames:
         ws = wb[sheet_name]
         all_rows = list(ws.iter_rows(values_only=True))
 
-        # Buscar fila de encabezado
         hi = -1
         headers = []
         for i, row in enumerate(all_rows):
@@ -124,26 +136,68 @@ def load_rows():
     return rows
 
 
-def update_html(rows):
+def find_faculty_files():
+    """Busca archivos {SIGLA}{AÑO}-{PERIODO}.xlsx en el directorio actual."""
+    # Ordenar por longitud descendente para que FIEECS no sea confundido con FIA
+    siglas = sorted(FACULTY_MAP.keys(), key=len, reverse=True)
+    pattern = re.compile(
+        r'^(' + '|'.join(re.escape(s) for s in siglas) + r')(\d{4}-\d)\.xlsx$'
+    )
+    found = {}
+    for f in globmod.glob("*.xlsx"):
+        m = pattern.match(f)
+        if m:
+            sigla = m.group(1)
+            period = m.group(2)
+            found[sigla] = {"file": f, "period": period}
+    return found
+
+
+def update_html(all_data):
     with open(HTML_PATH, "r", encoding="utf-8") as f:
         content = f.read()
 
-    new_data = "const FIA_DATA=" + json.dumps(rows, ensure_ascii=False, separators=(",", ":")) + ";"
-    new_content, n = re.subn(r"const FIA_DATA=\[.*?\];", new_data, content)
+    new_js = "const ALL_DATA=" + json.dumps(all_data, ensure_ascii=False, separators=(",", ":")) + ";"
 
+    # Replace const FIA_DATA=[...]; (first deploy)
+    new_content, n = re.subn(r"const FIA_DATA=\[.*?\];", new_js, content)
     if n == 0:
-        print("ERROR: no se encontró 'const FIA_DATA=[...]' en index.html", file=sys.stderr)
+        # Replace existing ALL_DATA={...};
+        new_content, n = re.subn(r"const ALL_DATA=\{.*?\};", new_js, content)
+    if n == 0:
+        print("ERROR: no se encontró 'const FIA_DATA=[...]' ni 'const ALL_DATA={...}' en index.html", file=sys.stderr)
         sys.exit(1)
 
     with open(HTML_PATH, "w", encoding="utf-8") as f:
         f.write(new_content)
 
-    print(f"OK: {len(rows)} sesiones escritas en FIA_DATA")
+    siglas = list(all_data.keys())
+    total = sum(len(v["rows"]) for v in all_data.values())
+    print(f"OK: {len(siglas)} facultad(es) {siglas}, {total} sesiones totales")
 
 
 if __name__ == "__main__":
-    rows = load_rows()
-    if not rows:
-        print("ERROR: no se encontraron filas en el xlsx", file=sys.stderr)
+    found = find_faculty_files()
+    if not found:
+        print("ERROR: no se encontró ningún archivo {SIGLA}{AÑO}-{PERIODO}.xlsx", file=sys.stderr)
         sys.exit(1)
-    update_html(rows)
+
+    all_data = {}
+    for sigla, info in found.items():
+        rows = load_rows(info["file"])
+        if not rows:
+            print(f"WARN: {info['file']} sin filas, omitido")
+            continue
+        meta = FACULTY_MAP[sigla]
+        all_data[sigla] = {
+            "label": meta["label"],
+            "fullName": meta["fullName"],
+            "period": info["period"],
+            "rows": rows,
+        }
+
+    if not all_data:
+        print("ERROR: ningún xlsx con datos válidos", file=sys.stderr)
+        sys.exit(1)
+
+    update_html(all_data)
