@@ -1082,6 +1082,7 @@ function updatePeriodUI(){
 }
 
 function boot(rows){
+  loadRatings();
   const map={};
   rows.forEach(function(r){
     const k=r.cod+"|"+r.secc;
@@ -1180,8 +1181,7 @@ function anySoftConflict(c){
   return c.secs.some(function(s){var cf=checkSectionConflict(s);return cf.hasTheory&&!cf.hasPractice;});
 }
 
-async function openModal(c){
-  await loadRatings();
+function openModal(c){
   document.getElementById("mttl").textContent=c.curso;
   document.getElementById("msub").textContent=c.cod+" \u00b7 "+facultyName+" \u00b7 Elige una secci\u00f3n";
   const body=document.getElementById("mbody");
@@ -1285,11 +1285,10 @@ function blkInfo(e){
   openInfoModal(cod);
 }
 
-async function openInfoModal(cod){
+function openInfoModal(cod){
   const c=courses.find(function(x){return x.cod===cod;});
   const sec=sel[cod];
   if(!c||!sec) return;
-  await loadRatings();
   document.getElementById("mttl").textContent=c.curso;
   document.getElementById("msub").textContent=cod+" \u00b7 "+facultyName+" \u00b7 Secci\u00f3n "+sec.secc;
   const body=document.getElementById("mbody");
