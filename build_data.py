@@ -21,6 +21,7 @@ FACULTY_MAP = {
     "FIC":    {"label": "FIC \u00b7 UNI",    "fullName": "Fac. Ing. Civil"},
     "FIA":    {"label": "FIA \u00b7 UNI",    "fullName": "Fac. Ing. Ambiental"},
     "FC":     {"label": "FC \u00b7 UNI",     "fullName": "Fac. de Ciencias"},
+    "FAUA":   {"label": "FAUA \u00b7 UNI",   "fullName": "Fac. de Arquitectura, Urbanismo y Artes"},
 }
 
 # Mapeo sección → especialidad (FIA)
