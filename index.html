@@ -1056,7 +1056,11 @@ let _editingCod=null;
 
 // ─── Calificaciones de docentes (Google Apps Script) ───────────────────────
 // Pega aquí la URL del Web App de Google Apps Script tras desplegarlo
-const RATINGS_CFG={webAppUrl:""};
+const RATINGS_CFG={
+  webAppUrl:"",
+  formUrl:"https://docs.google.com/forms/d/e/1FAIpQLSe6MiBUwLFktcGNHW6ZWDbVvXUqNa0pzpZWVpICGtM2_myhIA/formResponse",
+  fields:{docente:"entry.1423576837",puntuacion:"entry.787681983",curso:"entry.1242329604"}
+};
 let _ratingsCache=null;   // {"Dr. García":{avg:4.2,count:15}, ...}
 let _ratingsLoading=false;
 var _selectedRating=0;
@@ -1430,7 +1434,7 @@ function _ratingHTML(teacher){
 }
 
 function _ratingBtnHTML(cod){
-  if(!RATINGS_CFG.webAppUrl) return "";
+  if(!RATINGS_CFG.webAppUrl&&!RATINGS_CFG.formUrl) return "";
   const teacher=(sel[cod]||{}).docente;if(!teacher) return "";
   if(_hasRated(teacher)) return "<span class=\"rate-count\">&#10003; Ya calificaste</span>";
   return "<button class=\"rate-btn\" onclick=\"openRatingModal('"+cod+"')\">&#9733; Calificar</button>";
@@ -1490,7 +1494,16 @@ function selectStar(v){
 async function confirmRating(cod){
   const teacher=_ratingTeacher;if(!_selectedRating||!teacher) return;
   try{
-    await fetch(RATINGS_CFG.webAppUrl+"?action=rate&docente="+encodeURIComponent(teacher)+"&puntuacion="+_selectedRating+"&curso="+encodeURIComponent(cod));
+    if(RATINGS_CFG.formUrl){
+      const f=RATINGS_CFG.fields;
+      const body=new URLSearchParams();
+      body.append(f.docente,teacher);
+      body.append(f.puntuacion,String(_selectedRating));
+      body.append(f.curso,cod);
+      await fetch(RATINGS_CFG.formUrl,{method:"POST",mode:"no-cors",body});
+    } else if(RATINGS_CFG.webAppUrl){
+      await fetch(RATINGS_CFG.webAppUrl+"?action=rate&docente="+encodeURIComponent(teacher)+"&puntuacion="+_selectedRating+"&curso="+encodeURIComponent(cod));
+    }
   }catch(e){}
   // Actualiza caché local de forma optimista
   if(_ratingsCache){
