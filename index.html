@@ -1052,6 +1052,7 @@ const FIA_DATA=[{"esp":"IS","cod":"AA215","secc":"E","curso":"GEOLOGIA","docente
 
 let courses=[], sel={}, pal={}, palIdx=0;
 let _pendingCod=null, _pendingSec=null;
+let _fiaRows=null; // caché de filas FIA para restaurar al volver a esa facultad
 let _editingCod=null;
 
 // ─── Calificaciones de docentes (Google Apps Script) ───────────────────────
@@ -1082,6 +1083,7 @@ function updatePeriodUI(){
 }
 
 function boot(rows){
+  if(_isFIA()) _fiaRows=rows;
   loadRatings();
   const map={};
   rows.forEach(function(r){
@@ -1107,7 +1109,13 @@ function drawList(){
     return !q||c.cod.toLowerCase().includes(q)||c.curso.toLowerCase().includes(q);
   });
   const el=document.getElementById("clist");
-  if(!list.length){el.innerHTML="<div style=\"padding:2rem;text-align:center;color:var(--tx4);font-size:0.8rem\">Sin resultados</div>";return;}
+  if(!list.length){
+    var emptyMsg=(!courses.length&&!_isFIA())
+      ?"Carga el Excel de horarios de tu facultad"
+      :"Sin resultados";
+    el.innerHTML="<div style=\"padding:2rem;text-align:center;color:var(--tx4);font-size:0.8rem\">"+emptyMsg+"</div>";
+    return;
+  }
   let h="";
   list.forEach(function(c){
     const isSel=!!sel[c.cod];
@@ -1274,6 +1282,12 @@ function savePeriod(){
   facultyName=f;periodYear=y;periodNum=n;
   var match=FACULTY_PRESETS.find(function(p){return p.value===f;});
   facultyLabel=match?match.label:f;
+  if(_isFIA()){
+    if(_fiaRows) boot(_fiaRows);
+  } else {
+    courses=[];sel={};pal={};palIdx=0;
+    drawList();drawSched();drawTags();
+  }
   updatePeriodUI();
   modalClose();
   toast("Per\u00edodo actualizado: "+facultyName+" \u00b7 "+getPeriod(),"ok");
