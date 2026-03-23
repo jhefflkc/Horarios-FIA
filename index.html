@@ -642,6 +642,19 @@ body.light .sched-legend{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.0
 }
 .ses-edit-del:hover{background:rgba(239,68,68,0.22)}
 
+/* Teacher rating */
+.rate-star{display:inline-flex;align-items:center;gap:3px;font-size:0.72rem;color:#f0c870;font-weight:700;flex-shrink:0}
+.rate-count{color:var(--tx3);font-size:0.67rem;flex-shrink:0}
+.rate-btn{
+  background:transparent;border:1px solid var(--line3);color:var(--tx3);
+  border-radius:20px;padding:2px 9px;font-size:0.68rem;font-weight:600;
+  cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;
+  transition:all 0.15s;white-space:nowrap;flex-shrink:0;
+}
+.rate-btn:hover{border-color:var(--accent);color:var(--accent)}
+.star-inp{color:var(--tx3);transition:color 0.12s,transform 0.1s;line-height:1;cursor:pointer;user-select:none}
+.star-inp.on{color:#f0c870}
+
 /* ── Light themes: fix label contrast ── */
 body.light .ses-T,body.stitch-light .ses-T{color:#7a5400;background:rgba(160,100,0,0.13)}
 body.light .ses-P,body.stitch-light .ses-P{color:#286020;background:rgba(40,110,20,0.13)}
@@ -1040,6 +1053,18 @@ const FIA_DATA=[{"esp":"IS","cod":"AA215","secc":"E","curso":"GEOLOGIA","docente
 let courses=[], sel={}, pal={}, palIdx=0;
 let _pendingCod=null, _pendingSec=null;
 let _editingCod=null;
+
+// ─── Calificaciones de docentes (Google Apps Script) ───────────────────────
+// Pega aquí la URL del Web App de Google Apps Script tras desplegarlo
+const RATINGS_CFG={
+  webAppUrl:"",
+  formUrl:"https://docs.google.com/forms/d/e/1FAIpQLSe6MiBUwLFktcGNHW6ZWDbVvXUqNa0pzpZWVpICGtM2_myhIA/formResponse",
+  fields:{docente:"entry.1423576837",puntuacion:"entry.787681983",curso:"entry.1242329604"}
+};
+let _ratingsCache=null;   // {"Dr. García":{avg:4.2,count:15}, ...}
+let _ratingsLoading=false;
+var _selectedRating=0;
+var _ratingTeacher=null;
 let periodYear="2026", periodNum="1";
 let facultyName="Fac. Ing. Ambiental";
 let facultyLabel="FIA \u00b7 UNI";
@@ -1156,6 +1181,7 @@ function anySoftConflict(c){
 }
 
 function openModal(c){
+  loadRatings();
   document.getElementById("mttl").textContent=c.curso;
   document.getElementById("msub").textContent=c.cod+" \u00b7 "+facultyName+" \u00b7 Elige una secci\u00f3n";
   const body=document.getElementById("mbody");
@@ -1168,7 +1194,12 @@ function openModal(c){
     if(isPractice) h+="<span class=\"sec-conf\">Práctica bloqueada</span>";
     else if(isTheory) h+="<span class=\"sec-conf sec-warn\">Cruce de teoría</span>";
     h+="</div>";
-    if(sec.docente) h+="<div class=\"sec-doc\">"+sec.docente+"</div>";
+    if(sec.docente){
+      h+="<div class=\"sec-doc\" style=\"display:flex;align-items:center;gap:7px;flex-wrap:wrap\">";
+      h+="<span>"+sec.docente+"</span>";
+      h+="<span style=\"display:inline-flex;align-items:center;gap:5px\">"+_ratingHTML(sec.docente)+"</span>";
+      h+="</div>";
+    }
     sec.ss.forEach(function(s){
       h+="<div class=\"ses\"><span class=\"ses-"+s.t+"\">"+(TN[s.t]||s.t)+"</span>";
       h+="<span>"+(DN[s.d]||s.d)+" "+s.h0+":00\u2013"+s.h1+":00</span>";
@@ -1185,6 +1216,7 @@ function openModal(c){
 
 function modalClose(){
   if(_pendingCod&&_pendingSec){sel[_pendingCod]=_pendingSec;_pendingCod=null;_pendingSec=null;sync();}
+  _selectedRating=0;_ratingTeacher=null;
   document.getElementById("modal").style.display="none";
 }
 function closeModal(e){if(e.target===document.getElementById("modal")) modalClose();}
@@ -1257,6 +1289,7 @@ function openInfoModal(cod){
   const c=courses.find(function(x){return x.cod===cod;});
   const sec=sel[cod];
   if(!c||!sec) return;
+  loadRatings();
   document.getElementById("mttl").textContent=c.curso;
   document.getElementById("msub").textContent=cod+" \u00b7 "+facultyName+" \u00b7 Secci\u00f3n "+sec.secc;
   const body=document.getElementById("mbody");
@@ -1264,7 +1297,14 @@ function openInfoModal(cod){
   let h="<div class=\"sec\" style=\"cursor:default;pointer-events:none\">";
   h+="<div class=\"sec-top\"><span class=\"sec-name\">Secci\u00f3n "+sec.secc+"</span>";
   h+="<span class=\"leg-dot "+p+"\" style=\"width:12px;height:12px;display:inline-block;border-radius:3px;margin-left:6px\"></span></div>";
-  if(sec.docente) h+="<div class=\"sec-doc\">"+sec.docente+"</div>";
+  if(sec.docente){
+    h+="<div class=\"sec-doc\" style=\"display:flex;align-items:center;gap:8px;flex-wrap:wrap;pointer-events:auto\">";
+    h+="<span style=\"flex:1;min-width:0\">"+sec.docente+"</span>";
+    h+="<span style=\"display:inline-flex;align-items:center;gap:5px\">"+_ratingHTML(sec.docente)+"</span>";
+    h+="</div>";
+    const rBtn=_ratingBtnHTML(cod);
+    if(rBtn) h+="<div style=\"display:flex;justify-content:flex-end;margin:2px 0 6px\">"+rBtn+"</div>";
+  }
   sec.ss.forEach(function(s){
     h+="<div class=\"ses\"><span class=\"ses-"+s.t+"\">"+(TN[s.t]||s.t)+"</span>";
     h+="<span>"+(DN[s.d]||s.d)+" "+s.h0+":00\u2013"+s.h1+":00</span>";
@@ -1372,6 +1412,109 @@ function saveEditedSchedule(){
   document.getElementById("modal").style.display="none";
   sync();
   toast("Horario actualizado","ok");
+}
+
+// ─── Rating helpers ────────────────────────────────────────────────────────
+async function loadRatings(){
+  if(!RATINGS_CFG.webAppUrl||_ratingsCache!==null||_ratingsLoading) return;
+  _ratingsLoading=true;
+  try{
+    const res=await fetch(RATINGS_CFG.webAppUrl);
+    _ratingsCache=await res.json();
+  }catch(e){_ratingsCache={};}
+  finally{_ratingsLoading=false;}
+}
+
+function _ratingHTML(teacher){
+  if(!RATINGS_CFG.webAppUrl||!teacher||!_ratingsCache) return "";
+  const r=_ratingsCache[teacher];
+  if(!r) return "<span class=\"rate-count\">sin calificaciones</span>";
+  return "<span class=\"rate-star\"><svg width=\"11\" height=\"11\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z\"/></svg>"+r.avg+"</span>"+
+    "<span class=\"rate-count\">("+r.count+")</span>";
+}
+
+function _ratingBtnHTML(cod){
+  if(!RATINGS_CFG.webAppUrl&&!RATINGS_CFG.formUrl) return "";
+  const teacher=(sel[cod]||{}).docente;if(!teacher) return "";
+  if(_hasRated(teacher)) return "<span class=\"rate-count\">&#10003; Ya calificaste</span>";
+  return "<button class=\"rate-btn\" onclick=\"openRatingModal('"+cod+"')\">&#9733; Calificar</button>";
+}
+
+function _hasRated(teacher){
+  try{return!!(JSON.parse(localStorage.getItem("fia_rated")||"{}")[teacher]);}catch(e){return false;}
+}
+function _markRated(teacher){
+  try{const r=JSON.parse(localStorage.getItem("fia_rated")||"{}");r[teacher]=Date.now();localStorage.setItem("fia_rated",JSON.stringify(r));}catch(e){}
+}
+
+const _STAR_LABELS=["","Muy malo","Malo","Regular","Bueno","Excelente"];
+
+function openRatingModal(cod){
+  const sec=sel[cod];if(!sec||!sec.docente) return;
+  _ratingTeacher=sec.docente;_selectedRating=0;
+  document.getElementById("mttl").textContent="Calificar docente";
+  document.getElementById("msub").textContent=sec.docente;
+  const body=document.getElementById("mbody");
+  const r=(_ratingsCache||{})[sec.docente];
+  let h="";
+  if(r) h+="<div style=\"text-align:center;margin-bottom:10px;font-size:0.77rem;color:var(--tx3)\">Promedio actual: <strong style=\"color:#f0c870\">&#9733; "+r.avg+"</strong> <span style=\"color:var(--tx3)\">("+r.count+" votos)</span></div>";
+  h+="<div style=\"text-align:center;padding:10px 0 4px\">";
+  h+="<div style=\"font-size:0.78rem;color:var(--tx3);margin-bottom:16px\">&#191;C&#243;mo calificar&#237;as al docente?</div>";
+  h+="<div id=\"star-inp\" style=\"display:flex;justify-content:center;gap:12px;font-size:2.4rem;margin-bottom:8px\">";
+  for(var i=1;i<=5;i++) h+="<span class=\"star-inp\" data-v=\""+i+"\" onclick=\"selectStar("+i+")\" onmouseover=\"hoverStar("+i+")\" onmouseout=\"hoverStar(0)\">&#9734;</span>";
+  h+="</div>";
+  h+="<div id=\"star-lbl\" style=\"font-size:0.78rem;color:var(--accent);font-weight:700;height:1.3em;margin-bottom:16px\"></div>";
+  h+="</div>";
+  h+="<div style=\"display:flex;gap:8px\">";
+  h+="<button class=\"btn\" style=\"flex:1;justify-content:center;background:var(--surface);border-color:var(--line2);color:var(--tx2)\" onclick=\"openInfoModal('"+cod+"')\">Cancelar</button>";
+  h+="<button id=\"star-submit\" class=\"btn btn-dl\" style=\"flex:1;justify-content:center;opacity:0.4;pointer-events:none\" onclick=\"confirmRating('"+cod+"')\">";
+  h+="<svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z\"/></svg> Enviar calificaci&#243;n</button>";
+  h+="</div>";
+  body.innerHTML=h;
+  document.getElementById("modal").style.display="flex";
+}
+
+function hoverStar(v){
+  const active=v||_selectedRating;
+  document.querySelectorAll(".star-inp").forEach(function(s,i){
+    s.textContent=i<active?"\u2605":"\u2606";
+    s.className="star-inp"+(i<active?" on":"");
+    s.style.transform=(i===v-1)?"scale(1.28)":"scale(1)";
+  });
+  const lbl=document.getElementById("star-lbl");
+  if(lbl) lbl.textContent=v?_STAR_LABELS[v]:(_selectedRating?_STAR_LABELS[_selectedRating]:"");
+}
+
+function selectStar(v){
+  _selectedRating=v;hoverStar(v);
+  const btn=document.getElementById("star-submit");
+  if(btn){btn.style.opacity="1";btn.style.pointerEvents="auto";}
+}
+
+async function confirmRating(cod){
+  const teacher=_ratingTeacher;if(!_selectedRating||!teacher) return;
+  try{
+    if(RATINGS_CFG.formUrl){
+      const f=RATINGS_CFG.fields;
+      const body=new URLSearchParams();
+      body.append(f.docente,teacher);
+      body.append(f.puntuacion,String(_selectedRating));
+      body.append(f.curso,cod);
+      await fetch(RATINGS_CFG.formUrl,{method:"POST",mode:"no-cors",body});
+    } else if(RATINGS_CFG.webAppUrl){
+      await fetch(RATINGS_CFG.webAppUrl+"?action=rate&docente="+encodeURIComponent(teacher)+"&puntuacion="+_selectedRating+"&curso="+encodeURIComponent(cod));
+    }
+  }catch(e){}
+  // Actualiza caché local de forma optimista
+  if(_ratingsCache){
+    const old=_ratingsCache[teacher]||{avg:0,count:0};
+    const nc=old.count+1;
+    _ratingsCache[teacher]={avg:Math.round(((old.avg*old.count)+_selectedRating)/nc*10)/10,count:nc};
+  }
+  _markRated(teacher);
+  _ratingTeacher=null;_selectedRating=0;
+  toast("\u2713 \u00a1Gracias por tu calificaci\u00f3n!","ok");
+  openInfoModal(cod);
 }
 
 function removeFromInfo(cod){
