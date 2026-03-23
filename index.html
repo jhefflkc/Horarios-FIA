@@ -1062,7 +1062,7 @@ const RATINGS_CFG={
   fields:{docente:"entry.1423576837",puntuacion:"entry.787681983",curso:"entry.1242329604"}
 };
 let _ratingsCache=null;   // {"Dr. García":{avg:4.2,count:15}, ...}
-let _ratingsLoading=false;
+let _ratingsPromise=null;
 var _selectedRating=0;
 var _ratingTeacher=null;
 let periodYear="2026", periodNum="1";
@@ -1180,8 +1180,8 @@ function anySoftConflict(c){
   return c.secs.some(function(s){var cf=checkSectionConflict(s);return cf.hasTheory&&!cf.hasPractice;});
 }
 
-function openModal(c){
-  loadRatings();
+async function openModal(c){
+  await loadRatings();
   document.getElementById("mttl").textContent=c.curso;
   document.getElementById("msub").textContent=c.cod+" \u00b7 "+facultyName+" \u00b7 Elige una secci\u00f3n";
   const body=document.getElementById("mbody");
@@ -1285,11 +1285,11 @@ function blkInfo(e){
   openInfoModal(cod);
 }
 
-function openInfoModal(cod){
+async function openInfoModal(cod){
   const c=courses.find(function(x){return x.cod===cod;});
   const sec=sel[cod];
   if(!c||!sec) return;
-  loadRatings();
+  await loadRatings();
   document.getElementById("mttl").textContent=c.curso;
   document.getElementById("msub").textContent=cod+" \u00b7 "+facultyName+" \u00b7 Secci\u00f3n "+sec.secc;
   const body=document.getElementById("mbody");
@@ -1417,15 +1417,16 @@ function saveEditedSchedule(){
 }
 
 // ─── Rating helpers ────────────────────────────────────────────────────────
-async function loadRatings(){
-  if(_ratingsCache!==null||_ratingsLoading) return;
-  if(!RATINGS_CFG.webAppUrl){_ratingsCache={};return;}
-  _ratingsLoading=true;
-  try{
-    const res=await fetch(RATINGS_CFG.webAppUrl);
-    _ratingsCache=await res.json();
-  }catch(e){_ratingsCache={};}
-  finally{_ratingsLoading=false;}
+function loadRatings(){
+  if(_ratingsCache!==null) return Promise.resolve();
+  if(!RATINGS_CFG.webAppUrl){_ratingsCache={};return Promise.resolve();}
+  if(!_ratingsPromise){
+    _ratingsPromise=fetch(RATINGS_CFG.webAppUrl)
+      .then(function(r){return r.json();})
+      .catch(function(){return {};})
+      .then(function(data){_ratingsCache=data;});
+  }
+  return _ratingsPromise;
 }
 
 function _ratingHTML(teacher){
