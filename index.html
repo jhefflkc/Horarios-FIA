@@ -175,8 +175,8 @@ body.stitch-dark::before,body.stitch-light::before{
 body.stitch-dark::before{background-image:radial-gradient(circle,rgba(255,255,255,0.32) 1px,transparent 1px)}
 body.stitch-light::before{background-image:radial-gradient(circle,rgba(0,0,0,0.26) 1px,transparent 1px)}
 
-html{background:var(--bg)}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tx);height:100vh;display:flex;flex-direction:column;overflow:hidden;position:relative}
+html{background:var(--bg);height:100%;overflow:hidden}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tx);height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;position:relative}
 
 /* ═══ HEADER ═════════════════════════════════════════ */
 header{
@@ -1013,11 +1013,7 @@ body.light .c-conf-tag-soft,body.stitch-light .c-conf-tag-soft{color:#7a5200;bac
   }
 
   function fixBodyHeight(){
-    if(window.innerWidth<=720){
-      document.body.style.height=window.innerHeight+'px';
-    } else {
-      document.body.style.height='';
-    }
+    document.body.style.height=window.innerHeight+'px';
   }
 
   function fixAll(){
