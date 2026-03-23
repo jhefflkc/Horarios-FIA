@@ -1106,6 +1106,7 @@ function initFacultySelector(){
   if(!container) return;
   var siglas=Object.keys(ALL_DATA);
   if(siglas.length<=1){container.style.display="none";return;}
+  container.style.display="flex";
   var h="";
   siglas.forEach(function(sigla){
     h+="<button data-sigla=\""+sigla+"\" onclick=\"switchFaculty('"+sigla+"')\" "+
