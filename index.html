@@ -1300,10 +1300,12 @@ function openInfoModal(cod){
   if(sec.docente){
     h+="<div class=\"sec-doc\" style=\"display:flex;align-items:center;gap:8px;flex-wrap:wrap;pointer-events:auto\">";
     h+="<span style=\"flex:1;min-width:0\">"+sec.docente+"</span>";
-    h+="<span style=\"display:inline-flex;align-items:center;gap:5px\">"+_ratingHTML(sec.docente)+"</span>";
     h+="</div>";
     const rBtn=_ratingBtnHTML(cod);
-    if(rBtn) h+="<div style=\"display:flex;justify-content:flex-end;margin:2px 0 6px;pointer-events:auto\">"+rBtn+"</div>";
+    const rHtml=_ratingHTML(sec.docente);
+    if(rBtn||rHtml) h+="<div style=\"display:flex;align-items:center;justify-content:space-between;margin:2px 0 6px;pointer-events:auto\">";
+    if(rBtn||rHtml) h+="<span style=\"display:inline-flex;align-items:center;gap:5px\">"+rHtml+"</span>";
+    if(rBtn||rHtml) h+=rBtn+"</div>";
   }
   sec.ss.forEach(function(s){
     h+="<div class=\"ses\"><span class=\"ses-"+s.t+"\">"+(TN[s.t]||s.t)+"</span>";
@@ -1416,7 +1418,8 @@ function saveEditedSchedule(){
 
 // ─── Rating helpers ────────────────────────────────────────────────────────
 async function loadRatings(){
-  if(!RATINGS_CFG.webAppUrl||_ratingsCache!==null||_ratingsLoading) return;
+  if(_ratingsCache!==null||_ratingsLoading) return;
+  if(!RATINGS_CFG.webAppUrl){_ratingsCache={};return;}
   _ratingsLoading=true;
   try{
     const res=await fetch(RATINGS_CFG.webAppUrl);
@@ -1426,9 +1429,9 @@ async function loadRatings(){
 }
 
 function _ratingHTML(teacher){
-  if(!RATINGS_CFG.webAppUrl||!teacher||!_ratingsCache) return "";
+  if(!teacher||!_ratingsCache) return "";
   const r=_ratingsCache[teacher];
-  if(!r) return "<span class=\"rate-count\">sin calificaciones</span>";
+  if(!r) return "";
   return "<span class=\"rate-star\"><svg width=\"11\" height=\"11\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z\"/></svg>"+r.avg+"</span>"+
     "<span class=\"rate-count\">("+r.count+")</span>";
 }
