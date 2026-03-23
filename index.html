@@ -484,7 +484,7 @@ body.stitch-light .btn-cal:hover{box-shadow:0 4px 28px rgba(8,145,178,0.5),0 0 0
 .score-pop{
   background:var(--float-bg);border:1px solid var(--line2);border-radius:10px;
   padding:12px 15px;box-shadow:var(--float-shadow);
-  min-width:200px;
+  min-width:200px;max-width:calc(100vw - 16px);box-sizing:border-box;
 }
 .score-pop-count{font-weight:700;font-size:0.78rem;color:#f0c870;margin-bottom:5px}
 .score-pop-note{color:var(--tx3);font-size:0.67rem;line-height:1.5;max-width:220px}
@@ -1515,15 +1515,18 @@ function toggleScorePop(e){
   e.stopPropagation();
   const pop=document.getElementById("score-pop");
   if(pop.style.display==="block"){pop.style.display="none";return;}
-  pop.style.display="block";
+  /* Mostrar fuera de pantalla para leer dimensiones reales */
+  pop.style.visibility="hidden";pop.style.left="-9999px";pop.style.top="-9999px";pop.style.bottom="auto";pop.style.display="block";
+  const pw=pop.offsetWidth;const ph=pop.offsetHeight;
+  pop.style.visibility="";pop.style.top="auto";
   const r=document.getElementById("score-pill").getBoundingClientRect();
-  const pw=pop.offsetWidth||210;
+  const margin=8;
   let left=r.left+r.width/2-pw/2;
-  if(left+pw>window.innerWidth-8) left=window.innerWidth-pw-8;
-  if(left<8) left=8;
+  if(left+pw>window.innerWidth-margin) left=window.innerWidth-pw-margin;
+  if(left<margin) left=margin;
+  const bottomSpace=window.innerHeight-r.top;
   pop.style.left=left+"px";
-  pop.style.bottom=(window.innerHeight-r.top+8)+"px";
-  pop.style.top="auto";
+  pop.style.bottom=bottomSpace+margin+"px";
 }
 
 function _ratingBtnHTML(cod){
