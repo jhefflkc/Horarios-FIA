@@ -7,7 +7,7 @@ import re
 import sys
 import openpyxl
 
-XLSX_PATH = "horarios_uni_completo.xlsx"
+XLSX_PATH = "FIA2026-1.xlsx"
 HTML_PATH = "index.html"
 
 # Mapeo sección → especialidad (actualizar si cambia en cada periodo)
