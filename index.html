@@ -1303,7 +1303,7 @@ function openInfoModal(cod){
     h+="<span style=\"display:inline-flex;align-items:center;gap:5px\">"+_ratingHTML(sec.docente)+"</span>";
     h+="</div>";
     const rBtn=_ratingBtnHTML(cod);
-    if(rBtn) h+="<div style=\"display:flex;justify-content:flex-end;margin:2px 0 6px\">"+rBtn+"</div>";
+    if(rBtn) h+="<div style=\"display:flex;justify-content:flex-end;margin:2px 0 6px;pointer-events:auto\">"+rBtn+"</div>";
   }
   sec.ss.forEach(function(s){
     h+="<div class=\"ses\"><span class=\"ses-"+s.t+"\">"+(TN[s.t]||s.t)+"</span>";
