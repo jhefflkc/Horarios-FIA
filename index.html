@@ -482,10 +482,9 @@ body.stitch-light .btn-cal:hover{box-shadow:0 4px 28px rgba(8,145,178,0.5),0 0 0
 .score-pill:hover{background:rgba(240,200,80,0.18);box-shadow:0 2px 12px rgba(240,200,80,0.18)}
 .score-pill-val{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:0.8rem}
 .score-pop{
-  position:absolute;bottom:calc(100% + 9px);left:50%;transform:translateX(-50%);
   background:var(--float-bg);border:1px solid var(--line2);border-radius:10px;
-  padding:12px 15px;box-shadow:var(--float-shadow);z-index:200;
-  display:none;min-width:200px;
+  padding:12px 15px;box-shadow:var(--float-shadow);
+  min-width:200px;
 }
 .score-pop-count{font-weight:700;font-size:0.78rem;color:#f0c870;margin-bottom:5px}
 .score-pop-note{color:var(--tx3);font-size:0.67rem;line-height:1.5;max-width:220px}
@@ -943,10 +942,6 @@ body.light .c-conf-tag-soft,body.stitch-light .c-conf-tag-soft{color:#7a5200;bac
       <div class="score-pill" id="score-pill" style="display:none" onclick="toggleScorePop(event)">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
         Score&nbsp;<span class="score-pill-val" id="score-val">—</span>
-        <div class="score-pop" id="score-pop">
-          <div class="score-pop-count" id="score-pop-count"></div>
-          <div class="score-pop-note">Solo se consideran cursos con profesores que hayan sido evaluados.</div>
-        </div>
       </div>
     </div>
 
@@ -992,6 +987,12 @@ body.light .c-conf-tag-soft,body.stitch-light .c-conf-tag-soft{color:#7a5200;bac
 
 <!-- Toast -->
 <div class="toast" id="toast"><div class="tdot"></div><span id="tmsg"></span></div>
+
+<!-- Score popover (body-level so overflow:hidden parents don't clip it) -->
+<div class="score-pop" id="score-pop" style="display:none;position:fixed;z-index:9999">
+  <div class="score-pop-count" id="score-pop-count"></div>
+  <div class="score-pop-note">Solo se consideran cursos con profesores que hayan sido evaluados.</div>
+</div>
 
 <!-- SAB probe: used by JS to read the real env(safe-area-inset-bottom) value -->
 <div id="sab-probe" style="position:fixed;bottom:0;left:0;width:0;height:env(safe-area-inset-bottom,0px);pointer-events:none;visibility:hidden"></div>
@@ -1513,7 +1514,16 @@ function updateScorePill(){
 function toggleScorePop(e){
   e.stopPropagation();
   const pop=document.getElementById("score-pop");
-  pop.style.display=pop.style.display==="block"?"none":"block";
+  if(pop.style.display==="block"){pop.style.display="none";return;}
+  pop.style.display="block";
+  const r=document.getElementById("score-pill").getBoundingClientRect();
+  const pw=pop.offsetWidth||210;
+  let left=r.left+r.width/2-pw/2;
+  if(left+pw>window.innerWidth-8) left=window.innerWidth-pw-8;
+  if(left<8) left=8;
+  pop.style.left=left+"px";
+  pop.style.bottom=(window.innerHeight-r.top+8)+"px";
+  pop.style.top="auto";
 }
 
 function _ratingBtnHTML(cod){
