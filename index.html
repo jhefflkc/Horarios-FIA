@@ -1836,8 +1836,24 @@ function toast(msg,type){
 
 function getCiclo(cod){var c=String(cod)[2];return(c&&!isNaN(c))?parseInt(c):11;}
 function parseHorario(h){var p=String(h).trim().split(" ");if(p.length!==2) return null;var r=p[1].split("-");if(r.length!==2) return null;var h0=parseInt(r[0]),h1=parseInt(r[1]);if(isNaN(h0)||isNaN(h1)) return null;return{dia:p[0].toUpperCase(),hIni:h0,hFin:h1};}
+
+var FACULTY_MAP_JS={
+  "FIEECS":{label:"FIEECS \u00b7 UNI",fullName:"Fac. Ing. El\u00e9ctrica y Electr\u00f3nica"},
+  "FIGMM": {label:"FIGMM \u00b7 UNI", fullName:"Fac. Ing. Geol\u00f3gica, Minera y Metal\u00fargica"},
+  "FIQT":  {label:"FIQT \u00b7 UNI",  fullName:"Fac. Ing. Qu\u00edmica y Textil"},
+  "FIIS":  {label:"FIIS \u00b7 UNI",  fullName:"Fac. Ing. Industrial y Sistemas"},
+  "FIEE":  {label:"FIEE \u00b7 UNI",  fullName:"Fac. Ing. El\u00e9ctrica y Electr\u00f3nica"},
+  "FIPP":  {label:"FIPP \u00b7 UNI",  fullName:"Fac. Ing. Petr\u00f3leo, Gas Natural y Petroqu\u00edmica"},
+  "FIM":   {label:"FIM \u00b7 UNI",   fullName:"Fac. Ing. Mec\u00e1nica"},
+  "FIC":   {label:"FIC \u00b7 UNI",   fullName:"Fac. Ing. Civil"},
+  "FIA":   {label:"FIA \u00b7 UNI",   fullName:"Fac. Ing. Ambiental"},
+  "FC":    {label:"FC \u00b7 UNI",    fullName:"Fac. de Ciencias"},
+  "FAUA":  {label:"FAUA \u00b7 UNI",  fullName:"Fac. de Arquitectura, Urbanismo y Artes"}
+};
+
 function loadExcel(event){
   const file=event.target.files[0];if(!file) return;
+  event.target.value="";
   const reader=new FileReader();
   reader.onload=function(e){
     try{
@@ -1878,7 +1894,24 @@ function loadExcel(event){
         }
       });
       if(!rows.length){toast("No se encontraron datos v\u00e1lidos","er");return;}
-      boot(rows);toast("\u2713 "+rows.length+" sesiones cargadas","ok");
+      // Detectar facultad y periodo desde el nombre del archivo (ej: FIA2026-1.xlsx)
+      const m=file.name.match(/^([A-Za-z]+)(\d{4})-(\d+)\.xlsx?$/i);
+      if(m){
+        const sigla=m[1].toUpperCase();
+        const period=m[2]+"-"+m[3];
+        const fmeta=FACULTY_MAP_JS[sigla];
+        if(fmeta){
+          ALL_DATA[sigla]={label:fmeta.label,fullName:fmeta.fullName,period:period,rows:rows};
+          initFacultySelector();
+          switchFaculty(sigla);
+          toast("\u2713 "+rows.length+" sesiones \u2014 "+fmeta.label+" "+period,"ok");
+          return;
+        }
+      }
+      // Fallback: reemplaza la facultad actual sin cambiar selector
+      ALL_DATA[currentFaculty].rows=rows;
+      boot(rows);
+      toast("\u2713 "+rows.length+" sesiones cargadas","ok");
     }catch(e){toast("Error: "+e.message,"er");}
   };
   reader.readAsBinaryString(file);
