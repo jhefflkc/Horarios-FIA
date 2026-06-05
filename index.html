@@ -559,6 +559,25 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
 }
 .blk-room{font-size:0.55rem;opacity:0.55;margin-top:1px;line-height:1.1;color:inherit}
 
+/* Nombre mode */
+.blk-name{
+  font-size:0.58rem;font-weight:700;line-height:1.15;
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+}
+.blk-cod-sm{
+  font-family:'JetBrains Mono',monospace;font-size:0.49rem;font-weight:700;
+  opacity:0.6;margin-top:2px;line-height:1.1;
+}
+.cell-blocks .blk .blk-name{font-size:0.5rem;-webkit-line-clamp:1}
+.cell-blocks .blk .blk-cod-sm{font-size:0.42rem}
+
+/* Toggle nombre/código button */
+.btn-names{
+  background:var(--surface);border-color:var(--line2);color:var(--tx2);
+  font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.3px;
+}
+.btn-names.active{border-color:var(--accent);color:var(--accent3);background:rgba(200,120,58,0.1)}
+
 /* Side-by-side conflict blocks */
 .cell-blocks{display:flex;gap:2px;height:100%;width:100%}
 .cell-blocks .blk{flex:1;min-width:0;padding:3px 5px}
@@ -881,6 +900,13 @@ body.light .c-conf-tag-soft,body.stitch-light .c-conf-tag-soft{color:#7a5200;bac
         <span class="ph">&#8592; Selecciona cursos para armar tu horario</span>
       </div>
       <div class="action-btns">
+        <button class="btn btn-names" id="btn-names" onclick="toggleNames()" style="display:none" title="Alternar entre código y nombre del curso">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="4 7 4 4 20 4 20 7"/><line x1="9" x2="15" y1="20" y2="20"/>
+            <line x1="12" x2="12" y1="4" y2="20"/>
+          </svg>
+          <span id="btn-names-lbl">Nombre</span>
+        </button>
         <button class="btn btn-clear" id="bclear" onclick="clearAll()" style="display:none">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <polyline points="3 6 5 6 21 6"/>
@@ -1087,6 +1113,7 @@ var _selectedRating=0;
 var _ratingTeacher=null;
 let currentFaculty=null;
 let facultyName="",facultyLabel="";
+let showNames=false;
 function getPeriod(){return ALL_DATA[currentFaculty].period;}
 function updatePeriodUI(){
   var p=getPeriod();
@@ -1636,7 +1663,8 @@ function drawTags(){
   const st=document.getElementById("stats");
   if(!keys.length){
     tz.innerHTML="<span class=\"ph\">&#8592; Selecciona cursos para armar tu horario</span>";
-    bc.style.display="none";st.style.display="none";return;
+    bc.style.display="none";st.style.display="none";
+    document.getElementById("btn-names").style.display="none";return;
   }
   let h="";
   keys.forEach(function(cod){
@@ -1649,6 +1677,7 @@ function drawTags(){
     t.querySelector(".tag-x").addEventListener("click",function(e){e.stopPropagation();toggle(t.dataset.cod);});
   });
   bc.style.display="";st.style.display="flex";
+  document.getElementById("btn-names").style.display="";
   let hrs=0;
   Object.values(sel).forEach(function(s){s.ss.forEach(function(x){hrs+=x.h1-x.h0;});});
   document.getElementById("sn").textContent=keys.length;
@@ -1717,7 +1746,13 @@ function drawSched(){
       if(arr.length===1){
         const c=arr[0];
         h+="<td><div class=\"blk "+c.p+"\" data-cod=\""+c.cod+"\" onclick=\"blkInfo(event)\">";
-        h+="<div class=\"blk-cod\">"+c.cod+" <span class=\"blk-secc\">"+c.sec+"</span></div>";
+        if(showNames){
+          const cn=(sel[c.cod]||{}).curso||c.cod;
+          h+="<div class=\"blk-name\">"+cn+"</div>";
+          h+="<div class=\"blk-cod blk-cod-sm\">"+c.cod+" <span class=\"blk-secc\">"+c.sec+"</span></div>";
+        } else {
+          h+="<div class=\"blk-cod\">"+c.cod+" <span class=\"blk-secc\">"+c.sec+"</span></div>";
+        }
         h+="<div class=\"blk-type\">"+(TN[c.tipo]||c.tipo)+"</div>";
         if(c.rm) h+="<div class=\"blk-room\">"+c.rm+"</div>";
         h+="</div></td>";
@@ -1725,7 +1760,13 @@ function drawSched(){
         h+="<td><div class=\"cell-blocks\">";
         arr.forEach(function(c){
           h+="<div class=\"blk "+c.p+"\" data-cod=\""+c.cod+"\" onclick=\"blkInfo(event)\">";
-          h+="<div class=\"blk-cod\">"+c.cod+" <span class=\"blk-secc\">"+c.sec+"</span></div>";
+          if(showNames){
+            const cn=(sel[c.cod]||{}).curso||c.cod;
+            h+="<div class=\"blk-name\">"+cn+"</div>";
+            h+="<div class=\"blk-cod blk-cod-sm\">"+c.cod+" <span class=\"blk-secc\">"+c.sec+"</span></div>";
+          } else {
+            h+="<div class=\"blk-cod\">"+c.cod+" <span class=\"blk-secc\">"+c.sec+"</span></div>";
+          }
           h+="<div class=\"blk-type\">"+(TN[c.tipo]||c.tipo)+"</div>";
           h+="</div>";
         });
@@ -1750,6 +1791,14 @@ function drawSched(){
 }
 
 function clearAll(){sel={};pal={};palIdx=0;sync();}
+function toggleNames(){
+  showNames=!showNames;
+  const btn=document.getElementById("btn-names");
+  const lbl=document.getElementById("btn-names-lbl");
+  if(btn) btn.classList.toggle("active",showNames);
+  if(lbl) lbl.textContent=showNames?"Código":"Nombre";
+  drawSched();
+}
 
 function downloadPDF(){
   const el=document.getElementById("printable");
