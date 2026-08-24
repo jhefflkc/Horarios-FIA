@@ -76,32 +76,36 @@ body.light .p7{background:rgba(80,130,50,0.14);color:#285a10}
 
 /* ── Stitch Dark (Grafito) ───────────────────────────────── */
 body.stitch-dark{
-  --bg:#111111;
-  --panel:#1c1c1e;
-  --surface:#242426;
-  --surface2:#2c2c2e;
-  --card:#3a3a3c;
-  --card2:#48484a;
-  --line:rgba(255,255,255,0.05);
+  --bg:#0d0d0f;
+  --panel:#111113;
+  --surface:rgba(255,255,255,0.055);
+  --surface2:rgba(255,255,255,0.085);
+  --card:rgba(255,255,255,0.10);
+  --card2:rgba(255,255,255,0.13);
+  --line:rgba(255,255,255,0.042);
   --line2:rgba(255,255,255,0.09);
   --line3:rgba(255,255,255,0.16);
-  --tx:#f5f5f7;
+  --tx:#f2f2f4;
   --tx2:#aeaeb2;
   --tx3:#636366;
   --tx4:#3a3a3c;
   --accent:#4f8ef7;
   --accent2:#76aaff;
   --accent3:#a0c4ff;
-  --glow:rgba(79,142,247,0.3);
-  --float-bg:rgba(28,28,30,0.88);
-  --float-shadow:0 12px 40px rgba(0,0,0,0.55),0 1px 0 rgba(255,255,255,0.07) inset;
-  --float-btn-bg:rgba(28,28,30,0.82);
-  --float-btn-shadow:0 6px 24px rgba(0,0,0,0.45),0 1px 0 rgba(255,255,255,0.07) inset;
-  background-image:radial-gradient(circle,rgba(255,255,255,0.035) 1px,transparent 1px);
-  background-size:22px 22px;
+  --glow:rgba(79,142,247,0.22);
+  --float-bg:rgba(16,16,20,0.58);
+  --float-shadow:0 16px 60px rgba(0,0,0,0.70),0 1px 0 rgba(255,255,255,0.08) inset;
+  --float-btn-bg:rgba(16,16,20,0.52);
+  --float-btn-shadow:0 8px 32px rgba(0,0,0,0.55),0 1px 0 rgba(255,255,255,0.07) inset;
+  background-image:
+    radial-gradient(ellipse 90% 65% at 12% 30%,rgba(79,142,247,0.09) 0%,transparent 62%),
+    radial-gradient(ellipse 65% 70% at 88% 78%,rgba(120,70,210,0.07) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 40% at 55% 10%,rgba(40,180,220,0.04) 0%,transparent 55%),
+    radial-gradient(circle,rgba(255,255,255,0.028) 1px,transparent 1px);
+  background-size:auto,auto,auto,22px 22px;
 }
-body.stitch-dark header{background:rgba(17,17,17,0.96)}
-body.stitch-dark header::after{background:linear-gradient(90deg,transparent,#4f8ef7 50%,transparent);opacity:0.5}
+body.stitch-dark header{background:rgba(10,10,14,0.68);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px)}
+body.stitch-dark header::after{background:linear-gradient(90deg,transparent,#4f8ef7 50%,transparent);opacity:0.4}
 body.stitch-dark .c-row:hover{background:rgba(255,255,255,0.04)}
 body.stitch-dark table.sch tbody tr:nth-child(odd) td:not(:first-child) .cell-mt{background:rgba(255,255,255,0.025)}
 body.stitch-dark table.sch tbody tr:nth-child(even) td:not(:first-child) .cell-mt{background:rgba(255,255,255,0.01)}
@@ -120,32 +124,36 @@ body.stitch-dark .p7{background:rgba(48,209,88,0.14);border-left-color:#30d158;c
 
 /* ── Stitch Light (Glacial) ──────────────────────────────── */
 body.stitch-light{
-  --bg:#f2f2f7;
-  --panel:#ffffff;
-  --surface:#f2f2f7;
-  --surface2:#e5e5ea;
-  --card:#d1d1d6;
-  --card2:#c7c7cc;
-  --line:rgba(0,0,0,0.07);
-  --line2:rgba(0,0,0,0.11);
-  --line3:rgba(0,0,0,0.20);
+  --bg:#ededf2;
+  --panel:#f8f8fc;
+  --surface:rgba(255,255,255,0.68);
+  --surface2:rgba(255,255,255,0.85);
+  --card:rgba(0,0,0,0.04);
+  --card2:rgba(0,0,0,0.07);
+  --line:rgba(0,0,0,0.045);
+  --line2:rgba(0,0,0,0.095);
+  --line3:rgba(0,0,0,0.17);
   --tx:#1c1c1e;
   --tx2:#3a3a3c;
   --tx3:#8e8e93;
   --tx4:#c7c7cc;
   --accent:#2563eb;
   --accent2:#3b82f6;
-  --accent3:#60a5fa;
-  --glow:rgba(37,99,235,0.18);
-  --float-bg:rgba(255,255,255,0.88);
-  --float-shadow:0 8px 32px rgba(0,0,0,0.13),0 1px 0 rgba(255,255,255,0.95) inset;
-  --float-btn-bg:rgba(255,255,255,0.86);
-  --float-btn-shadow:0 6px 24px rgba(0,0,0,0.12),0 1px 0 rgba(255,255,255,0.9) inset;
-  background-image:radial-gradient(circle,rgba(0,0,0,0.065) 1px,transparent 1px);
-  background-size:22px 22px;
+  --accent3:#1d4ed8;
+  --glow:rgba(37,99,235,0.13);
+  --float-bg:rgba(255,255,255,0.58);
+  --float-shadow:0 12px 48px rgba(0,0,0,0.10),0 1px 0 rgba(255,255,255,0.95) inset;
+  --float-btn-bg:rgba(255,255,255,0.55);
+  --float-btn-shadow:0 8px 28px rgba(0,0,0,0.09),0 1px 0 rgba(255,255,255,0.95) inset;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 18% 22%,rgba(37,99,235,0.055) 0%,transparent 60%),
+    radial-gradient(ellipse 65% 70% at 82% 80%,rgba(100,130,255,0.04) 0%,transparent 58%),
+    radial-gradient(ellipse 55% 45% at 60% 5%,rgba(140,80,220,0.025) 0%,transparent 55%),
+    radial-gradient(circle,rgba(0,0,0,0.052) 1px,transparent 1px);
+  background-size:auto,auto,auto,22px 22px;
 }
-body.stitch-light header{background:rgba(255,255,255,0.96)}
-body.stitch-light header::after{background:linear-gradient(90deg,transparent,#2563eb 50%,transparent);opacity:0.45}
+body.stitch-light header{background:rgba(248,248,252,0.68);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px)}
+body.stitch-light header::after{background:linear-gradient(90deg,transparent,#2563eb 50%,transparent);opacity:0.38}
 body.stitch-light .logo-text{color:var(--tx)}
 body.stitch-light .c-row:hover{background:rgba(0,0,0,0.03)}
 body.stitch-light table.sch tbody tr:nth-child(odd) td:not(:first-child) .cell-mt{background:rgba(0,0,0,0.018)}
@@ -164,6 +172,15 @@ body.stitch-light .p7{background:rgba(5,150,105,0.12);border-left-color:#059669;
 
 /* ── Stitch: transparent sched-area so dot background shows ── */
 body.stitch-dark .sched-area,body.stitch-light .sched-area{background:transparent}
+/* ── Stitch: reforzar blur acrílico en sidebar y modal ── */
+body.stitch-dark .sidebar,body.stitch-light .sidebar{
+  backdrop-filter:blur(36px);-webkit-backdrop-filter:blur(36px);
+}
+body.stitch-dark .modal,body.stitch-light .modal{
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+}
+/* ── Stitch: html fondo sin color para que los gradientes del body sean visibles ── */
+body.stitch-dark~html,body.stitch-light~html{background:transparent}
 
 /* Dot spotlight: intense dots revealed only near cursor via CSS mask */
 body.stitch-dark::before,body.stitch-light::before{
@@ -1980,7 +1997,7 @@ var THEME_LABELS={dark:"Ámbar",["stitch-dark"]:"Grafito",light:"Crema",["stitch
 var THEME_IS_DARK={dark:true,["stitch-dark"]:true,light:false,["stitch-light"]:false};
 /* Panel colors per theme — must match CSS --panel values.
    html { background } can't inherit --panel from body, so we set it directly. */
-var THEME_PANEL={dark:"#130e08",["stitch-dark"]:"#1c1c1e",light:"#fffaf4",["stitch-light"]:"#ffffff"};
+var THEME_PANEL={dark:"#130e08",["stitch-dark"]:"#0d0d0f",light:"#fffaf4",["stitch-light"]:"#ededf2"};
 
 function applyTheme(t){
   document.body.classList.remove("light","stitch-dark","stitch-light");
