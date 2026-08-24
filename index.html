@@ -124,8 +124,8 @@ body.stitch-dark .p7{background:rgba(48,209,88,0.14);border-left-color:#30d158;c
 
 /* ── Stitch Light (Glacial) ──────────────────────────────── */
 body.stitch-light{
-  --bg:#ededf2;
-  --panel:#f8f8fc;
+  --bg:#efefef;
+  --panel:#f8f8f8;
   --surface:rgba(255,255,255,0.68);
   --surface2:rgba(255,255,255,0.85);
   --card:rgba(0,0,0,0.04);
@@ -146,14 +146,14 @@ body.stitch-light{
   --float-btn-bg:rgba(255,255,255,0.55);
   --float-btn-shadow:0 8px 28px rgba(0,0,0,0.09),0 1px 0 rgba(255,255,255,0.95) inset;
   background-image:
-    radial-gradient(ellipse 80% 60% at 18% 22%,rgba(37,99,235,0.055) 0%,transparent 60%),
-    radial-gradient(ellipse 65% 70% at 82% 80%,rgba(100,130,255,0.04) 0%,transparent 58%),
-    radial-gradient(ellipse 55% 45% at 60% 5%,rgba(140,80,220,0.025) 0%,transparent 55%),
+    radial-gradient(ellipse 80% 60% at 18% 22%,rgba(0,0,0,0.025) 0%,transparent 60%),
+    radial-gradient(ellipse 65% 70% at 82% 80%,rgba(0,0,0,0.018) 0%,transparent 58%),
+    radial-gradient(ellipse 55% 45% at 60% 5%,rgba(0,0,0,0.012) 0%,transparent 55%),
     radial-gradient(circle,rgba(0,0,0,0.052) 1px,transparent 1px);
   background-size:auto,auto,auto,22px 22px;
 }
-body.stitch-light header{background:rgba(248,248,252,0.68);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px)}
-body.stitch-light header::after{background:linear-gradient(90deg,transparent,#2563eb 50%,transparent);opacity:0.38}
+body.stitch-light header{background:rgba(250,250,250,0.68);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px)}
+body.stitch-light header::after{background:linear-gradient(90deg,transparent,rgba(0,0,0,0.12) 50%,transparent);opacity:0.38}
 body.stitch-light .logo-text{color:var(--tx)}
 body.stitch-light .c-row:hover{background:rgba(0,0,0,0.03)}
 body.stitch-light table.sch tbody tr:nth-child(odd) td:not(:first-child) .cell-mt{background:rgba(0,0,0,0.018)}
@@ -2002,7 +2002,7 @@ var THEME_LABELS={dark:"Ámbar",["stitch-dark"]:"Grafito",light:"Crema",["stitch
 var THEME_IS_DARK={dark:true,["stitch-dark"]:true,light:false,["stitch-light"]:false};
 /* Panel colors per theme — must match CSS --panel values.
    html { background } can't inherit --panel from body, so we set it directly. */
-var THEME_PANEL={dark:"#130e08",["stitch-dark"]:"#0d0d0f",light:"#fffaf4",["stitch-light"]:"#ededf2"};
+var THEME_PANEL={dark:"#130e08",["stitch-dark"]:"#0d0d0f",light:"#fffaf4",["stitch-light"]:"#efefef"};
 
 function applyTheme(t){
   document.body.classList.remove("light","stitch-dark","stitch-light");
