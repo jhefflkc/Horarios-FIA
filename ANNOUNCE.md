@@ -10,4 +10,3 @@ El generador de horarios para la **Facultad de Ingeniería Ambiental** de la UNI
 
 ---
 
-*Ante cualquier inconveniente o sugerencia, contacta al equipo de desarrollo.*
