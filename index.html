@@ -660,6 +660,72 @@ body.light .sched-legend{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.0
 .modal-x:hover{background:var(--card2);color:var(--tx)}
 .modal-body{padding:1rem 1.5rem 1.5rem}
 
+/* ── Announcement modal ─────────────────────────────────── */
+.ann-overlay{
+  position:fixed;inset:0;z-index:600;
+  background:rgba(5,6,15,0.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  display:flex;align-items:center;justify-content:center;padding:1rem;
+}
+body.light .ann-overlay,body.stitch-light .ann-overlay{background:rgba(0,0,0,0.22)}
+.ann-modal{
+  background:var(--surface2);border:1.5px solid var(--line2);
+  border-radius:16px;width:100%;max-width:540px;max-height:88vh;
+  overflow-y:auto;display:flex;flex-direction:column;
+  box-shadow:0 40px 100px rgba(0,0,0,0.8),0 0 0 1px rgba(200,120,58,0.1);
+}
+body.stitch-dark .ann-modal,body.stitch-light .ann-modal{backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px)}
+.ann-modal::-webkit-scrollbar{width:3px}
+.ann-modal::-webkit-scrollbar-thumb{background:var(--card2);border-radius:2px}
+.ann-top{
+  padding:1.3rem 1.5rem 1rem;border-bottom:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:center;
+  position:sticky;top:0;z-index:2;
+  background:var(--surface2);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.ann-title{display:flex;align-items:center;gap:9px;font-size:0.95rem;font-weight:800;color:var(--tx)}
+.ann-title svg{color:var(--accent2);flex-shrink:0}
+.ann-x{
+  width:30px;height:30px;border-radius:8px;flex-shrink:0;margin-left:12px;
+  background:var(--card);border:none;color:var(--tx2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all 0.15s;
+}
+.ann-x:hover{background:var(--card2);color:var(--tx)}
+.ann-body{padding:1.4rem 1.5rem;flex:1;min-width:0}
+.ann-body h1{font-size:1.1rem;font-weight:800;color:var(--tx);margin:0 0 0.55em;line-height:1.3}
+.ann-body h2{font-size:0.92rem;font-weight:700;color:var(--tx);margin:1.1em 0 0.35em;line-height:1.3}
+.ann-body h3{font-size:0.82rem;font-weight:700;color:var(--tx2);margin:0.9em 0 0.3em;line-height:1.3}
+.ann-body p{font-size:0.83rem;color:var(--tx2);line-height:1.7;margin:0 0 0.65em}
+.ann-body ul,.ann-body ol{padding-left:1.4em;margin:0 0 0.65em}
+.ann-body li{font-size:0.83rem;color:var(--tx2);line-height:1.65;margin-bottom:0.2em}
+.ann-body hr{border:none;border-top:1px solid var(--line2);margin:1.1em 0}
+.ann-body a{color:var(--accent2);text-decoration:none}
+.ann-body a:hover{text-decoration:underline}
+.ann-body code{font-family:'JetBrains Mono',monospace;font-size:0.77rem;background:var(--card);padding:1px 5px;border-radius:4px;color:var(--tx2)}
+.ann-body strong{font-weight:700;color:var(--tx)}
+.ann-body em{font-style:italic}
+.ann-body del{text-decoration:line-through;opacity:0.55}
+.ann-body blockquote{border-left:3px solid var(--accent2);margin:0.6em 0;padding:0.35em 0 0.35em 0.9em;color:var(--tx3);font-style:italic;font-size:0.83rem}
+.ann-body img{max-width:100%;border-radius:8px;margin:6px 0;display:block}
+.ann-foot{
+  padding:1rem 1.5rem;border-top:1px solid var(--line);
+  display:flex;align-items:center;justify-content:flex-end;gap:0.8rem;
+  position:sticky;bottom:0;
+  background:var(--surface2);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.ann-btn-skip{
+  padding:8px 18px;border-radius:8px;border:1.5px solid var(--line2);
+  background:transparent;color:var(--tx3);font-size:0.78rem;font-weight:600;
+  cursor:pointer;transition:all 0.15s;
+}
+.ann-btn-skip:hover{background:var(--card);color:var(--tx2)}
+.ann-btn-ok{
+  padding:8px 22px;border-radius:8px;border:1.5px solid var(--accent2);
+  background:rgba(100,150,255,0.1);color:var(--accent2);font-size:0.78rem;font-weight:700;
+  cursor:pointer;transition:all 0.15s;
+}
+body.dark .ann-btn-ok,body.stitch-dark .ann-btn-ok{background:rgba(79,142,247,0.12);border-color:var(--accent2);color:var(--accent2)}
+.ann-btn-ok:hover{background:rgba(100,150,255,0.2)}
+
 /* Section card */
 .sec{
   background:var(--surface);border:1.5px solid var(--line2);border-radius:11px;
@@ -1030,6 +1096,31 @@ body.light .c-conf-tag-soft,body.stitch-light .c-conf-tag-soft{color:#7a5200;bac
       </button>
     </div>
     <div class="modal-body" id="mbody"></div>
+  </div>
+</div>
+
+<!-- Announcement modal -->
+<div class="ann-overlay" id="ann-overlay" style="display:none" onclick="if(event.target===this)closeAnnounce(false)">
+  <div class="ann-modal">
+    <div class="ann-top">
+      <div class="ann-title">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        Anuncios
+      </div>
+      <button class="ann-x" onclick="closeAnnounce(false)" title="Cerrar (volver a mostrar la próxima vez)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="ann-body" id="ann-body"></div>
+    <div class="ann-foot">
+      <button class="ann-btn-skip" onclick="closeAnnounce(false)" title="Cerrar y volver a mostrar la próxima vez">Después</button>
+      <button class="ann-btn-ok" onclick="closeAnnounce(true)">Entendido</button>
+    </div>
   </div>
 </div>
 
@@ -2025,6 +2116,7 @@ window.addEventListener("DOMContentLoaded",function(){
   applyTheme(saved);
   initFacultySelector();
   switchFaculty(Object.keys(ALL_DATA)[0]);
+  fetchAnnounce();
   document.addEventListener("click",function(){
     var pop=document.getElementById("score-pop");
     if(pop) pop.style.display="none";
@@ -2035,6 +2127,74 @@ function toggleTheme(){
   var cur=localStorage.getItem("theme")||"dark";
   var idx=THEME_ORDER.indexOf(cur);
   applyTheme(THEME_ORDER[(idx+1)%THEME_ORDER.length]);
+}
+
+// ── Announcements ──────────────────────────────────────────────────────────
+function _annHash(s){
+  var h=0;
+  for(var i=0;i<Math.min(s.length,3000);i++) h=(Math.imul(31,h)+s.charCodeAt(i))|0;
+  return h.toString(36)+":"+s.length;
+}
+
+function md2html(md){
+  function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+  function inline(s){
+    s=s.replace(/`([^`]+)`/g,"<code>$1</code>");
+    s=s.replace(/\*\*\*(.+?)\*\*\*/g,"<strong><em>$1</em></strong>");
+    s=s.replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>");
+    s=s.replace(/__(.+?)__/g,"<strong>$1</strong>");
+    s=s.replace(/\*(.+?)\*/g,"<em>$1</em>");
+    s=s.replace(/_([^_\n]+)_/g,"<em>$1</em>");
+    s=s.replace(/~~(.+?)~~/g,"<del>$1</del>");
+    s=s.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,'<img alt="$1" src="$2">');
+    s=s.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+    return s;
+  }
+  var blocks=md.replace(/\r\n/g,"\n").split(/\n{2,}/);
+  var out="";
+  blocks.forEach(function(block){
+    block=block.trim();if(!block)return;
+    var hm=block.match(/^(#{1,3})\s+(.+)$/);
+    if(hm){out+="<h"+hm[1].length+">"+inline(esc(hm[2]))+"</h"+hm[1].length+">";return;}
+    if(/^[-*_]{3,}\s*$/.test(block)){out+="<hr>";return;}
+    if(/^>\s/.test(block)){
+      var bq=block.split("\n").map(function(l){return l.replace(/^>\s?/,"");}).join("\n");
+      out+="<blockquote>"+inline(esc(bq))+"</blockquote>";return;
+    }
+    if(/^[\-\*\+]\s/.test(block)){
+      var its=block.split("\n").filter(function(l){return/^[\-\*\+]\s/.test(l);});
+      out+="<ul>"+its.map(function(l){return"<li>"+inline(esc(l.replace(/^[\-\*\+]\s+/,"")))+"</li>";}).join("")+"</ul>";return;
+    }
+    if(/^\d+\.\s/.test(block)){
+      var its=block.split("\n").filter(function(l){return/^\d+\.\s/.test(l);});
+      out+="<ol>"+its.map(function(l){return"<li>"+inline(esc(l.replace(/^\d+\.\s+/,"")))+"</li>";}).join("")+"</ol>";return;
+    }
+    out+="<p>"+block.split("\n").map(function(l){return inline(esc(l));}).join("<br>")+"</p>";
+  });
+  return out;
+}
+
+function fetchAnnounce(){
+  fetch("ANNOUNCE.md?_="+Date.now())
+    .then(function(r){if(!r.ok)throw new Error("no file");return r.text();})
+    .then(function(text){
+      text=text.trim();if(!text)return;
+      var hash=_annHash(text);
+      if(localStorage.getItem("fia_ann_seen")===hash)return;
+      document.getElementById("ann-body").innerHTML=md2html(text);
+      var ol=document.getElementById("ann-overlay");
+      ol.dataset.hash=hash;
+      ol.style.display="flex";
+    })
+    .catch(function(){/* no ANNOUNCE.md → skip silently */});
+}
+
+function closeAnnounce(remember){
+  var ol=document.getElementById("ann-overlay");
+  if(remember){
+    try{localStorage.setItem("fia_ann_seen",ol.dataset.hash||"");}catch(e){}
+  }
+  ol.style.display="none";
 }
 
 </script>
