@@ -929,6 +929,9 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
   font-size:0.52rem;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;
   padding:1px 5px;border-radius:3px;display:inline-block;margin-top:2px;width:fit-content;
   background:rgba(255,255,255,0.12);
+  /* «TEORÍA» y «PRÁCTICA» nunca se parten: al generar el PDF, html2canvas
+     no respeta `width:fit-content` y las cortaba a mitad. */
+  white-space:nowrap;
 }
 .blk-room{font-size:0.55rem;opacity:0.55;margin-top:1px;line-height:1.1;color:inherit}
 
@@ -1371,6 +1374,12 @@ body.exporting *,body.exporting *::before,body.exporting *::after{
    PDF ese ancho sobrante no aporta nada y encoge el texto al escalar. */
 body.exporting .sched-wrap{min-width:0;width:max-content;max-width:none}
 body.exporting table.sch{width:auto}
+/* Al exportar, las columnas toman el ancho que pide su contenido, así que
+   toda palabra cabe entera y no hace falta permitir cortes. Se prohíben
+   explícitamente porque html2canvas parte por cualquier letra al llegar al
+   final de la línea, y salían cosas como «AT/MOSFÉRICO» o «AUTO/MATIZADA». */
+body.exporting .blk-name{overflow-wrap:normal;word-break:normal;hyphens:none}
+body.exporting .blk-cod,body.exporting .blk-room{white-space:nowrap}
 
 /* ── Menos movimiento ───────────────────────────────────
    Se respeta la preferencia del sistema en todos los temas. */
