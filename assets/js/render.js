@@ -53,7 +53,7 @@ function drawTags(){
   }
   let h="";
   keys.forEach(function(cod){
-    const s=sel[cod];const p=pal[cod]||"p0";const hex=PAL_HEX[p];
+    const s=sel[cod];const p=pal[cod]||"p0";const hex=palHex(p);
     h+="<div class=\"tag\" style=\"background:"+hex+"1e;border-color:"+hex+"50;color:"+hex+"\" data-cod=\""+cod+"\">";
     h+=cod+" <span style=\"opacity:0.6\">"+s.secc+"</span><i class=\"tag-x\">\u00d7</i></div>";
   });
