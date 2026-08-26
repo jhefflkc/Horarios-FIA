@@ -877,6 +877,9 @@ body.stitch-light .btn-cal:hover{box-shadow:0 4px 28px rgba(8,145,178,0.5),0 0 0
   color:var(--accent3);letter-spacing:1px;
 }
 
+/* Cada día toma el ancho que pide su contenido: los que tienen nombres
+   largos o celdas compartidas salen más anchos que los de nombres cortos.
+   El tope de `.blk-name` evita que un solo nombre estire la columna. */
 table.sch{width:100%;border-collapse:separate;border-spacing:0}
 table.sch th{padding:0;text-align:center;position:sticky;top:0;z-index:10;background:transparent}
 table.sch th:first-child{width:56px}
@@ -907,10 +910,12 @@ table.sch tbody tr:nth-child(even) td:not(:first-child) .cell-mt{background:rgba
 table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
 
 /* Course block in schedule */
+/* La altura es un mínimo, no un tope: el nombre del curso se muestra
+   entero y la fila crece si hace falta, en lugar de recortarlo. */
 .blk{
-  width:100%;height:100%;border-radius:7px;padding:5px 8px;
+  width:100%;min-height:100%;border-radius:7px;padding:5px 8px;
   display:flex;flex-direction:column;justify-content:center;
-  border-left:3px solid;position:relative;overflow:hidden;
+  border-left:3px solid;position:relative;
   cursor:pointer;transition:filter 0.12s,transform 0.12s;
 }
 .blk:hover{filter:brightness(1.18);transform:scale(1.025)}
@@ -929,9 +934,13 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
 .blk-room{font-size:0.55rem;opacity:0.55;margin-top:1px;line-height:1.1;color:inherit}
 
 /* Nombre mode */
+/* Sin límite de líneas: el nombre se ve completo, envolviendo lo que haga falta */
 .blk-name{
   font-size:0.58rem;font-weight:700;line-height:1.15;
-  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  overflow-wrap:break-word;hyphens:auto;
+  /* Tope de ancho pedido: sin él, un nombre largo en una sola línea
+     reclamaría toda la columna y estiraría el horario a lo ancho. */
+  max-width:19ch;
 }
 .blk-cod-sm{
   font-family:'JetBrains Mono',monospace;font-size:0.49rem;font-weight:700;
@@ -948,8 +957,16 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
 .btn-names.active{border-color:var(--accent);color:var(--accent3);background:rgba(200,120,58,0.1)}
 
 /* Side-by-side conflict blocks */
-.cell-blocks{display:flex;gap:2px;height:100%;width:100%}
-.cell-blocks .blk{flex:1;min-width:0;padding:3px 5px}
+/* Si llegan a juntarse demasiados en una celda, pasan a una segunda fila
+   en lugar de estrujarse hasta ser ilegibles. */
+.cell-blocks{display:flex;flex-wrap:wrap;gap:2px;min-height:100%;width:100%;align-items:stretch}
+/* `flex:1` daba a cada píldora la mitad exacta aunque una necesitara más.
+   Con base automática el reparto sigue lo que ocupa cada contenido, y el
+   mínimo evita que la más corta se quede sin espacio legible. */
+.cell-blocks .blk{flex:1 1 auto;width:auto;min-width:38px;padding:3px 5px}
+/* Al compartir celda hay la mitad de ancho: se reduce la letra para que las
+   palabras largas quepan enteras en vez de partirse a mitad */
+.cell-blocks .blk .blk-name{font-size:0.5rem;line-height:1.1}
 .cell-blocks .blk .blk-cod{font-size:0.54rem}
 .cell-blocks .blk .blk-type{font-size:0.46rem;padding:1px 3px}
 .cell-blocks .blk .blk-room{display:none}
