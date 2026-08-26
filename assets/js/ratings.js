@@ -18,12 +18,25 @@ function loadRatings(){
 }
 
 
+/* Lo que devuelve el servicio de calificaciones es dato ajeno y acaba dentro
+   de innerHTML: se fuerza a número antes de pintarlo, así no puede colar HTML
+   aunque la hoja de cálculo llegue a contener basura. */
+function _avgOf(r){
+  const n=Number(r&&r.avg);
+  return (isFinite(n)&&n>0)?n.toFixed(1):null;
+}
+function _countOf(r){
+  const n=Math.trunc(Number(r&&r.count));
+  return (isFinite(n)&&n>0)?n:0;
+}
+
 function _ratingHTML(teacher){
   if(!_isFIA()||!teacher||!_ratingsCache) return "";
   const r=_ratingsCache[teacher];
-  if(!r) return "";
-  return "<span class=\"rate-star\"><svg width=\"11\" height=\"11\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z\"/></svg>"+r.avg+"</span>"+
-    "<span class=\"rate-count\">("+r.count+")</span>";
+  const avg=_avgOf(r);
+  if(avg===null) return "";
+  return "<span class=\"rate-star\"><svg width=\"11\" height=\"11\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z\"/></svg>"+avg+"</span>"+
+    "<span class=\"rate-count\">("+_countOf(r)+")</span>";
 }
 
 
@@ -43,7 +56,8 @@ function updateScorePill(){
     let s=0,n=0;
     names.forEach(function(t){
       const r=_ratingsCache[t];
-      if(r&&r.avg){s+=parseFloat(r.avg);n++;}
+      const a=_avgOf(r);
+      if(a!==null){s+=parseFloat(a);n++;}
     });
     if(n){sum+=s/n;count++;}
   });
@@ -112,7 +126,8 @@ function openRatingModal(cod,di){
   const body=document.getElementById("mbody");
   const r=(_ratingsCache||{})[teacher];
   let h="";
-  if(r) h+="<div style=\"text-align:center;margin-bottom:10px;font-size:0.77rem;color:var(--tx3)\">Promedio actual: <strong style=\"color:#f0c870\">&#9733; "+r.avg+"</strong> <span style=\"color:var(--tx3)\">("+r.count+" votos)</span></div>";
+  const rAvg=_avgOf(r);
+  if(rAvg!==null) h+="<div style=\"text-align:center;margin-bottom:10px;font-size:0.77rem;color:var(--tx3)\">Promedio actual: <strong style=\"color:#f0c870\">&#9733; "+rAvg+"</strong> <span style=\"color:var(--tx3)\">("+_countOf(r)+" votos)</span></div>";
   h+="<div style=\"text-align:center;padding:10px 0 4px\">";
   h+="<div style=\"font-size:0.78rem;color:var(--tx3);margin-bottom:16px\">&#191;C&#243;mo calificar&#237;as al docente?</div>";
   h+="<div id=\"star-inp\" style=\"display:flex;justify-content:center;gap:12px;font-size:2.4rem;margin-bottom:8px\">";
@@ -165,9 +180,10 @@ async function confirmRating(cod){
   }catch(e){}
   // Actualiza caché local de forma optimista
   if(_ratingsCache){
-    const old=_ratingsCache[teacher]||{avg:0,count:0};
-    const nc=old.count+1;
-    _ratingsCache[teacher]={avg:Math.round(((old.avg*old.count)+_selectedRating)/nc*10)/10,count:nc};
+    const prev=_ratingsCache[teacher];
+    const oa=Number(_avgOf(prev))||0, oc=_countOf(prev);
+    const nc=oc+1;
+    _ratingsCache[teacher]={avg:Math.round(((oa*oc)+_selectedRating)/nc*10)/10,count:nc};
   }
   _markRated(teacher);
   _ratingTeacher=null;_selectedRating=0;

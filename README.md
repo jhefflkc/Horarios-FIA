@@ -66,6 +66,37 @@ Acepta Markdown normal: títulos, **negrita**, *cursiva*, listas, `código`,
 enlaces, citas con `>`, `---` como separador, emojis y símbolos. Para dejar un
 asterisco o guion bajo literal, escápalo: `\*así\*`.
 
+## Seguridad
+
+El repositorio es público y la web es estática, así que **todo lo que hay en
+`assets/js/` lo puede leer cualquiera** — incluida la URL del servicio de
+calificaciones. Eso no es un descuido: el navegador de cada visitante tiene
+que llamar a ese endpoint, así que la URL no puede mantenerse en secreto.
+La seguridad tiene que venir de *qué permite hacer el endpoint*, no de
+esconderlo.
+
+En el repositorio **no debe haber nunca** claves de servicio, `client_secret`,
+tokens ni archivos `.json` de credenciales de Google. Si alguna vez se sube
+uno, no basta con borrarlo: queda en el historial de git y hay que revocarlo
+en Google.
+
+Al tocar `assets/js/ratings.js`, ten presente que lo que responde el servicio
+de calificaciones es **dato ajeno**: pásalo siempre por `_avgOf()` /
+`_countOf()` antes de meterlo en `innerHTML`. Si se concatena en crudo,
+cualquiera que consiga escribir en la hoja de cálculo puede ejecutar
+JavaScript en el navegador de todos los visitantes.
+
+Recomendado en el Apps Script (esto se configura en Google, no aquí):
+
+- Que valide `action`, limite `puntuacion` al rango 1–5 y descarte cualquier
+  otro parámetro
+- Que tenga permisos solo sobre la hoja de cálculo de calificaciones
+- Idealmente, que viva en una cuenta de Google aparte de la personal
+
+El botón «Ya calificaste» solo mira `localStorage`, así que **no impide votar
+varias veces**: quien quiera puede llamar al endpoint directamente. Las
+calificaciones son orientativas, no un recuento fiable.
+
 ## Probarlo en tu máquina
 
 Hace falta servirlo por HTTP (abrir el archivo directamente no carga los
