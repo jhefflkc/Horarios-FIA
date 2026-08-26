@@ -5,6 +5,11 @@
 :root{
   --dot-x:-9999px;
   --dot-y:-9999px;
+  /* Movimiento compartido por todos los temas (curvas de Material 3) */
+  --ease:cubic-bezier(0.2,0,0,1);
+  --ease-out:cubic-bezier(0.05,0.7,0.1,1);
+  --dur:0.2s;
+  --dur-fast:0.12s;
   --bg:#0c0905;
   --panel:#130e08;
   --surface:#1b160f;
@@ -480,18 +485,8 @@ body.google .blk:hover{
   box-shadow:0 2px 6px rgba(60,64,67,0.24);
   z-index:5;
 }
-@keyframes g-dialog-in{
-  from{opacity:0;transform:scale(0.88)}
-  to{opacity:1;transform:scale(1)}
-}
-@keyframes g-scrim-in{from{opacity:0}to{opacity:1}}
-body.google .overlay,body.google .ann-overlay{animation:g-scrim-in 0.16s var(--g-ease) both}
-body.google .modal,body.google .ann-modal{animation:g-dialog-in 0.28s var(--g-ease) both}
-@keyframes g-toast-in{
-  from{opacity:0;transform:translateY(14px)}
-  to{opacity:1;transform:translateY(0)}
-}
-body.google .toast.on{animation:g-toast-in 0.24s var(--g-ease-out) both}
+/* Las entradas de diálogo, velo y aviso son las compartidas del final
+   de la hoja; aquí no hace falta repetirlas. */
 body.google .sched-area::-webkit-scrollbar-thumb,
 body.google .course-scroll::-webkit-scrollbar-thumb,
 body.google .modal::-webkit-scrollbar-thumb,
@@ -1267,3 +1262,101 @@ body.light .c-conf-tag-soft,body.stitch-light .c-conf-tag-soft{color:#7a5200;bac
 .toast.ok .tdot{background:#10b981;box-shadow:0 0 10px rgba(16,185,129,0.7)}
 .toast.er .tdot{background:#f43f5e;box-shadow:0 0 10px rgba(244,63,94,0.7)}
 .toast.warn .tdot{background:#f59e0b;box-shadow:0 0 10px rgba(245,158,11,0.7)}
+
+/* ═══ MOVIMIENTO ═══════════════════════════════════════════
+   Sistema compartido por todos los temas. Las curvas son las de
+   Material 3: entradas que desaceleran y nada que rebote sin razón.
+   El tema Google añade encima su onda al pulsar. */
+
+/* ── Transiciones de estado ─────────────────────────────── */
+.hbtn,.btn,.chip,.sec,.tag,.score-pill,.modal-x,.ann-x,
+.rate-btn,.ann-btn-ok,.ann-btn-skip,.upload-btn,.mob-tab{
+  transition:background var(--dur) var(--ease),
+             color var(--dur) var(--ease),
+             border-color var(--dur) var(--ease),
+             box-shadow var(--dur) var(--ease),
+             transform var(--dur-fast) var(--ease-out);
+}
+/* Al pulsar, todo lo pulsable se hunde un punto */
+.hbtn:active,.btn:active,.chip:active,.sec:active,.modal-x:active,
+.ann-x:active,.rate-btn:active,.ann-btn-ok:active,.ann-btn-skip:active{
+  transform:scale(0.96);
+}
+.c-row{transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease)}
+.cbox{transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease)}
+.search-box{transition:border-color var(--dur) var(--ease),background var(--dur) var(--ease),box-shadow var(--dur) var(--ease)}
+.blk{transition:transform var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease),filter var(--dur-fast) var(--ease)}
+.tag-x{transition:opacity var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease-out)}
+.tag-x:hover{transform:scale(1.25)}
+
+/* ── Entradas ───────────────────────────────────────────── */
+@keyframes fx-fade{from{opacity:0}to{opacity:1}}
+@keyframes fx-dialog{
+  from{opacity:0;transform:scale(0.9) translateY(8px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+@keyframes fx-pop{
+  from{opacity:0;transform:scale(0.82)}
+  to{opacity:1;transform:scale(1)}
+}
+@keyframes fx-rise{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes fx-drop{
+  from{opacity:0;transform:translateY(-10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes fx-slide-left{
+  from{opacity:0;transform:translateX(-14px)}
+  to{opacity:1;transform:translateX(0)}
+}
+
+/* Diálogos: el velo se funde y la ventana entra escalando */
+.overlay,.ann-overlay{animation:fx-fade 0.16s var(--ease) both}
+.modal,.ann-modal{animation:fx-dialog 0.26s var(--ease) both}
+/* Bloques del horario y etiquetas: aparición breve al redibujarse */
+.blk{animation:fx-pop 0.18s var(--ease-out) both}
+.tag{animation:fx-pop 0.18s var(--ease-out) both}
+/* Secciones del diálogo, escalonadas: guían la lectura de arriba abajo */
+.sec{animation:fx-rise 0.26s var(--ease-out) both}
+.sec:nth-child(2){animation-delay:0.04s}
+.sec:nth-child(3){animation-delay:0.08s}
+.sec:nth-child(4){animation-delay:0.12s}
+.sec:nth-child(n+5){animation-delay:0.16s}
+/* Aviso emergente y marco, al cargar */
+header{animation:fx-drop 0.4s var(--ease-out) both}
+.sidebar{animation:fx-slide-left 0.42s var(--ease-out) both;animation-delay:0.06s}
+.conf-bar.on{animation:fx-drop 0.24s var(--ease-out) both}
+.empty{animation:fx-fade 0.35s var(--ease) both}
+
+/* ── Cambio de tema ─────────────────────────────────────
+   Durante el cambio se funden los colores; la clase la pone y quita
+   applyTheme(), así el resto del tiempo nada va más lento. */
+body.theming,
+body.theming header,body.theming .sidebar,body.theming .main,
+body.theming .c-row,body.theming .btn,body.theming .hbtn,body.theming .chip,
+body.theming .blk,body.theming .dhead,body.theming .cell-mt,body.theming .modal,
+body.theming .toast,body.theming .sec,body.theming .tag,body.theming .conf-bar,
+body.theming .search-box,body.theming .stats,body.theming .sched-legend,
+body.theming .c-cod,body.theming .cbox,body.theming .sched-area{
+  transition:background-color 0.38s var(--ease),
+             color 0.38s var(--ease),
+             border-color 0.38s var(--ease);
+}
+/* Nada debe animarse mientras se captura el PDF */
+body.exporting *,body.exporting *::before,body.exporting *::after{
+  animation:none !important;transition:none !important;
+}
+
+/* ── Menos movimiento ───────────────────────────────────
+   Se respeta la preferencia del sistema en todos los temas. */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:0.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:0.01ms !important;
+    scroll-behavior:auto !important;
+  }
+  .blk:hover,.btn:active,.hbtn:active,.chip:active,.sec:active,.tag-x:hover{transform:none}
+}

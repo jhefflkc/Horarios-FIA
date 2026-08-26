@@ -112,7 +112,9 @@ function drawSched(){
   const allH=[];
   Object.values(sel).forEach(function(s){s.ss.forEach(function(x){allH.push(x.h0);allH.push(x.h1);});});
   const mn=Math.min.apply(null,allH),mx=Math.max.apply(null,allH);
-  const hrs=[];for(let i=mn;i<mx;i++) hrs.push(i);
+  /* Se incluye la hora de fin como última fila: sin ella el bloque que
+     termina a las 21:00 se quedaba sin marca de cierre en la rejilla. */
+  const hrs=[];for(let i=mn;i<=mx;i++) hrs.push(i);
 
   const todayIdx=new Date().getDay();
   const todayKey=["DO","LU","MA","MI","JU","VI","SA"][todayIdx];
