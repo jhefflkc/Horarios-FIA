@@ -6,12 +6,15 @@ archivo subido desde la web de GitHub funciona sin moverlo).
 
 Uso: python build_data.py
 """
+import hashlib
 import json
 import os
 import re
 import sys
 import glob as globmod
 import openpyxl
+
+HTML_PATH = "index.html"
 
 DATA_JS = os.path.join("assets", "data.js")
 XLSX_DIRS = ["data", "."]
@@ -190,6 +193,40 @@ def write_data_js(all_data):
     print(f"OK: {len(siglas)} facultad(es) {siglas}, {total} sesiones totales → {DATA_JS}")
 
 
+ASSET_RE = re.compile(r'(assets/(?:js/[\w.-]+\.js|styles\.css|data\.js))(\?v=[0-9a-f]+)?"')
+
+
+def stamp_assets():
+    """Sella los assets con una versión derivada de su contenido.
+
+    El CSS y el JS viven en archivos aparte que GitHub Pages sirve con caché,
+    así que sin esto el navegador puede seguir ejecutando la versión anterior
+    después de un despliegue. La versión solo cambia si cambia el contenido.
+    """
+    with open(HTML_PATH, "r", encoding="utf-8") as f:
+        html = f.read()
+
+    paths = sorted(set(m.group(1) for m in ASSET_RE.finditer(html)))
+    if not paths:
+        print("WARN: no se encontraron assets que sellar en index.html")
+        return
+
+    h = hashlib.sha1()
+    for p in paths:
+        try:
+            with open(p, "rb") as fh:
+                h.update(fh.read())
+        except OSError:
+            print(f"WARN: {p} referenciado en index.html pero no existe")
+    ver = h.hexdigest()[:8]
+
+    new_html = ASSET_RE.sub(lambda m: f'{m.group(1)}?v={ver}"', html)
+    if new_html != html:
+        with open(HTML_PATH, "w", encoding="utf-8") as f:
+            f.write(new_html)
+    print(f"OK: {len(paths)} assets sellados con ?v={ver}")
+
+
 if __name__ == "__main__":
     found = find_faculty_files()
     if not found:
@@ -216,3 +253,4 @@ if __name__ == "__main__":
         sys.exit(1)
 
     write_data_js(all_data)
+    stamp_assets()
