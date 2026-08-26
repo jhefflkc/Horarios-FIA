@@ -1,5 +1,5 @@
 # Bienvenido a Horarios FIA 2026-2
-
+hasta el momento solo 88 vursos estan disponible ( fueron extraidos desde Intralu )
 ## ¿Cómo usarlo?
 
 1. Busca tus cursos en el panel de la izquierda
