@@ -159,6 +159,286 @@ body.stitch-light .p5{background:rgba(124,58,237,0.12);border-left-color:#7c3aed
 body.stitch-light .p6{background:rgba(234,88,12,0.12);border-left-color:#ea580c;color:#9a3412}
 body.stitch-light .p7{background:rgba(5,150,105,0.12);border-left-color:#059669;color:#065f46}
 
+/* ── Google (Material You) ───────────────────────────────────
+   Material 3 oscuro: superficies tonales sin bordes, esquinas muy
+   redondeadas, tipografía Roboto y acentos en el azul de Google.
+   El relieve lo dan los tonos de gris, no las líneas. */
+body.google{
+  --bg:#131314;
+  --panel:#1b1b1f;
+  --surface:#232327;
+  --surface2:#2b2b30;
+  --card:#33333a;
+  --card2:#3e3e46;
+  --line:rgba(255,255,255,0.05);
+  --line2:rgba(255,255,255,0.08);
+  --line3:rgba(255,255,255,0.15);
+  --tx:#e3e3e6;
+  --tx2:#c4c7c9;
+  --tx3:#8e9099;
+  --tx4:#5b5d64;
+  --accent:#a8c7fa;
+  --accent2:#c2e7ff;
+  --accent3:#d3e3fd;
+  --glow:rgba(168,199,250,0.30);
+  --float-bg:rgba(27,27,31,0.82);
+  --float-shadow:0 8px 32px rgba(0,0,0,0.42);
+  --float-btn-bg:rgba(35,35,39,0.84);
+  --float-btn-shadow:0 4px 18px rgba(0,0,0,0.36);
+  /* Movimiento de Material 3: curva «enfatizada» y duración estándar */
+  --g-ease:cubic-bezier(0.2,0,0,1);
+  --g-ease-out:cubic-bezier(0.05,0.7,0.1,1);
+  --g-dur:0.2s;
+  /* Contenedores tonales reutilizados */
+  --g-prim-cont:#004a77;
+  --g-prim-cont-h:#005a90;
+  background-image:
+    radial-gradient(ellipse 70% 55% at 14% 0%,rgba(168,199,250,0.055) 0%,transparent 62%),
+    radial-gradient(ellipse 60% 60% at 88% 88%,rgba(130,165,240,0.04) 0%,transparent 58%);
+}
+body.google,
+body.google .hbtn,body.google .btn,body.google .chip,
+body.google input,body.google select,body.google textarea{
+  font-family:'Roboto','Plus Jakarta Sans',sans-serif;
+}
+/* Cabecera: superficie plana, sin la línea de color de los otros temas */
+body.google header{
+  background:rgba(27,27,31,0.82);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border:none;border-radius:28px;box-shadow:0 2px 14px rgba(0,0,0,0.32);
+}
+body.google header::after{display:none}
+body.google .logo-gem{background:#004a77;border-radius:16px;box-shadow:none}
+body.google .logo-text{color:var(--tx);font-weight:500;letter-spacing:0}
+body.google .logo-text span{color:var(--accent)}
+body.google .logo-sub{font-family:'Roboto',sans-serif;letter-spacing:0.7px}
+/* Paneles: radio grande, sin borde, separados solo por tono */
+body.google .sidebar{
+  border:none;border-radius:28px;
+  backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
+}
+body.google .sidebar-label{
+  background:none;-webkit-text-fill-color:currentColor;color:var(--tx3);
+  font-family:'Roboto',sans-serif;font-weight:500;letter-spacing:1.4px;
+}
+body.google .search-box{border-radius:999px;border:none;background:var(--surface)}
+body.google .search-box:focus-within{background:var(--surface2);border:none;box-shadow:none}
+/* Botones y chips: píldora completa, relleno tonal */
+body.google .hbtn,body.google .btn{
+  border-radius:999px;border:none;background:var(--surface2);color:var(--tx2);font-weight:500;
+}
+body.google .hbtn:hover,body.google .btn:hover{background:var(--card);color:var(--tx)}
+body.google .btn-dl{background:var(--accent);color:#062e6f;font-weight:500}
+body.google .btn-dl:hover{background:var(--accent3);color:#062e6f}
+body.google .btn-cal{background:#004a77;color:var(--accent2);box-shadow:none}
+body.google .btn-cal:hover{background:#00639b;box-shadow:none}
+body.google .btn-names.active{background:#004a77;border:none;color:var(--accent3)}
+body.google .chip{border-radius:999px;border:none;background:var(--surface2);color:var(--tx2)}
+body.google .chip:hover{background:var(--card);color:var(--tx)}
+body.google .chip.on{background:#004a77;color:var(--accent3);border:none}
+body.google .tag{border-radius:999px;border:none}
+body.google .score-pill{border-radius:999px;border:none;background:rgba(168,199,250,0.14);color:var(--accent3)}
+body.google .score-pill:hover{background:rgba(168,199,250,0.22);box-shadow:none}
+/* Listas: al estilo del panel de navegación de Material — las filas son
+   transparentes y solo la seleccionada se convierte en píldora rellena. */
+body.google .c-row{
+  background:transparent;border:none;border-left:none;
+  margin:2px 8px;padding:0.6rem 1rem;
+  border-radius:999px;
+  transition:background var(--g-dur) var(--g-ease),color var(--g-dur) var(--g-ease);
+}
+/* Capa de estado de Material (hover y pulsado) */
+body.google .c-row:hover{background:rgba(227,227,230,0.08)}
+body.google .c-row:active{background:rgba(227,227,230,0.12)}
+body.google .c-row.sel{background:#004a77;border-left:none}
+body.google .c-row.sel:hover{background:#005a90}
+body.google .c-row.sel .c-name{color:var(--accent3)}
+body.google .c-row.sel .c-cod{color:var(--accent2)}
+/* Casilla al estilo Material */
+body.google .cbox{
+  border-radius:4px;border:2px solid var(--tx3);
+  transition:background var(--g-dur) var(--g-ease),border-color var(--g-dur) var(--g-ease);
+}
+body.google .c-row.sel .cbox{background:var(--accent);border-color:var(--accent);box-shadow:none}
+body.google .c-row.sel .cbox::after{border-left-color:#062e6f;border-bottom-color:#062e6f}
+body.google .sec{border-radius:20px;border:none;background:var(--surface)}
+body.google .sec:hover{background:var(--surface2);box-shadow:none;transform:none}
+body.google .doc-role{border:none;background:var(--card);color:var(--tx3)}
+body.google .blk{border-radius:14px}
+body.google .sched-legend{border-radius:16px;border:none;background:var(--surface)}
+body.google table.sch tbody tr:nth-child(odd) td:not(:first-child) .cell-mt{background:rgba(255,255,255,0.022)}
+body.google table.sch tbody tr:nth-child(even) td:not(:first-child) .cell-mt{background:rgba(255,255,255,0.008)}
+body.google table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.05)}
+/* Modales y superposiciones */
+body.google .modal,body.google .ann-modal{
+  border:none;border-radius:28px;background:var(--panel);
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+}
+body.google .modal-top,body.google .ann-top,body.google .ann-foot{background:var(--panel)}
+body.google .overlay,body.google .ann-overlay{background:rgba(0,0,0,0.55)}
+body.google .modal-x,body.google .ann-x{border-radius:999px;background:var(--surface2)}
+body.google .modal-x:hover,body.google .ann-x:hover{background:var(--card)}
+body.google .ann-btn-skip{border-radius:999px;border:none;background:var(--surface2);color:var(--tx2)}
+body.google .ann-btn-skip:hover{background:var(--card);color:var(--tx)}
+body.google .ann-btn-ok{border-radius:999px;border:none;background:var(--accent);color:#062e6f}
+body.google .ann-btn-ok:hover{background:var(--accent3)}
+body.google .toast{border-radius:999px;border:none}
+/* Cursos del horario: paleta pastel de Google (tonos 200) sobre texto
+   oscuro, como los eventos de Calendar. Suave, no apagado ni chillón. */
+body.google .p0{background:#aecbfa;border-left-color:#669df6;color:#062e6f}
+body.google .p1{background:#a8dab5;border-left-color:#5bb974;color:#0d652d}
+body.google .p2{background:#fde293;border-left-color:#fbbc04;color:#5c4200}
+body.google .p3{background:#f6aea9;border-left-color:#ee675c;color:#5c1512}
+body.google .p4{background:#a7e8eb;border-left-color:#4ecde6;color:#0b4f4d}
+body.google .p5{background:#d7aefb;border-left-color:#af5cf7;color:#3c1a5b}
+body.google .p6{background:#fdc69c;border-left-color:#fa903e;color:#5f2b01}
+body.google .p7{background:#a5dfcf;border-left-color:#4db6a2;color:#0b4f3f}
+/* Sobre pastel, los realces claros no funcionan: se invierten */
+body.google .blk::before{background:none}
+body.google .blk:hover{filter:brightness(0.97)}
+body.google .blk-type{background:rgba(0,0,0,0.13)}
+body.google .blk-secc{opacity:0.7}
+body.google .blk-room{opacity:0.7}
+body.google .ses-T{background:#5b4300;color:#ffdea6}
+body.google .ses-P{background:#0f5223;color:#a6f4c5}
+body.google .ses-L{background:#6d3b00;color:#ffdcc2}
+body.google .ses-S{background:#00504d;color:#a6f2f0}
+/* Roboto Mono en vez de JetBrains para códigos, horas y secciones */
+body.google .logo-sub,body.google .sidebar-label,body.google .c-cod,
+body.google .sec-name,body.google .stat-n,body.google .dhead,
+body.google table.sch td:first-child,body.google .blk-cod,body.google .blk-cod-sm,
+body.google .score-pill-val,body.google .btn-names{
+  font-family:'Roboto Mono','JetBrains Mono',monospace;
+}
+/* Cabeceras de día: planas, sin recuadro */
+body.google .dhead{
+  border:none;background:var(--surface);border-radius:14px 14px 0 0;
+  font-weight:500;letter-spacing:0.6px;
+}
+body.google .dhead.now{background:#004a77;color:var(--accent3);border:none}
+body.google .cell-mt{border-radius:8px}
+/* Avisos: mismos pasteles de la paleta, atenuados sobre fondo oscuro */
+body.google .conf-bar{
+  border:none;border-radius:16px;
+  background:rgba(246,174,169,0.13);color:#f6aea9;
+}
+body.google .sec-conf,body.google .c-conf-tag{
+  border:none;border-radius:999px;padding:2px 9px;
+  background:rgba(246,174,169,0.15);color:#f6aea9;
+}
+body.google .sec-warn,body.google .c-conf-tag-soft{
+  border:none;background:rgba(253,226,147,0.15);color:#fde293;
+}
+/* Etiquetas de especialidad y de código, en los mismos tonos 200 */
+body.google .cyCB .cy-pill{color:#fde293;background:rgba(253,226,147,0.13);border-color:transparent}
+body.google .cyIA .cy-pill{color:#a8dab5;background:rgba(168,218,181,0.13);border-color:transparent}
+body.google .cyIS .cy-pill{color:#a7e8eb;background:rgba(167,232,235,0.13);border-color:transparent}
+body.google .cyIH .cy-pill{color:#d7aefb;background:rgba(215,174,251,0.13);border-color:transparent}
+body.google .cyCB .cy-line{background:linear-gradient(90deg,rgba(253,226,147,0.35),transparent)}
+body.google .cyIA .cy-line{background:linear-gradient(90deg,rgba(168,218,181,0.35),transparent)}
+body.google .cyIS .cy-line{background:linear-gradient(90deg,rgba(167,232,235,0.35),transparent)}
+body.google .cyIH .cy-line{background:linear-gradient(90deg,rgba(215,174,251,0.35),transparent)}
+body.google .c-cod{border-radius:999px;padding:1px 8px;font-weight:500}
+body.google .sec.soft-conf{border:none;background:#2e2a1c}
+body.google .sec.soft-conf:hover{border:none;background:#3a3524;box-shadow:none}
+body.google .empty-box{border:none;border-radius:28px;background:var(--surface);box-shadow:none}
+body.google .rate-btn{border-radius:999px;border:none;background:#004a77;color:var(--accent2)}
+
+/* ── Google: movimiento y respuesta al tacto ─────────────────
+   Material apoya la jerarquía en el movimiento: las superficies
+   pulsables se hunden levemente y todo comparte la misma curva. */
+body.google .btn,body.google .hbtn,body.google .chip,
+body.google .sec,body.google .tag,body.google .score-pill,
+body.google .modal-x,body.google .ann-x,body.google .rate-btn,
+body.google .ann-btn-ok,body.google .ann-btn-skip{
+  transition:background var(--g-dur) var(--g-ease),
+             color var(--g-dur) var(--g-ease),
+             box-shadow var(--g-dur) var(--g-ease),
+             transform 0.1s var(--g-ease-out);
+}
+body.google .btn:active,body.google .hbtn:active,body.google .chip:active,
+body.google .sec:active,body.google .modal-x:active,body.google .ann-x:active,
+body.google .rate-btn:active,body.google .ann-btn-ok:active,body.google .ann-btn-skip:active{
+  transform:scale(0.96);
+}
+/* Elevación al posarse sobre los botones de acción */
+body.google .btn-dl:hover,body.google .btn-cal:hover{
+  box-shadow:0 2px 6px rgba(0,0,0,0.30),0 1px 2px rgba(0,0,0,0.22);
+}
+/* Los bloques del horario crecen un punto al pasar por encima */
+body.google .blk{
+  transition:transform 0.15s var(--g-ease-out),box-shadow 0.15s var(--g-ease);
+}
+body.google .blk:hover{
+  transform:scale(1.02);
+  box-shadow:0 3px 10px rgba(0,0,0,0.35);
+  z-index:5;
+}
+/* Entrada de los diálogos: Material los escala desde el centro */
+@keyframes g-dialog-in{
+  from{opacity:0;transform:scale(0.88)}
+  to{opacity:1;transform:scale(1)}
+}
+@keyframes g-scrim-in{from{opacity:0}to{opacity:1}}
+body.google .overlay,body.google .ann-overlay{animation:g-scrim-in 0.16s var(--g-ease) both}
+body.google .modal,body.google .ann-modal{animation:g-dialog-in 0.28s var(--g-ease) both}
+/* El aviso emergente sube desde abajo */
+@keyframes g-toast-in{
+  from{opacity:0;transform:translateY(14px)}
+  to{opacity:1;transform:translateY(0)}
+}
+body.google .toast.on{animation:g-toast-in 0.24s var(--g-ease-out) both}
+/* Barras de desplazamiento finas, al estilo del sistema */
+body.google .sched-area::-webkit-scrollbar-thumb,
+body.google .course-scroll::-webkit-scrollbar-thumb,
+body.google .modal::-webkit-scrollbar-thumb,
+body.google .ann-modal::-webkit-scrollbar-thumb{
+  background:var(--card2);border-radius:999px;
+}
+body.google ::selection{background:#004a77;color:var(--accent3)}
+/* Foco visible con el color primario, como en los componentes de Material */
+body.google :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* ── Google: escala tipográfica de Material ──────────────────
+   Material no usa negritas fuertes: el peso 500 marca lo importante
+   y el 400 lleva el texto corrido. */
+body.google .logo-text{font-size:1.35rem;font-weight:400;letter-spacing:0}
+body.google .logo-sub{font-size:0.66rem;font-weight:400;letter-spacing:0.4px;text-transform:none}
+body.google .c-name{font-size:0.84rem;font-weight:500;letter-spacing:0.1px}
+body.google .c-meta,body.google .c-secs{font-weight:400}
+body.google .btn,body.google .hbtn{font-size:0.82rem;font-weight:500;letter-spacing:0.1px;padding:9px 20px}
+body.google .modal-ttl,body.google .ann-title{font-weight:400;font-size:1.05rem;letter-spacing:0}
+body.google .modal-sub{font-weight:400}
+body.google .sec-name{font-weight:500;letter-spacing:0.3px}
+body.google .stat{font-weight:400}
+body.google .stat-n{font-weight:500}
+body.google .empty h3{font-weight:400;font-size:1.05rem}
+body.google .ann-body h1{font-weight:400;font-size:1.3rem}
+body.google .ann-body h2{font-weight:500}
+body.google .ann-body p,body.google .ann-body li{font-weight:400;line-height:1.6}
+
+/* ── Google: efecto de onda al pulsar ────────────────────────
+   Lo genera theme.js; aquí solo vive la animación. */
+body.google .btn,body.google .hbtn,body.google .chip,body.google .c-row,
+body.google .sec,body.google .rate-btn,body.google .modal-x,body.google .ann-x,
+body.google .ann-btn-ok,body.google .ann-btn-skip{
+  position:relative;overflow:hidden;
+}
+.g-ripple{
+  position:absolute;border-radius:50%;pointer-events:none;
+  background:currentColor;opacity:0.2;transform:scale(0);
+  animation:g-ripple 0.55s var(--g-ease-out) forwards;
+}
+@keyframes g-ripple{to{transform:scale(1);opacity:0}}
+
+/* Quien prefiera menos movimiento no recibe ninguna animación */
+@media (prefers-reduced-motion:reduce){
+  body.google *,body.google *::before,body.google *::after{
+    animation-duration:0.01ms !important;animation-iteration-count:1 !important;
+    transition-duration:0.01ms !important;
+  }
+  body.google .blk:hover,body.google .btn:active{transform:none}
+  .g-ripple{display:none}
+}
+
 /* ── Stitch: transparent sched-area so dot background shows ── */
 body.stitch-dark .sched-area,body.stitch-light .sched-area{background:transparent}
 /* ── Stitch: reforzar blur acrílico en sidebar y modal ── */

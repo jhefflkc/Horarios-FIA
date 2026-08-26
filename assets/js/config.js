@@ -20,6 +20,15 @@ const ESP_SH={CB:"B\u00e1sicas",IA:"I. Ambiental",IS:"I. Sanitaria",IH:"I. Higie
 
 const PAL_HEX={p0:"#c86432",p1:"#46883c",p2:"#c8a01e",p3:"#b45028",p4:"#788c28",p5:"#288c6e",p6:"#b4821e",p7:"#508232"};
 
+/* Tonos pastel de Material (nivel 200) para el tema Google */
+const PAL_HEX_GOOGLE={p0:"#aecbfa",p1:"#a8dab5",p2:"#fde293",p3:"#f6aea9",p4:"#a7e8eb",p5:"#d7aefb",p6:"#fdc69c",p7:"#a5dfcf"};
+
+/* Color de una etiqueta según el tema activo */
+function palHex(p){
+  if(document.body.classList.contains("google")) return PAL_HEX_GOOGLE[p]||PAL_HEX_GOOGLE.p0;
+  return PAL_HEX[p]||PAL_HEX.p0;
+}
+
 
 // ─── Calificaciones de docentes (Google Apps Script) ───────────────────────
 // Pega aquí la URL del Web App de Google Apps Script tras desplegarlo
@@ -44,12 +53,15 @@ var FACULTY_MAP_JS={
 };
 
 
-var THEME_ORDER=["dark","stitch-dark","light","stitch-light"];
+var THEME_ORDER=["dark","stitch-dark","light","stitch-light","google"];
 
-var THEME_LABELS={dark:"Ámbar",["stitch-dark"]:"Grafito",light:"Crema",["stitch-light"]:"Glacial"};
+var THEME_LABELS={dark:"Ámbar",["stitch-dark"]:"Grafito",light:"Crema",["stitch-light"]:"Glacial",google:"Google"};
 
-var THEME_IS_DARK={dark:true,["stitch-dark"]:true,light:false,["stitch-light"]:false};
+var THEME_IS_DARK={dark:true,["stitch-dark"]:true,light:false,["stitch-light"]:false,google:true};
+
+/* Qué icono muestra el botón de tema en cada caso */
+var THEME_ICON={dark:"light",light:"dark",["stitch-dark"]:"stitch",["stitch-light"]:"stitch",google:"google"};
 
 /* Panel colors per theme — must match CSS --panel values.
    html { background } can't inherit --panel from body, so we set it directly. */
-var THEME_PANEL={dark:"#130e08",["stitch-dark"]:"#0d0d0f",light:"#fffaf4",["stitch-light"]:"#efefef"};
+var THEME_PANEL={dark:"#130e08",["stitch-dark"]:"#0d0d0f",light:"#fffaf4",["stitch-light"]:"#efefef",google:"#131314"};
