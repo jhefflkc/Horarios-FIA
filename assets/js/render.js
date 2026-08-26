@@ -11,8 +11,23 @@ function drawList(){
     el.innerHTML="<div style=\"padding:2rem;text-align:center;color:var(--tx4);font-size:0.8rem\">"+emptyMsg+"</div>";
     return;
   }
-  let h="";
+  /* Agrupado por ciclo. Un ciclo fuera de 1–10 (o ausente) significa que el
+     Excel no lo trae y no se pudo deducir del código: van juntos al final. */
+  const grupos={};
   list.forEach(function(c){
+    const n=parseInt(c.ciclo);
+    const k=(n>=1&&n<=10)?n:"otros";
+    (grupos[k]=grupos[k]||[]).push(c);
+  });
+  const orden=Object.keys(grupos).filter(function(k){return k!=="otros";})
+    .map(Number).sort(function(a,b){return a-b;});
+  if(grupos["otros"]) orden.push("otros");
+
+  let h="";
+  orden.forEach(function(k){
+    h+="<div class=\"cy-head\">"+(k==="otros"?"Otros cursos":"Ciclo "+k)+
+       "<span class=\"cy-head-n\">"+grupos[k].length+"</span></div>";
+    grupos[k].forEach(function(c){
     const isSel=!!sel[c.cod];
     const isConf=!isSel&&allHardConflict(c);
     const isSoft=!isSel&&!isConf&&anySoftConflict(c);
@@ -26,6 +41,7 @@ function drawList(){
     if(isConf) h+="<span class=\"c-conf-tag\">práctica bloqueada</span>";
     else if(isSoft) h+="<span class=\"c-conf-tag c-conf-tag-soft\">cruce teor\u00eda</span>";
     h+="</div></div></div>";
+    });
   });
   el.innerHTML=h;
   el.querySelectorAll(".c-row").forEach(function(r){

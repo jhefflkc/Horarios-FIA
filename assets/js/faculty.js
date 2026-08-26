@@ -64,9 +64,15 @@ function loadExcel(event){
           if(r.indexOf("COD")>=0&&r.indexOf("CURSO")>=0){hi=i;break;}
         }
         if(hi<0) return;
-        const hs=json[hi].map(function(c){return String(c).toUpperCase().trim();});
-        const ix=function(h){return hs.indexOf(h);};
-        const iC=ix("COD"),iCu=ix("CURSO"),iS=ix("SECC"),iTi=ix("TIPO"),iH=ix("HORARIO"),iD=ix("DIA"),iHi=ix("H INI"),iHf=ix("H FIN"),iSa=ix("AULA")>=0?ix("AULA"):ix("SALON"),iDo=ix("DOCENTE"),iCy=ix("CICLO");
+        /* Compara cabeceras sin tildes, puntos ni espacios: «Vac. máximas»,
+           «VAC MAXIMAS» y «Vacantes Máximas» son la misma columna. */
+        const norm=function(t){return String(t).normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+          .toUpperCase().replace(/[^A-Z0-9]/g,"");};
+        const hs=json[hi].map(norm);
+        const ix=function(){for(let k=0;k<arguments.length;k++){
+          const j=hs.indexOf(norm(arguments[k])); if(j>=0) return j;} return -1;};
+        const iC=ix("COD"),iCu=ix("CURSO"),iS=ix("SECC"),iTi=ix("TIPO"),iH=ix("HORARIO"),iD=ix("DIA"),iHi=ix("H INI"),iHf=ix("H FIN"),iSa=ix("AULA")>=0?ix("AULA"):ix("SALON"),iDo=ix("DOCENTE"),iCy=ix("CICLO"),
+              iVm=ix("VAC. MAXIMAS","VACANTES MAXIMAS","VAC MAXIMAS","VACANTES");
         const fiaFmt=iH>=0;
         for(let i=hi+1;i<json.length;i++){
           const r=json[i];
@@ -77,14 +83,16 @@ function loadExcel(event){
           const salon=iSa>=0?String(r[iSa]||"").trim():"";
           const docente=iDo>=0?String(r[iDo]||"").trim():"";
           const curso=String(r[iCu]).trim();
+          const vm=iVm>=0?parseInt(r[iVm]):NaN;
+          const extra=isNaN(vm)?{}:{vacMax:vm};
           if(fiaFmt){
             const ph=parseHorario(r[iH]);if(!ph) continue;
-            rows.push({cod:cod,curso:curso,secc:secc,tipo:tipo,ciclo:ciclo,dia:ph.dia,hIni:ph.hIni,hFin:ph.hFin,salon:salon,docente:docente});
+            rows.push(Object.assign({cod:cod,curso:curso,secc:secc,tipo:tipo,ciclo:ciclo,dia:ph.dia,hIni:ph.hIni,hFin:ph.hFin,salon:salon,docente:docente},extra));
           } else {
             if(!r[iD]) continue;
             const h0=parseInt(r[iHi]),h1=parseInt(r[iHf]);
             if(isNaN(h0)||isNaN(h1)) continue;
-            rows.push({cod:cod,curso:curso,secc:secc,tipo:tipo,ciclo:ciclo,dia:String(r[iD]).trim().toUpperCase(),hIni:h0,hFin:h1,salon:salon,docente:docente});
+            rows.push(Object.assign({cod:cod,curso:curso,secc:secc,tipo:tipo,ciclo:ciclo,dia:String(r[iD]).trim().toUpperCase(),hIni:h0,hFin:h1,salon:salon,docente:docente},extra));
           }
         }
       });

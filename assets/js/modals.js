@@ -1,5 +1,18 @@
 /* Ventanas modales: elegir sección, ver un curso, editar sesiones y periodo. */
 
+/* Vacantes máximas de la sección. Solo se pinta si el Excel trae la
+   columna: sin ella, `vacMax` no existe y no se muestra nada. */
+function _vacHTML(sec){
+  const n=Number(sec&&sec.vacMax);
+  if(!isFinite(n)||n<=0) return "";
+  return "<span class=\"sec-vac\" title=\"Vacantes m\u00e1ximas de la secci\u00f3n\">"+
+    "<svg width=\"10\" height=\"10\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\">"+
+    "<path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/>"+
+    "<path d=\"M23 21v-2a4 4 0 0 0-3-3.87\"/><path d=\"M16 3.13a4 4 0 0 1 0 7.75\"/></svg>"+
+    n+" vac.</span>";
+}
+
+
 function openModal(c){
   document.getElementById("mttl").textContent=c.curso;
   document.getElementById("msub").textContent=c.cod+" \u00b7 "+facultyName+" \u00b7 Elige una secci\u00f3n";
@@ -10,9 +23,11 @@ function openModal(c){
     const isPractice=cf.hasPractice;const isTheory=!cf.hasPractice&&cf.hasTheory;
     h+="<div class=\"sec"+(isPractice?" conf":isTheory?" soft-conf":"")+"\" data-i=\""+i+"\">";
     h+="<div class=\"sec-top\"><span class=\"sec-name\">Secci\u00f3n "+sec.secc+"</span>";
+    h+="<span style=\"display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap\">";
+    h+=_vacHTML(sec);
     if(isPractice) h+="<span class=\"sec-conf\">Práctica bloqueada</span>";
     else if(isTheory) h+="<span class=\"sec-conf sec-warn\">Cruce de teoría</span>";
-    h+="</div>";
+    h+="</span></div>";
     if(sec.docs&&sec.docs.length){
       h+="<div class=\"sec-docs\">";
       sec.docs.forEach(function(d){
