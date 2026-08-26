@@ -57,7 +57,6 @@ body.light .c-row:hover{background:rgba(0,0,0,0.03)}
 body.light table.sch tbody tr:nth-child(odd) td:not(:first-child) .cell-mt{background:rgba(0,0,0,0.018)}
 body.light table.sch tbody tr:nth-child(even) td:not(:first-child) .cell-mt{background:rgba(0,0,0,0.008)}
 body.light table.sch tbody tr:hover .cell-mt{background:rgba(0,0,0,0.04)}
-body.light .overlay{background:rgba(0,0,0,0.18)}
 body.light .logo-text{color:var(--tx)}
 body.light .p0{background:rgba(200,100,50,0.14);color:#a04020}
 body.light .p1{background:rgba(70,140,60,0.14);color:#2e6e22}
@@ -104,7 +103,6 @@ body.stitch-dark .c-row:hover{background:rgba(255,255,255,0.04)}
 body.stitch-dark table.sch tbody tr:nth-child(odd) td:not(:first-child) .cell-mt{background:rgba(255,255,255,0.025)}
 body.stitch-dark table.sch tbody tr:nth-child(even) td:not(:first-child) .cell-mt{background:rgba(255,255,255,0.01)}
 body.stitch-dark table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.05)}
-body.stitch-dark .overlay{background:rgba(0,0,0,0.65)}
 body.stitch-dark .logo-text{color:#f5f5f7}
 body.stitch-dark .sched-legend{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.08)}
 body.stitch-dark .p0{background:rgba(99,142,247,0.18);border-left-color:#4f8ef7;color:#90b8ff}
@@ -153,7 +151,6 @@ body.stitch-light .c-row:hover{background:rgba(0,0,0,0.03)}
 body.stitch-light table.sch tbody tr:nth-child(odd) td:not(:first-child) .cell-mt{background:rgba(0,0,0,0.018)}
 body.stitch-light table.sch tbody tr:nth-child(even) td:not(:first-child) .cell-mt{background:rgba(0,0,0,0.008)}
 body.stitch-light table.sch tbody tr:hover .cell-mt{background:rgba(0,0,0,0.04)}
-body.stitch-light .overlay{background:rgba(0,0,0,0.18)}
 body.stitch-light .sched-legend{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.08)}
 body.stitch-light .p0{background:rgba(37,99,235,0.12);border-left-color:#2563eb;color:#1d4ed8}
 body.stitch-light .p1{background:rgba(22,163,74,0.12);border-left-color:#16a34a;color:#166534}
@@ -231,7 +228,7 @@ body.google header{
 }
 body.google header::after{display:none}
 body.google .logo-gem{background:var(--g-prim-cont);border-radius:16px;box-shadow:none}
-body.google .logo-text{color:var(--tx);font-weight:400;letter-spacing:0}
+body.google .logo-text{color:var(--tx);font-weight:700;letter-spacing:0}
 body.google .logo-text span{color:var(--g-prim)}
 body.google .logo-sub{font-family:'Roboto',sans-serif;letter-spacing:0.7px;color:var(--tx3)}
 
@@ -303,7 +300,6 @@ body.google .modal-top{padding:1.6rem 1.75rem 0.9rem}
 body.google .modal-body{padding:0.4rem 1.75rem 1.75rem}
 body.google .modal-ttl,body.google .ann-title{font-weight:400;font-size:1.35rem;letter-spacing:0;color:var(--tx)}
 body.google .modal-sub{font-weight:400;font-size:0.78rem;color:var(--tx3);margin-top:6px}
-body.google .overlay,body.google .ann-overlay{background:rgba(32,33,36,0.45)}
 body.google .modal-x,body.google .ann-x{
   border-radius:999px;background:transparent;color:var(--tx2);width:40px;height:40px;
 }
@@ -395,7 +391,7 @@ body.google .cyIH .cy-line{background:linear-gradient(90deg,rgba(175,92,247,0.5)
 
 /* ── Tipografía ───────────────────────────────────────────
    Material no usa negritas fuertes: el 500 marca lo importante. */
-body.google .logo-text{font-size:1.35rem}
+body.google .logo-text{font-size:1.15rem}
 body.google .logo-sub{font-size:0.66rem;font-weight:400;letter-spacing:0.4px;text-transform:none}
 body.google .c-name{font-size:0.84rem;font-weight:500;letter-spacing:0.1px;color:var(--tx)}
 body.google .c-meta,body.google .c-secs{font-weight:400}
@@ -576,7 +572,6 @@ header::after{
   display:flex;align-items:center;gap:10px;
   font-size:0.72rem;color:var(--tx3);letter-spacing:0.5px;
 }
-.header-mid-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:0.6}
 .hbtn{
   display:inline-flex;align-items:center;gap:6px;
   padding:7px 15px;border-radius:8px;border:1px solid var(--line2);
@@ -859,7 +854,11 @@ body.stitch-light .btn-cal:hover{box-shadow:0 4px 28px rgba(8,145,178,0.5),0 0 0
 .score-pop-note{color:var(--tx3);font-size:0.67rem;line-height:1.5;max-width:220px}
 
 /* ═══ SCHEDULE TABLE ══════════════════════════════════ */
-.sched-wrap{min-width:680px}
+/* Suelo de ancho del horario. Por debajo de ~760px las celdas con dos
+   cursos a la misma hora dejan menos de 70px a cada uno y palabras como
+   «SOCIOCULTURAL» ya no caben enteras; se prefiere desplazamiento lateral
+   antes que partirlas. */
+.sched-wrap{min-width:780px}
 .sched-hdr{
   display:flex;align-items:center;gap:12px;margin-bottom:1.3rem;
 }
@@ -957,13 +956,14 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
 .btn-names.active{border-color:var(--accent);color:var(--accent3);background:rgba(200,120,58,0.1)}
 
 /* Side-by-side conflict blocks */
-/* Si llegan a juntarse demasiados en una celda, pasan a una segunda fila
-   en lugar de estrujarse hasta ser ilegibles. */
-.cell-blocks{display:flex;flex-wrap:wrap;gap:2px;min-height:100%;width:100%;align-items:stretch}
+/* Los cursos que coinciden en la misma hora van SIEMPRE uno al lado del
+   otro, nunca apilados: si se apilaran parecerían estar en horas distintas.
+   Por eso no se permite el salto de línea y pueden encogerse sin tope. */
+.cell-blocks{display:flex;flex-wrap:nowrap;gap:2px;min-height:100%;width:100%;align-items:stretch}
 /* `flex:1` daba a cada píldora la mitad exacta aunque una necesitara más.
    Con base automática el reparto sigue lo que ocupa cada contenido, y el
    mínimo evita que la más corta se quede sin espacio legible. */
-.cell-blocks .blk{flex:1 1 auto;width:auto;min-width:38px;padding:3px 5px}
+.cell-blocks .blk{flex:1 1 auto;width:auto;min-width:0;padding:3px 5px}
 /* Al compartir celda hay la mitad de ancho: se reduce la letra para que las
    palabras largas quepan enteras en vez de partirse a mitad */
 .cell-blocks .blk .blk-name{font-size:0.5rem;line-height:1.1}
@@ -1001,7 +1001,9 @@ body.light .sched-legend{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.0
 /* ═══ MODAL ═══════════════════════════════════════════ */
 .overlay{
   position:fixed;inset:0;z-index:500;
-  background:rgba(5,6,15,0.85);backdrop-filter:blur(10px);
+  /* Solo un desenfoque leve: el fondo no se oscurece, la ventana se
+     despega por su propia sombra. Igual en todos los temas. */
+  background:transparent;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
   display:flex;align-items:center;justify-content:center;padding:1rem;
 }
 .modal{
@@ -1029,10 +1031,9 @@ body.light .sched-legend{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.0
 /* ── Announcement modal ─────────────────────────────────── */
 .ann-overlay{
   position:fixed;inset:0;z-index:600;
-  background:rgba(5,6,15,0.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  background:transparent;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
   display:flex;align-items:center;justify-content:center;padding:1rem;
 }
-body.light .ann-overlay,body.stitch-light .ann-overlay{background:rgba(0,0,0,0.22)}
 .ann-modal{
   background:var(--surface2);border:1.5px solid var(--line2);
   border-radius:16px;width:100%;max-width:540px;max-height:88vh;
