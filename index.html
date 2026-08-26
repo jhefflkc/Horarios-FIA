@@ -2204,17 +2204,35 @@ function _annHash(s){
 
 function md2html(md){
   function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+  function attr(s){return s.replace(/"/g,"&quot;");}
+  /* Solo http(s)/mailto/rutas relativas: bloquea javascript: y similares */
+  function url(u){
+    u=u.trim();
+    if(/^[a-z][a-z0-9+.\-]*:/i.test(u)&&!/^(https?:|mailto:|data:image\/)/i.test(u)) return "#";
+    return attr(u);
+  }
   function inline(s){
+    /* \* \_ etc. → literal: se aparcan como marcador y se restauran al final */
+    var lit=[];
+    s=s.replace(/\\([\\`*_~\[\]()#+\-.!>])/g,function(m,ch){
+      lit.push(ch);return "\uE000"+(lit.length-1)+"\uE000";
+    });
     s=s.replace(/`([^`]+)`/g,"<code>$1</code>");
-    s=s.replace(/\*\*\*(.+?)\*\*\*/g,"<strong><em>$1</em></strong>");
-    s=s.replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>");
-    s=s.replace(/__(.+?)__/g,"<strong>$1</strong>");
-    s=s.replace(/\*(.+?)\*/g,"<em>$1</em>");
-    s=s.replace(/_([^_\n]+)_/g,"<em>$1</em>");
-    s=s.replace(/~~(.+?)~~/g,"<del>$1</del>");
-    s=s.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,'<img alt="$1" src="$2">');
-    s=s.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
-    return s;
+    /* El delimitador debe pegar con texto (no " * "), y _ no parte palabras
+       (así FIA_2026_1.xlsx o 5 * 3 * 2 quedan intactos) */
+    s=s.replace(/\*\*\*(\S(?:[\s\S]*?\S)?)\*\*\*/g,"<strong><em>$1</em></strong>");
+    s=s.replace(/\*\*(\S(?:[\s\S]*?\S)?)\*\*/g,"<strong>$1</strong>");
+    s=s.replace(/(^|[^\w\\])__(\S(?:[\s\S]*?\S)?)__(?!\w)/g,"$1<strong>$2</strong>");
+    s=s.replace(/\*(\S(?:[^*\n]*?\S)?)\*/g,"<em>$1</em>");
+    s=s.replace(/(^|[^\w\\])_(\S(?:[^_\n]*?\S)?)_(?!\w)/g,"$1<em>$2</em>");
+    s=s.replace(/~~(\S(?:[\s\S]*?\S)?)~~/g,"<del>$1</del>");
+    s=s.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,function(m,a,u){
+      return '<img alt="'+attr(a)+'" src="'+url(u)+'">';
+    });
+    s=s.replace(/\[([^\]]+)\]\(([^)]+)\)/g,function(m,t,u){
+      return '<a href="'+url(u)+'" target="_blank" rel="noopener">'+t+'</a>';
+    });
+    return s.replace(/\uE000(\d+)\uE000/g,function(m,i){return lit[i];});
   }
   var blocks=md.replace(/\r\n/g,"\n").split(/\n{2,}/);
   var out="";
