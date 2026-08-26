@@ -1,14 +1,20 @@
 """
-Detecta archivos {SIGLA}{AÑO}-{PERIODO}.xlsx → genera ALL_DATA en index.html
+Detecta archivos {SIGLA}{AÑO}-{PERIODO}.xlsx y genera assets/data.js
+
+Los .xlsx se buscan en data/ y, por comodidad, también en la raíz (así un
+archivo subido desde la web de GitHub funciona sin moverlo).
+
 Uso: python build_data.py
 """
 import json
+import os
 import re
 import sys
 import glob as globmod
 import openpyxl
 
-HTML_PATH = "index.html"
+DATA_JS = os.path.join("assets", "data.js")
+XLSX_DIRS = ["data", "."]
 
 FACULTY_MAP = {
     "FIEECS": {"label": "FIEECS \u00b7 UNI", "fullName": "Fac. Ing. El\u00e9ctrica y Electr\u00f3nica"},
@@ -138,49 +144,57 @@ def load_rows(xlsx_path):
 
 
 def find_faculty_files():
-    """Busca archivos {SIGLA}{AÑO}-{PERIODO}.xlsx en el directorio actual."""
+    """Busca {SIGLA}{AÑO}-{PERIODO}.xlsx en data/ y en la raíz.
+
+    Si una misma facultad aparece con varios periodos se queda con el más
+    reciente, en lugar de que gane uno u otro según el orden del disco.
+    """
     # Ordenar por longitud descendente para que FIEECS no sea confundido con FIA
     siglas = sorted(FACULTY_MAP.keys(), key=len, reverse=True)
     pattern = re.compile(
-        r'^(' + '|'.join(re.escape(s) for s in siglas) + r')(\d{4}-\d)\.xlsx$'
+        r'^(' + '|'.join(re.escape(s) for s in siglas) + r')(\d{4})-(\d)\.xlsx$'
     )
     found = {}
-    for f in globmod.glob("*.xlsx"):
-        m = pattern.match(f)
-        if m:
-            sigla = m.group(1)
-            period = m.group(2)
-            found[sigla] = {"file": f, "period": period}
+    seen = set()
+    for d in XLSX_DIRS:
+        for path in sorted(globmod.glob(os.path.join(d, "*.xlsx"))):
+            name = os.path.basename(path)
+            m = pattern.match(name)
+            if not m or name in seen:
+                continue
+            seen.add(name)
+            sigla, year, num = m.group(1), int(m.group(2)), int(m.group(3))
+            prev = found.get(sigla)
+            if prev and prev["sort"] >= (year, num):
+                print(f"INFO: {name} ignorado, {prev['file']} es más reciente")
+                continue
+            if prev:
+                print(f"INFO: {prev['file']} ignorado, {name} es más reciente")
+            found[sigla] = {"file": path, "period": f"{year}-{num}", "sort": (year, num)}
     return found
 
 
-def update_html(all_data):
-    with open(HTML_PATH, "r", encoding="utf-8") as f:
-        content = f.read()
-
-    new_js = "const ALL_DATA=" + json.dumps(all_data, ensure_ascii=False, separators=(",", ":")) + ";"
-
-    # Replace const FIA_DATA=[...]; (first deploy)
-    new_content, n = re.subn(r"const FIA_DATA=\[.*?\];", new_js, content)
-    if n == 0:
-        # Replace existing ALL_DATA={...};
-        new_content, n = re.subn(r"const ALL_DATA=\{.*?\};", new_js, content)
-    if n == 0:
-        print("ERROR: no se encontró 'const FIA_DATA=[...]' ni 'const ALL_DATA={...}' en index.html", file=sys.stderr)
-        sys.exit(1)
-
-    with open(HTML_PATH, "w", encoding="utf-8") as f:
-        f.write(new_content)
+def write_data_js(all_data):
+    """Reescribe assets/data.js por completo (antes se parcheaba index.html)."""
+    payload = json.dumps(all_data, ensure_ascii=False, separators=(",", ":"))
+    os.makedirs(os.path.dirname(DATA_JS), exist_ok=True)
+    with open(DATA_JS, "w", encoding="utf-8") as f:
+        f.write(
+            "/* GENERADO AUTOMÁTICAMENTE por build_data.py — no editar a mano.\n"
+            "   Se reconstruye en cada despliegue a partir de los .xlsx de data/. */\n"
+            "const ALL_DATA=" + payload + ";\n"
+        )
 
     siglas = list(all_data.keys())
     total = sum(len(v["rows"]) for v in all_data.values())
-    print(f"OK: {len(siglas)} facultad(es) {siglas}, {total} sesiones totales")
+    print(f"OK: {len(siglas)} facultad(es) {siglas}, {total} sesiones totales → {DATA_JS}")
 
 
 if __name__ == "__main__":
     found = find_faculty_files()
     if not found:
-        print("ERROR: no se encontró ningún archivo {SIGLA}{AÑO}-{PERIODO}.xlsx", file=sys.stderr)
+        print("ERROR: no se encontró ningún archivo {SIGLA}{AÑO}-{PERIODO}.xlsx "
+              "(busqué en " + " y ".join(XLSX_DIRS) + ")", file=sys.stderr)
         sys.exit(1)
 
     all_data = {}
@@ -201,4 +215,4 @@ if __name__ == "__main__":
         print("ERROR: ningún xlsx con datos válidos", file=sys.stderr)
         sys.exit(1)
 
-    update_html(all_data)
+    write_data_js(all_data)

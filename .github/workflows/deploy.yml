@@ -31,7 +31,7 @@ jobs:
       - name: Install dependencies
         run: pip install openpyxl
 
-      - name: Build FIA_DATA from xlsx
+      - name: Generar assets/data.js desde los .xlsx
         run: python build_data.py
 
       - uses: actions/configure-pages@v5
