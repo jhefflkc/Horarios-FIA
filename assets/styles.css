@@ -859,7 +859,11 @@ body.stitch-light .btn-cal:hover{box-shadow:0 4px 28px rgba(8,145,178,0.5),0 0 0
 .score-pop-note{color:var(--tx3);font-size:0.67rem;line-height:1.5;max-width:220px}
 
 /* ═══ SCHEDULE TABLE ══════════════════════════════════ */
-.sched-wrap{min-width:680px}
+/* Suelo de ancho del horario. Por debajo de ~760px las celdas con dos
+   cursos a la misma hora dejan menos de 70px a cada uno y palabras como
+   «SOCIOCULTURAL» ya no caben enteras; se prefiere desplazamiento lateral
+   antes que partirlas. */
+.sched-wrap{min-width:780px}
 .sched-hdr{
   display:flex;align-items:center;gap:12px;margin-bottom:1.3rem;
 }
@@ -957,13 +961,14 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
 .btn-names.active{border-color:var(--accent);color:var(--accent3);background:rgba(200,120,58,0.1)}
 
 /* Side-by-side conflict blocks */
-/* Si llegan a juntarse demasiados en una celda, pasan a una segunda fila
-   en lugar de estrujarse hasta ser ilegibles. */
-.cell-blocks{display:flex;flex-wrap:wrap;gap:2px;min-height:100%;width:100%;align-items:stretch}
+/* Los cursos que coinciden en la misma hora van SIEMPRE uno al lado del
+   otro, nunca apilados: si se apilaran parecerían estar en horas distintas.
+   Por eso no se permite el salto de línea y pueden encogerse sin tope. */
+.cell-blocks{display:flex;flex-wrap:nowrap;gap:2px;min-height:100%;width:100%;align-items:stretch}
 /* `flex:1` daba a cada píldora la mitad exacta aunque una necesitara más.
    Con base automática el reparto sigue lo que ocupa cada contenido, y el
    mínimo evita que la más corta se quede sin espacio legible. */
-.cell-blocks .blk{flex:1 1 auto;width:auto;min-width:38px;padding:3px 5px}
+.cell-blocks .blk{flex:1 1 auto;width:auto;min-width:0;padding:3px 5px}
 /* Al compartir celda hay la mitad de ancho: se reduce la letra para que las
    palabras largas quepan enteras en vez de partirse a mitad */
 .cell-blocks .blk .blk-name{font-size:0.5rem;line-height:1.1}
