@@ -64,6 +64,17 @@ var THEME_IS_DARK={dark:true,["stitch-dark"]:true,light:false,["stitch-light"]:f
 /* Qué icono muestra el botón de tema en cada caso */
 var THEME_ICON={dark:"light",light:"dark",["stitch-dark"]:"stitch",["stitch-light"]:"stitch",google:"google"};
 
+/* Colores del PDF por tema. html2canvas no hereda el tema de la página, así
+   que el marco del PDF se pinta a mano: cada tema necesita su entrada aquí o
+   el PDF saldrá con los colores de otro. */
+var PDF_THEME={
+  dark:            {canvas:"#0c0905",outer:[12,9,5],     inner:[19,14,8],    pri:[200,150,100],sec:[110,100,80]},
+  ["stitch-dark"]: {canvas:"#0d0d0f",outer:[13,13,15],   inner:[17,17,19],   pri:[229,229,231],sec:[142,142,147]},
+  light:           {canvas:"#fdf6ee",outer:[253,246,238],inner:[255,250,244],pri:[90,58,24],   sec:[138,98,72]},
+  ["stitch-light"]:{canvas:"#efefef",outer:[239,239,239],inner:[255,255,255],pri:[28,28,30],   sec:[99,99,102]},
+  google:          {canvas:"#f0f4f9",outer:[240,244,249],inner:[255,255,255],pri:[31,31,31],   sec:[95,99,104]}
+};
+
 /* Panel colors per theme — must match CSS --panel values.
    html { background } can't inherit --panel from body, so we set it directly. */
 var THEME_PANEL={dark:"#130e08",["stitch-dark"]:"#0d0d0f",light:"#fffaf4",["stitch-light"]:"#efefef",google:"#f0f4f9"};

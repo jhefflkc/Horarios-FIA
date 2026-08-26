@@ -1,6 +1,13 @@
 /* Cambio de tema y persistencia en localStorage. */
 
+var _themingTimer=null;
+
 function applyTheme(t){
+  /* Funde los colores mientras dura el cambio; fuera de esa ventana la
+     clase se retira para no ralentizar el resto de interacciones. */
+  document.body.classList.add("theming");
+  clearTimeout(_themingTimer);
+  _themingTimer=setTimeout(function(){document.body.classList.remove("theming");},450);
   THEME_ORDER.forEach(function(x){if(x!=="dark") document.body.classList.remove(x);});
   if(t!=="dark") document.body.classList.add(t);
   document.documentElement.style.background=THEME_PANEL[t]||"#130e08";

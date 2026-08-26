@@ -3,13 +3,14 @@
 function downloadPDF(){
   const el=document.getElementById("printable");
   if(!el){toast("Primero selecciona cursos para generar el horario","er");return;}
-  const isLight=document.body.classList.contains("light");
-  const isGlacial=document.body.classList.contains("stitch-light");
-  const bgCanvas=isGlacial?"#f2f2f7":(isLight?"#fdf6ee":"#0c0905");
-  const bgOuter=isGlacial?[242,242,247]:(isLight?[253,246,238]:[12,9,5]);
-  const bgInner=isGlacial?[255,255,255]:(isLight?[255,250,244]:[19,14,8]);
-  const txtPri=isGlacial?[28,28,30]:(isLight?[90,58,24]:[200,150,100]);
-  const txtSec=isGlacial?[99,99,102]:(isLight?[138,98,72]:[110,100,80]);
+  /* El tema activo manda: antes se comprobaban clases sueltas y cualquier
+     tema no contemplado —como Google— salía con el marco oscuro. */
+  const pdfC=PDF_THEME[localStorage.getItem("theme")||"dark"]||PDF_THEME.dark;
+  const bgCanvas=pdfC.canvas;
+  const bgOuter=pdfC.outer;
+  const bgInner=pdfC.inner;
+  const txtPri=pdfC.pri;
+  const txtSec=pdfC.sec;
   toast("Generando PDF\u2026","ok");
   /* Temporarily remove sticky positioning so html2canvas captures the full table correctly */
   const stickyEls=el.querySelectorAll("thead th");
@@ -17,7 +18,11 @@ function downloadPDF(){
   /* Hide legend \u2014 not needed in PDF since name mode is available */
   const legend=el.querySelector(".sched-legend");
   if(legend) legend.style.display="none";
+  /* Congela las animaciones: html2canvas captura el estado del momento y
+     un bloque a medio aparecer saldr\u00eda trasl\u00facido o desplazado en el PDF. */
+  document.body.classList.add("exporting");
   html2canvas(el,{backgroundColor:bgCanvas,scale:2.8,useCORS:true,logging:false,scrollX:0,scrollY:0}).then(function(canvas){
+    document.body.classList.remove("exporting");
     stickyEls.forEach(function(th){th.style.position="";});
     if(legend) legend.style.display="";
     const W=canvas.width/2.8, H=canvas.height/2.8;
@@ -31,7 +36,7 @@ function downloadPDF(){
     pdf.addImage(canvas.toDataURL("image/png"),"PNG",28,44,W,H);
     pdf.save("horario-"+facultyLabel.split(" \u00b7 ")[0].toLowerCase()+"-"+getPeriod()+".pdf");
     toast("\u2713 PDF descargado correctamente","ok");
-  }).catch(function(e){stickyEls.forEach(function(th){th.style.position="";});if(legend) legend.style.display="";toast("Error al generar: "+e.message,"er");});
+  }).catch(function(e){document.body.classList.remove("exporting");stickyEls.forEach(function(th){th.style.position="";});if(legend) legend.style.display="";toast("Error al generar: "+e.message,"er");});
 }
 
 
