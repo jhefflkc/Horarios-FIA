@@ -57,6 +57,10 @@ var FACULTY_MAP_JS={
 
 var THEME_ORDER=["dark","stitch-dark","light","stitch-light","google"];
 
+/* Tema con el que se entra la primera vez (después manda lo que guarde
+   el navegador con la elección del usuario) */
+var DEFAULT_THEME="google";
+
 var THEME_LABELS={dark:"Ámbar",["stitch-dark"]:"Grafito",light:"Crema",["stitch-light"]:"Glacial",google:"Google"};
 
 var THEME_IS_DARK={dark:true,["stitch-dark"]:true,light:false,["stitch-light"]:false,google:false};

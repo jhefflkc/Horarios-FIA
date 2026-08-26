@@ -81,10 +81,11 @@ document.addEventListener("mousemove",function(e){
 
 
 window.addEventListener("DOMContentLoaded",function(){
+  /* Google es el tema de entrada. Solo se aplica a quien no haya elegido
+     uno todavía: si hay preferencia guardada, manda esa. Se comprueba que
+     siga siendo un tema válido por si alguna vez se retira alguno. */
   var saved=localStorage.getItem("theme");
-  if(!saved){
-    saved=window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";
-  }
+  if(!saved||THEME_ORDER.indexOf(saved)<0) saved=DEFAULT_THEME;
   applyTheme(saved);
   initFacultySelector();
   switchFaculty(Object.keys(ALL_DATA)[0]);
