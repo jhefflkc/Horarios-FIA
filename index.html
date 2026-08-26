@@ -740,6 +740,14 @@ body.dark .ann-btn-ok,body.stitch-dark .ann-btn-ok{background:rgba(79,142,247,0.
 .sec-conf{font-size:0.62rem;color:#fca5a5;background:rgba(239,68,68,0.12);padding:2px 8px;border-radius:5px;border:1px solid rgba(239,68,68,0.25)}
 .sec-warn{color:#fcd34d;background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.35)}
 .sec-doc{font-size:0.68rem;color:var(--tx3);margin-bottom:7px;line-height:1.4}
+.sec-docs{margin-bottom:7px}
+.sec-docs .sec-doc{margin-bottom:4px}
+.sec-docs .sec-doc:last-child{margin-bottom:0}
+.doc-role{
+  font-size:0.57rem;font-weight:800;letter-spacing:0.02em;flex-shrink:0;
+  padding:2px 7px;border-radius:4px;
+  background:var(--card2);color:var(--tx3);border:1px solid var(--line2);
+}
 .ses{display:flex;align-items:center;gap:7px;padding:3px 0;font-size:0.71rem;color:var(--tx2)}
 .ses-T{background:rgba(200,150,40,0.2);color:#f0c870;font-size:0.59rem;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0}
 .ses-P{background:rgba(70,140,60,0.2);color:#98d888;font-size:0.59rem;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0}
@@ -1197,6 +1205,36 @@ if(window.innerWidth<=720){
 const DAYS=["LU","MA","MI","JU","VI","SA"];
 const DN={LU:"Lunes",MA:"Martes",MI:"Mi\u00e9rcoles",JU:"Jueves",VI:"Viernes",SA:"S\u00e1bado"};
 const TN={T:"Teor\u00eda",P:"Pr\u00e1ctica",L:"Laboratorio",S:"Seminario"};
+const _TORD={T:0,P:1,L:2,S:3};
+function _tOrder(t){return _TORD[t]===undefined?9:_TORD[t];}
+/* "T"+"P" \u2192 "Teor\u00eda \u00b7 Pr\u00e1ctica" */
+function _docRole(tipos){
+  return (tipos||[]).map(function(t){return TN[t]||t;}).join(" \u00b7 ");
+}
+/* Etiqueta de rol: solo aporta si la secci\u00f3n tiene m\u00e1s de un docente */
+function _docRoleHTML(sec,d){
+  if(!sec.docs||sec.docs.length<2||!d.tipos.length) return "";
+  return "<span class=\"doc-role\">"+_docRole(d.tipos)+"</span>";
+}
+/* Agrupa las sesiones de una secci\u00f3n por docente y de qu\u00e9 tipos se encarga cada uno.
+   Una secci\u00f3n puede tener varios (p.ej. uno dicta teor\u00eda y otro el laboratorio). */
+function _rebuildDocs(s){
+  const dm={},order=[];
+  s.ss.forEach(function(x){
+    const n=(x.dc||"").trim();
+    if(!n) return;
+    if(!dm[n]){dm[n]={name:n,tipos:[]};order.push(n);}
+    if(dm[n].tipos.indexOf(x.t)<0) dm[n].tipos.push(x.t);
+  });
+  s.docs=order.map(function(n){
+    dm[n].tipos.sort(function(a,b){return _tOrder(a)-_tOrder(b);});
+    return dm[n];
+  }).sort(function(a,b){return _tOrder(a.tipos[0])-_tOrder(b.tipos[0]);});
+  /* docente "principal" (calificaciones, exportaciones): el que dicta teor\u00eda */
+  const th=s.docs.filter(function(d){return d.tipos.indexOf("T")>=0;})[0];
+  s.docente=(th||s.docs[0]||{}).name||"";
+  return s;
+}
 const PAL=["p0","p1","p2","p3","p4","p5","p6","p7"];
 const ESP_ORDER=["CB","IA","IS","IH"];
 const ESP_LAB={CB:"CIENCIAS B\u00c1SICAS",IA:"INGENIER\u00cdA AMBIENTAL",IS:"INGENIER\u00cdA SANITARIA",IH:"ING. HIGIENE Y SEGURIDAD"};
@@ -1275,8 +1313,9 @@ function boot(rows){
   rows.forEach(function(r){
     const k=r.cod+"|"+r.secc;
     if(!map[k]) map[k]={cod:r.cod,curso:r.curso,secc:r.secc,esp:r.esp,docente:r.docente,ss:[]};
-    map[k].ss.push({t:r.tipo,d:r.dia,h0:r.hIni,h1:r.hFin,rm:r.salon});
+    map[k].ss.push({t:r.tipo,d:r.dia,h0:r.hIni,h1:r.hFin,rm:r.salon,dc:(r.docente||"").trim()});
   });
+  Object.values(map).forEach(_rebuildDocs);
   const cm={};
   Object.values(map).forEach(function(s){
     if(!cm[s.cod]) cm[s.cod]={cod:s.cod,curso:s.curso,esp:s.esp,esps:[],secs:[]};
@@ -1386,10 +1425,15 @@ function openModal(c){
     if(isPractice) h+="<span class=\"sec-conf\">Práctica bloqueada</span>";
     else if(isTheory) h+="<span class=\"sec-conf sec-warn\">Cruce de teoría</span>";
     h+="</div>";
-    if(sec.docente){
-      h+="<div class=\"sec-doc\" style=\"display:flex;align-items:center;gap:7px;flex-wrap:wrap\">";
-      h+="<span>"+sec.docente+"</span>";
-      h+="<span style=\"display:inline-flex;align-items:center;gap:5px\">"+_ratingHTML(sec.docente)+"</span>";
+    if(sec.docs&&sec.docs.length){
+      h+="<div class=\"sec-docs\">";
+      sec.docs.forEach(function(d){
+        h+="<div class=\"sec-doc\" style=\"display:flex;align-items:center;gap:7px;flex-wrap:wrap\">";
+        h+="<span>"+d.name+"</span>";
+        h+=_docRoleHTML(sec,d);
+        h+="<span style=\"display:inline-flex;align-items:center;gap:5px\">"+_ratingHTML(d.name)+"</span>";
+        h+="</div>";
+      });
       h+="</div>";
     }
     sec.ss.forEach(function(s){
@@ -1490,15 +1534,20 @@ function openInfoModal(cod){
   let h="<div class=\"sec\" style=\"cursor:default;pointer-events:none\">";
   h+="<div class=\"sec-top\"><span class=\"sec-name\">Secci\u00f3n "+sec.secc+"</span>";
   h+="<span class=\"leg-dot "+p+"\" style=\"width:12px;height:12px;display:inline-block;border-radius:3px;margin-left:6px\"></span></div>";
-  if(sec.docente){
-    h+="<div class=\"sec-doc\" style=\"display:flex;align-items:center;gap:8px;flex-wrap:wrap;pointer-events:auto\">";
-    h+="<span style=\"flex:1;min-width:0\">"+sec.docente+"</span>";
-    h+="</div>";
-    const rBtn=_ratingBtnHTML(cod);
-    const rHtml=_ratingHTML(sec.docente);
-    if(rBtn||rHtml) h+="<div style=\"display:flex;align-items:center;justify-content:space-between;margin:2px 0 6px;pointer-events:auto\">";
-    if(rBtn||rHtml) h+="<span style=\"display:inline-flex;align-items:center;gap:5px\">"+rHtml+"</span>";
-    if(rBtn||rHtml) h+=rBtn+"</div>";
+  if(sec.docs&&sec.docs.length){
+    sec.docs.forEach(function(d,di){
+      h+="<div class=\"sec-doc\" style=\"display:flex;align-items:center;gap:8px;flex-wrap:wrap;pointer-events:auto;margin-bottom:3px\">";
+      h+="<span style=\"flex:1;min-width:0\">"+d.name+"</span>";
+      h+=_docRoleHTML(sec,d);
+      h+="</div>";
+      const rBtn=_ratingBtnHTML(cod,di);
+      const rHtml=_ratingHTML(d.name);
+      if(rBtn||rHtml){
+        h+="<div style=\"display:flex;align-items:center;justify-content:space-between;gap:8px;margin:2px 0 8px;pointer-events:auto\">";
+        h+="<span style=\"display:inline-flex;align-items:center;gap:5px\">"+rHtml+"</span>";
+        h+=rBtn+"</div>";
+      }
+    });
   }
   sec.ss.forEach(function(s){
     h+="<div class=\"ses\"><span class=\"ses-"+s.t+"\">"+(TN[s.t]||s.t)+"</span>";
@@ -1550,7 +1599,7 @@ function openEditScheduleModal(cod){
 function _buildSesRow(i,s){
   var tOpts=["T","P","L","S"].map(function(v){return"<option value=\""+v+"\""+(s.t===v?" selected":"")+">"+(TN[v]||v)+"</option>";}).join("");
   var dOpts=["LU","MA","MI","JU","VI","SA"].map(function(v){return"<option value=\""+v+"\""+(s.d===v?" selected":"")+">"+(DN[v]||v)+"</option>";}).join("");
-  return "<div class=\"ses-edit\" id=\"ses-row-"+i+"\">"+
+  return "<div class=\"ses-edit\" id=\"ses-row-"+i+"\" data-dc=\""+String(s.dc||"").replace(/"/g,"&quot;")+"\">"+
     "<select data-f=\"t\">"+tOpts+"</select>"+
     "<select data-f=\"d\">"+dOpts+"</select>"+
     "<input type=\"number\" data-f=\"h0\" min=\"6\" max=\"22\" value=\""+s.h0+"\" title=\"Hora inicio\">"+
@@ -1566,7 +1615,7 @@ function addSesRow(){
   if(!list) return;
   const i=list.querySelectorAll(".ses-edit").length;
   const div=document.createElement("div");
-  div.innerHTML=_buildSesRow(i,{t:"T",d:"LU",h0:8,h1:10,rm:""});
+  div.innerHTML=_buildSesRow(i,{t:"T",d:"LU",h0:8,h1:10,rm:"",dc:(sel[_editingCod]||{}).docente||""});
   list.appendChild(div.firstChild);
 }
 
@@ -1600,9 +1649,10 @@ function saveEditedSchedule(){
     const rm=r.querySelector("[data-f='rm']").value.trim();
     if(isNaN(h0)||isNaN(h1)||h1<=h0){toast("Hora inv\u00e1lida en sesi\u00f3n "+(i+1),"er");return;}
     if(h0<6||h1>23){toast("Hora fuera de rango en sesi\u00f3n "+(i+1),"er");return;}
-    newSS.push({t:t,d:d,h0:h0,h1:h1,rm:rm});
+    newSS.push({t:t,d:d,h0:h0,h1:h1,rm:rm,dc:r.getAttribute("data-dc")||""});
   }
   sel[cod].ss=newSS;
+  _rebuildDocs(sel[cod]);
   _editingCod=null;
   document.getElementById("modal").style.display="none";
   sync();
@@ -1641,10 +1691,17 @@ function updateScorePill(){
   if(!keys.length){pill.style.display="none";return;}
   let sum=0,count=0;
   keys.forEach(function(cod){
-    const teacher=(sel[cod]||{}).docente;
-    if(!teacher) return;
-    const r=_ratingsCache[teacher];
-    if(r&&r.avg){sum+=parseFloat(r.avg);count++;}
+    const sec=sel[cod]||{};
+    const names=(sec.docs&&sec.docs.length)
+      ?sec.docs.map(function(d){return d.name;})
+      :(sec.docente?[sec.docente]:[]);
+    /* Un curso con varios docentes aporta el promedio de los que estén evaluados */
+    let s=0,n=0;
+    names.forEach(function(t){
+      const r=_ratingsCache[t];
+      if(r&&r.avg){s+=parseFloat(r.avg);n++;}
+    });
+    if(n){sum+=s/n;count++;}
   });
   if(!count){pill.style.display="none";return;}
   document.getElementById("score-val").textContent=(sum/count).toFixed(1);
@@ -1670,12 +1727,18 @@ function toggleScorePop(e){
   pop.style.bottom=bottomSpace+margin+"px";
 }
 
-function _ratingBtnHTML(cod){
+/* Docente nº di de la sección elegida para `cod` (0 por defecto) */
+function _docOf(cod,di){
+  const sec=sel[cod];if(!sec) return "";
+  return ((sec.docs||[])[di||0]||{}).name||sec.docente||"";
+}
+
+function _ratingBtnHTML(cod,di){
   if(!_isFIA()) return "";
   if(!RATINGS_CFG.webAppUrl&&!RATINGS_CFG.formUrl) return "";
-  const teacher=(sel[cod]||{}).docente;if(!teacher) return "";
+  const teacher=_docOf(cod,di);if(!teacher) return "";
   if(_hasRated(teacher)) return "<span class=\"rate-count\">&#10003; Ya calificaste</span>";
-  return "<button class=\"rate-btn\" onclick=\"openRatingModal('"+cod+"')\">&#9733; Calificar</button>";
+  return "<button class=\"rate-btn\" onclick=\"openRatingModal('"+cod+"',"+(di||0)+")\">&#9733; Calificar</button>";
 }
 
 function _hasRated(teacher){
@@ -1687,13 +1750,16 @@ function _markRated(teacher){
 
 const _STAR_LABELS=["","Muy malo","Malo","Regular","Bueno","Excelente"];
 
-function openRatingModal(cod){
-  const sec=sel[cod];if(!sec||!sec.docente) return;
-  _ratingTeacher=sec.docente;_selectedRating=0;
+function openRatingModal(cod,di){
+  const sec=sel[cod];if(!sec) return;
+  const teacher=_docOf(cod,di);if(!teacher) return;
+  _ratingTeacher=teacher;_selectedRating=0;
   document.getElementById("mttl").textContent="Calificar docente";
-  document.getElementById("msub").textContent=sec.docente;
+  const d=(sec.docs||[])[di||0];
+  const role=(d&&sec.docs.length>1&&d.tipos.length)?" · "+_docRole(d.tipos):"";
+  document.getElementById("msub").textContent=teacher+role;
   const body=document.getElementById("mbody");
-  const r=(_ratingsCache||{})[sec.docente];
+  const r=(_ratingsCache||{})[teacher];
   let h="";
   if(r) h+="<div style=\"text-align:center;margin-bottom:10px;font-size:0.77rem;color:var(--tx3)\">Promedio actual: <strong style=\"color:#f0c870\">&#9733; "+r.avg+"</strong> <span style=\"color:var(--tx3)\">("+r.count+" votos)</span></div>";
   h+="<div style=\"text-align:center;padding:10px 0 4px\">";
@@ -1975,7 +2041,7 @@ function exportICS(){
       lines.push("RRULE:FREQ=WEEKLY;BYDAY="+dayMap[x.d]);
       lines.push("SUMMARY:"+(s.curso||cod)+" ("+s.secc+") \u2013 "+(TN[x.t]||x.t));
       if(x.rm)lines.push("LOCATION:"+x.rm);
-      lines.push("DESCRIPTION:Docente: "+(s.docente||"\u2013")+"\\nC\u00f3digo: "+cod);
+      lines.push("DESCRIPTION:Docente: "+(x.dc||s.docente||"\u2013")+"\\nC\u00f3digo: "+cod);
       lines.push("END:VEVENT");
     });
   });
