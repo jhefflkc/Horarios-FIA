@@ -44,13 +44,18 @@ function boot(rows){
   const map={};
   rows.forEach(function(r){
     const k=r.cod+"|"+r.secc;
-    if(!map[k]) map[k]={cod:r.cod,curso:r.curso,secc:r.secc,esp:r.esp,docente:r.docente,ss:[]};
+    if(!map[k]) map[k]={cod:r.cod,curso:r.curso,secc:r.secc,esp:r.esp,docente:r.docente,
+                        ciclo:r.ciclo,ss:[]};
+    /* Las vacantes vienen repetidas en cada sesión de la sección; basta la
+       primera que traiga un número. Si el Excel no tiene la columna, queda
+       sin definir y la interfaz simplemente no la muestra. */
+    if(map[k].vacMax===undefined&&typeof r.vacMax==="number") map[k].vacMax=r.vacMax;
     map[k].ss.push({t:r.tipo,d:r.dia,h0:r.hIni,h1:r.hFin,rm:r.salon,dc:(r.docente||"").trim()});
   });
   Object.values(map).forEach(_rebuildDocs);
   const cm={};
   Object.values(map).forEach(function(s){
-    if(!cm[s.cod]) cm[s.cod]={cod:s.cod,curso:s.curso,esp:s.esp,esps:[],secs:[]};
+    if(!cm[s.cod]) cm[s.cod]={cod:s.cod,curso:s.curso,esp:s.esp,esps:[],ciclo:s.ciclo,secs:[]};
     if(!cm[s.cod].esps.includes(s.esp)) cm[s.cod].esps.push(s.esp);
     cm[s.cod].secs.push(s);
   });

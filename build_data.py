@@ -8,6 +8,7 @@ Uso: python build_data.py
 """
 import hashlib
 import json
+import unicodedata
 import os
 import re
 import sys
@@ -70,6 +71,16 @@ def get_ciclo(cod):
     return int(c) if c.isdigit() else 11
 
 
+def make_row(esp, cod, secc, curso, docente, tipo, dia, h0, h1, salon, ciclo, vac_max):
+    """Fila de sesión. `vacMax` solo aparece si el Excel trae esa columna."""
+    r = {"esp": esp, "cod": cod, "secc": secc, "curso": curso,
+         "docente": docente, "tipo": tipo, "dia": dia,
+         "hIni": h0, "hFin": h1, "salon": salon, "ciclo": ciclo}
+    if vac_max is not None:
+        r["vacMax"] = vac_max
+    return r
+
+
 def load_rows(xlsx_path):
     wb = openpyxl.load_workbook(xlsx_path, read_only=True, data_only=True)
     rows = []
@@ -89,11 +100,22 @@ def load_rows(xlsx_path):
         if hi < 0:
             continue
 
-        def ix(name):
-            try:
-                return headers.index(name)
-            except ValueError:
-                return -1
+        def norm(t):
+            """Normaliza una cabecera: sin tildes, sin puntos y sin espacios."""
+            t = unicodedata.normalize("NFD", str(t))
+            t = "".join(c for c in t if unicodedata.category(c) != "Mn")
+            return re.sub(r"[^A-Z0-9]", "", t.upper())
+
+        norm_headers = [norm(h) for h in headers]
+
+        def ix(*names):
+            """Índice de la primera cabecera que coincida, comparando normalizado."""
+            for n in names:
+                try:
+                    return norm_headers.index(norm(n))
+                except ValueError:
+                    pass
+            return -1
 
         iC = ix("COD")
         iCu = ix("CURSO")
@@ -106,6 +128,7 @@ def load_rows(xlsx_path):
         iSa = ix("AULA") if ix("AULA") >= 0 else ix("SALON")
         iDo = ix("DOCENTE")
         iCy = ix("CICLO")
+        iVm = ix("VAC. MAXIMAS", "VACANTES MAXIMAS", "VAC MAXIMAS", "VACANTES")
         fia_fmt = iH >= 0
 
         for row in all_rows[hi + 1:]:
@@ -121,15 +144,20 @@ def load_rows(xlsx_path):
             salon = str(row[iSa] or "").strip() if iSa >= 0 else ""
             docente = str(row[iDo] or "").strip() if iDo >= 0 else ""
             esp = SECC_ESP.get(secc, "")
+            vac_max = None
+            if iVm >= 0 and row[iVm] is not None:
+                try:
+                    vac_max = int(float(str(row[iVm]).strip()))
+                except ValueError:
+                    vac_max = None
 
             if fia_fmt:
                 ph = parse_horario(row[iH])
                 if not ph:
                     continue
                 dia, h0, h1 = ph
-                rows.append({"esp": esp, "cod": cod, "secc": secc, "curso": curso,
-                              "docente": docente, "tipo": tipo, "dia": dia,
-                              "hIni": h0, "hFin": h1, "salon": salon})
+                rows.append(make_row(esp, cod, secc, curso, docente, tipo, dia,
+                                     h0, h1, salon, ciclo, vac_max))
             else:
                 if iD < 0 or not row[iD]:
                     continue
@@ -138,9 +166,8 @@ def load_rows(xlsx_path):
                 except (TypeError, ValueError):
                     continue
                 dia = str(row[iD]).strip().upper()
-                rows.append({"esp": esp, "cod": cod, "secc": secc, "curso": curso,
-                              "docente": docente, "tipo": tipo, "dia": dia,
-                              "hIni": h0, "hFin": h1, "salon": salon})
+                rows.append(make_row(esp, cod, secc, curso, docente, tipo, dia,
+                                     h0, h1, salon, ciclo, vac_max))
 
     wb.close()
     return rows
