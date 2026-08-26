@@ -231,7 +231,7 @@ body.google header{
 }
 body.google header::after{display:none}
 body.google .logo-gem{background:var(--g-prim-cont);border-radius:16px;box-shadow:none}
-body.google .logo-text{color:var(--tx);font-weight:400;letter-spacing:0}
+body.google .logo-text{color:var(--tx);font-weight:700;letter-spacing:0}
 body.google .logo-text span{color:var(--g-prim)}
 body.google .logo-sub{font-family:'Roboto',sans-serif;letter-spacing:0.7px;color:var(--tx3)}
 
@@ -395,7 +395,7 @@ body.google .cyIH .cy-line{background:linear-gradient(90deg,rgba(175,92,247,0.5)
 
 /* ── Tipografía ───────────────────────────────────────────
    Material no usa negritas fuertes: el 500 marca lo importante. */
-body.google .logo-text{font-size:1.35rem}
+body.google .logo-text{font-size:1.15rem}
 body.google .logo-sub{font-size:0.66rem;font-weight:400;letter-spacing:0.4px;text-transform:none}
 body.google .c-name{font-size:0.84rem;font-weight:500;letter-spacing:0.1px;color:var(--tx)}
 body.google .c-meta,body.google .c-secs{font-weight:400}
@@ -576,7 +576,6 @@ header::after{
   display:flex;align-items:center;gap:10px;
   font-size:0.72rem;color:var(--tx3);letter-spacing:0.5px;
 }
-.header-mid-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:0.6}
 .hbtn{
   display:inline-flex;align-items:center;gap:6px;
   padding:7px 15px;border-radius:8px;border:1px solid var(--line2);

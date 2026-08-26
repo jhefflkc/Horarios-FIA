@@ -5,7 +5,7 @@ function getPeriod(){return ALL_DATA[currentFaculty].period;}
 function updatePeriodUI(){
   var p=getPeriod();
   document.getElementById("period-label").textContent="\u25c6 Cursos disponibles \u2014 "+p;
-  document.getElementById("logo-sub-period").textContent="Generador de Horarios \u00b7 "+p;
+  document.getElementById("logo-sub-period").textContent="Horarios \u00b7 "+p;
   var lt=document.getElementById("logo-text-faculty");
   if(lt) lt.innerHTML=facultyLabel.replace(" \u00b7 "," <span>&middot;</span> ");
   var fs=document.getElementById("faculty-selector");
