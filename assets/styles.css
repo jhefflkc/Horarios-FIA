@@ -1365,6 +1365,11 @@ body.theming .c-cod,body.theming .cbox,body.theming .sched-area{
 body.exporting *,body.exporting *::before,body.exporting *::after{
   animation:none !important;transition:none !important;
 }
+/* Y el horario se ajusta a su contenido solo durante la captura: en
+   pantalla se estira para llenar la ventana, lo cual está bien, pero en el
+   PDF ese ancho sobrante no aporta nada y encoge el texto al escalar. */
+body.exporting .sched-wrap{min-width:0;width:max-content;max-width:none}
+body.exporting table.sch{width:auto}
 
 /* ── Menos movimiento ───────────────────────────────────
    Se respeta la preferencia del sistema en todos los temas. */
