@@ -2234,27 +2234,47 @@ function md2html(md){
     });
     return s.replace(/\uE000(\d+)\uE000/g,function(m,i){return lit[i];});
   }
-  var blocks=md.replace(/\r\n/g,"\n").split(/\n{2,}/);
-  var out="";
-  blocks.forEach(function(block){
-    block=block.trim();if(!block)return;
-    var hm=block.match(/^(#{1,3})\s+(.+)$/);
-    if(hm){out+="<h"+hm[1].length+">"+inline(esc(hm[2]))+"</h"+hm[1].length+">";return;}
-    if(/^[-*_]{3,}\s*$/.test(block)){out+="<hr>";return;}
-    if(/^>\s/.test(block)){
-      var bq=block.split("\n").map(function(l){return l.replace(/^>\s?/,"");}).join("\n");
-      out+="<blockquote>"+inline(esc(bq))+"</blockquote>";return;
+  /* Recorrido línea a línea: un título, una regla o una lista cortan el
+     párrafo aunque no haya línea en blanco antes, así nunca se pierde texto. */
+  var HR=/^\s*([-*_])\s*(\1\s*){2,}$/;
+  var UL=/^\s*[-*+]\s+/;
+  var OL=/^\s*\d+[.)]\s+/;
+  var QT=/^\s*>\s?/;
+  var lines=md.replace(/\r\n/g,"\n").split("\n");
+  var out="",para=[];
+  function txt(l){return inline(esc(l));}
+  function flush(){
+    if(!para.length) return;
+    out+="<p>"+para.map(txt).join("<br>")+"</p>";
+    para=[];
+  }
+  for(var i=0;i<lines.length;i++){
+    var ln=lines[i];
+    if(!ln.trim()){flush();continue;}
+    var hm=ln.match(/^\s*(#{1,3})\s+(.+?)\s*#*$/);
+    if(hm){flush();out+="<h"+hm[1].length+">"+txt(hm[2])+"</h"+hm[1].length+">";continue;}
+    if(HR.test(ln)){flush();out+="<hr>";continue;}
+    if(QT.test(ln)){
+      flush();var q=[];
+      while(i<lines.length&&QT.test(lines[i])) q.push(lines[i++].replace(QT,""));
+      i--;
+      out+="<blockquote>"+q.map(txt).join("<br>")+"</blockquote>";continue;
     }
-    if(/^[\-\*\+]\s/.test(block)){
-      var its=block.split("\n").filter(function(l){return/^[\-\*\+]\s/.test(l);});
-      out+="<ul>"+its.map(function(l){return"<li>"+inline(esc(l.replace(/^[\-\*\+]\s+/,"")))+"</li>";}).join("")+"</ul>";return;
+    if(UL.test(ln)&&!HR.test(ln)){
+      flush();var ul=[];
+      while(i<lines.length&&UL.test(lines[i])&&!HR.test(lines[i])) ul.push(lines[i++].replace(UL,""));
+      i--;
+      out+="<ul>"+ul.map(function(l){return"<li>"+txt(l)+"</li>";}).join("")+"</ul>";continue;
     }
-    if(/^\d+\.\s/.test(block)){
-      var its=block.split("\n").filter(function(l){return/^\d+\.\s/.test(l);});
-      out+="<ol>"+its.map(function(l){return"<li>"+inline(esc(l.replace(/^\d+\.\s+/,"")))+"</li>";}).join("")+"</ol>";return;
+    if(OL.test(ln)){
+      flush();var ol=[];
+      while(i<lines.length&&OL.test(lines[i])) ol.push(lines[i++].replace(OL,""));
+      i--;
+      out+="<ol>"+ol.map(function(l){return"<li>"+txt(l)+"</li>";}).join("")+"</ol>";continue;
     }
-    out+="<p>"+block.split("\n").map(function(l){return inline(esc(l));}).join("<br>")+"</p>";
-  });
+    para.push(ln);
+  }
+  flush();
   return out;
 }
 
