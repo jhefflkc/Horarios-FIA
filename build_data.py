@@ -66,6 +66,29 @@ def parse_horario(h):
         return None
 
 
+CICLO_NUM_RE = re.compile(r":\s*(\d+)")
+
+
+def parse_ciclo(valor, cod):
+    """Ciclo del curso a partir de la columna «Ciclo(s)».
+
+    El formato es compuesto —«S1:2 / S2:1 / S3:1»— porque el ciclo depende de
+    la especialidad; también aparecen «ELECT.» y «S/D». Se toma el menor de
+    los números presentes, que es el ciclo en el que el curso aparece antes.
+    Si no hay ninguno (electivo o sin dato) se devuelve None: es preferible a
+    inventarlo, y la interfaz lo agrupa aparte.
+    """
+    if valor is None:
+        return get_ciclo(cod)
+    txt = str(valor).strip()
+    if not txt:
+        return get_ciclo(cod)
+    if txt.isdigit():
+        return int(txt)
+    nums = [int(n) for n in CICLO_NUM_RE.findall(txt)]
+    return min(nums) if nums else None
+
+
 def get_ciclo(cod):
     c = str(cod)[2] if len(str(cod)) > 2 else ""
     return int(c) if c.isdigit() else 11
@@ -75,7 +98,9 @@ def make_row(esp, cod, secc, curso, docente, tipo, dia, h0, h1, salon, ciclo, va
     """Fila de sesión. `vacMax` solo aparece si el Excel trae esa columna."""
     r = {"esp": esp, "cod": cod, "secc": secc, "curso": curso,
          "docente": docente, "tipo": tipo, "dia": dia,
-         "hIni": h0, "hFin": h1, "salon": salon, "ciclo": ciclo}
+         "hIni": h0, "hFin": h1, "salon": salon}
+    if ciclo is not None:
+        r["ciclo"] = ciclo
     if vac_max is not None:
         r["vacMax"] = vac_max
     return r
@@ -127,7 +152,7 @@ def load_rows(xlsx_path):
         iHf = ix("H FIN")
         iSa = ix("AULA") if ix("AULA") >= 0 else ix("SALON")
         iDo = ix("DOCENTE")
-        iCy = ix("CICLO")
+        iCy = ix("CICLO", "CICLO(S)", "CICLOS")
         iVm = ix("VAC. MAXIMAS", "VACANTES MAXIMAS", "VAC MAXIMAS", "VACANTES")
         fia_fmt = iH >= 0
 
@@ -140,7 +165,7 @@ def load_rows(xlsx_path):
             secc = str(row[iS] or "").strip().upper() if iS >= 0 else ""
             tipo_raw = str(row[iTi] or "").strip().upper() if iTi >= 0 else ""
             tipo = TIPO_MAP.get(tipo_raw, "T")
-            ciclo = int(row[iCy]) if iCy >= 0 and row[iCy] and str(row[iCy]).strip().isdigit() else get_ciclo(cod)
+            ciclo = parse_ciclo(row[iCy] if iCy >= 0 else None, cod)
             salon = str(row[iSa] or "").strip() if iSa >= 0 else ""
             docente = str(row[iDo] or "").strip() if iDo >= 0 else ""
             esp = SECC_ESP.get(secc, "")
