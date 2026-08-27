@@ -11,22 +11,28 @@ function drawList(){
     el.innerHTML="<div style=\"padding:2rem;text-align:center;color:var(--tx4);font-size:0.8rem\">"+emptyMsg+"</div>";
     return;
   }
-  /* Agrupado por ciclo. Un ciclo fuera de 1–10 (o ausente) significa que el
-     Excel no lo trae y no se pudo deducir del código: van juntos al final. */
+  /* Agrupado por ciclo, activable desde GROUP_BY_CYCLE (config.js). Con el
+     interruptor apagado va todo en una sola lista, sin cabeceras.
+     Un ciclo fuera de 1–10 (o ausente) significa que el Excel no lo trae y
+     no se pudo deducir del código: van juntos al final. */
   const grupos={};
   list.forEach(function(c){
+    if(!GROUP_BY_CYCLE){(grupos["todos"]=grupos["todos"]||[]).push(c);return;}
     const n=parseInt(c.ciclo);
     const k=(n>=1&&n<=10)?n:"otros";
     (grupos[k]=grupos[k]||[]).push(c);
   });
-  const orden=Object.keys(grupos).filter(function(k){return k!=="otros";})
+  const orden=Object.keys(grupos).filter(function(k){return k!=="otros"&&k!=="todos";})
     .map(Number).sort(function(a,b){return a-b;});
   if(grupos["otros"]) orden.push("otros");
+  if(grupos["todos"]) orden.push("todos");
 
   let h="";
   orden.forEach(function(k){
-    h+="<div class=\"cy-head\">"+(k==="otros"?"Otros cursos":"Ciclo "+k)+
-       "<span class=\"cy-head-n\">"+grupos[k].length+"</span></div>";
+    if(k!=="todos"){
+      h+="<div class=\"cy-head\">"+(k==="otros"?"Otros cursos":"Ciclo "+k)+
+         "<span class=\"cy-head-n\">"+grupos[k].length+"</span></div>";
+    }
     grupos[k].forEach(function(c){
     const isSel=!!sel[c.cod];
     const isConf=!isSel&&allHardConflict(c);

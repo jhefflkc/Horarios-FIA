@@ -71,7 +71,7 @@ function loadExcel(event){
         const hs=json[hi].map(norm);
         const ix=function(){for(let k=0;k<arguments.length;k++){
           const j=hs.indexOf(norm(arguments[k])); if(j>=0) return j;} return -1;};
-        const iC=ix("COD"),iCu=ix("CURSO"),iS=ix("SECC"),iTi=ix("TIPO"),iH=ix("HORARIO"),iD=ix("DIA"),iHi=ix("H INI"),iHf=ix("H FIN"),iSa=ix("AULA")>=0?ix("AULA"):ix("SALON"),iDo=ix("DOCENTE"),iCy=ix("CICLO"),
+        const iC=ix("COD"),iCu=ix("CURSO"),iS=ix("SECC"),iTi=ix("TIPO"),iH=ix("HORARIO"),iD=ix("DIA"),iHi=ix("H INI"),iHf=ix("H FIN"),iSa=ix("AULA")>=0?ix("AULA"):ix("SALON"),iDo=ix("DOCENTE"),iCy=ix("CICLO","CICLO(S)","CICLOS"),
               iVm=ix("VAC. MAXIMAS","VACANTES MAXIMAS","VAC MAXIMAS","VACANTES");
         const fiaFmt=iH>=0;
         for(let i=hi+1;i<json.length;i++){
@@ -79,7 +79,7 @@ function loadExcel(event){
           if(!r[iC]||!r[iCu]) continue;
           const cod=String(r[iC]).trim(),secc=String(r[iS]||"").trim().toUpperCase();
           const tipo=TM[String(r[iTi]||"").trim().toUpperCase()]||"T";
-          const ciclo=iCy>=0&&parseInt(r[iCy])?parseInt(r[iCy]):getCiclo(cod);
+          const ciclo=parseCiclo(iCy>=0?r[iCy]:null,cod);
           const salon=iSa>=0?String(r[iSa]||"").trim():"";
           const docente=iDo>=0?String(r[iDo]||"").trim():"";
           const curso=String(r[iCu]).trim();

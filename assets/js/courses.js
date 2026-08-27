@@ -135,6 +135,19 @@ function toggleNames(){
 }
 
 
+/* Ciclo a partir de la columna «Ciclo(s)». Viene compuesto —«S1:2 / S2:1»—
+   porque depende de la especialidad, y también trae «ELECT.» y «S/D». Se
+   toma el menor número presente; si no hay ninguno se devuelve null en vez
+   de inventarlo. */
+function parseCiclo(valor,cod){
+  if(valor===null||valor===undefined) return getCiclo(cod);
+  const txt=String(valor).trim();
+  if(!txt) return getCiclo(cod);
+  if(/^\d+$/.test(txt)) return parseInt(txt);
+  const nums=(txt.match(/:\s*(\d+)/g)||[]).map(function(m){return parseInt(m.replace(/\D/g,""));});
+  return nums.length?Math.min.apply(null,nums):null;
+}
+
 function getCiclo(cod){var c=String(cod)[2];return(c&&!isNaN(c))?parseInt(c):11;}
 
 function parseHorario(h){var p=String(h).trim().split(" ");if(p.length!==2) return null;var r=p[1].split("-");if(r.length!==2) return null;var h0=parseInt(r[0]),h1=parseInt(r[1]);if(isNaN(h0)||isNaN(h1)) return null;return{dia:p[0].toUpperCase(),hIni:h0,hFin:h1};}
