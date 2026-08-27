@@ -61,6 +61,11 @@ var THEME_ORDER=["dark","stitch-dark","light","stitch-light","google"];
    el navegador con la elección del usuario) */
 var DEFAULT_THEME="google";
 
+/* Agrupar la lista de cursos por ciclo, con una cabecera por cada uno.
+   Desactivado por ahora: ponlo en true para recuperarlo. El ciclo se sigue
+   leyendo del Excel, así que no hace falta nada más. */
+var GROUP_BY_CYCLE=false;
+
 var THEME_LABELS={dark:"Ámbar",["stitch-dark"]:"Grafito",light:"Crema",["stitch-light"]:"Glacial",google:"Google"};
 
 var THEME_IS_DARK={dark:true,["stitch-dark"]:true,light:false,["stitch-light"]:false,google:false};
