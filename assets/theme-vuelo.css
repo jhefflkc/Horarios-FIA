@@ -55,8 +55,8 @@ body.vuelo-oscuro{
   --v-edge-hi:rgba(255,255,255,0.12);       /* filo de luz superior */
 
   --v-tx:#f9f8f8;
-  --v-tx-2:#a8a7a3;
-  --v-tx-3:#9e9d99;
+  --v-tx-2:#bdbcb8;
+  --v-tx-3:#a9a8a4;
   --v-tx-4:#6e6d6d;
 
   --v-accent:#9bb4ca;        /* azul polvo de la tarjeta, aclarado */
@@ -331,7 +331,8 @@ body.vuelo .tag{
   padding:6px 8px 6px 12px;gap:6px;
   font-family:var(--v-mono);font-size:0.72rem;font-weight:600;
 }
-body.vuelo .tag-x{opacity:0.55;font-size:0.85rem}
+body.vuelo .tag-x{opacity:0.9;font-size:0.85rem}
+body.vuelo .tag span{opacity:0.9!important}
 
 /* Grupo de acciones */
 body.vuelo .action-btns{border-radius:var(--v-pill);padding:6px;gap:6px}
@@ -442,7 +443,7 @@ body.vuelo .dhead.now::after{
   border-radius:50%;background:var(--v-accent);
 }
 body.vuelo table.sch td:first-child{
-  font-family:var(--v-mono);font-size:0.64rem;font-weight:500;color:var(--v-tx-4);
+  font-family:var(--v-mono);font-size:0.64rem;font-weight:500;color:var(--v-tx-3);
 }
 body.vuelo .cell-mt{border-radius:10px}
 /* Huecos vacíos casi invisibles: el horario se lee por los bloques, no
@@ -467,14 +468,14 @@ body.vuelo .blk::before{
 body.vuelo .blk:hover{filter:none;transform:translateY(-1px);box-shadow:var(--v-shadow-sm)}
 body.vuelo .blk-name{font-family:var(--v-sans);font-weight:700;font-size:0.6rem;letter-spacing:0.01em}
 body.vuelo .blk-cod{font-family:var(--v-mono);font-weight:700;font-size:0.66rem;letter-spacing:0.02em}
-body.vuelo .blk-cod-sm{font-family:var(--v-mono)}
-body.vuelo .blk-secc{font-weight:500;opacity:0.65}
+body.vuelo .blk-cod-sm{font-family:var(--v-mono);opacity:0.9}
+body.vuelo .blk-secc{font-weight:500;opacity:0.9}
 body.vuelo .blk-type{
   font-size:0.58rem;padding:1px 6px;margin-top:4px;border-radius:5px;
   background:rgba(0,0,0,0.12);color:inherit;
 }
 body.vuelo-oscuro .blk-type{background:rgba(0,0,0,0.28)}
-body.vuelo .blk-room{font-family:var(--v-mono);font-size:0.56rem;opacity:0.7}
+body.vuelo .blk-room{font-family:var(--v-mono);font-size:0.56rem;opacity:0.9}
 body.vuelo .cell-blocks{gap:3px}
 
 /* Los 8 papeles de curso: los tintes de los chips de la referencia
@@ -513,7 +514,7 @@ body.vuelo .sched-legend{
 }
 body.vuelo .leg-dot{border-left:none;border-radius:50%;width:10px;height:10px}
 body.vuelo .leg-cod{font-family:var(--v-mono)}
-body.vuelo .leg-name{font-family:var(--v-sans)}
+body.vuelo .leg-name{font-family:var(--v-sans);opacity:0.85}
 
 /* Barra inferior: cifras serif grandes con su etiqueta, como «2,628 km» */
 body.vuelo .stats{gap:0;padding:0.6rem 1.4rem 0.8rem;align-items:stretch}
@@ -581,9 +582,9 @@ body.vuelo .sec:hover{background:var(--v-surface-3);border-color:var(--v-hair);t
 body.vuelo .sec.soft-conf{background:var(--v-amber-bg);border-color:transparent}
 body.vuelo .sec.soft-conf:hover{border-color:transparent;box-shadow:var(--v-shadow-sm)}
 body.vuelo .sec-name{font-family:var(--v-serif);font-weight:600;font-size:1.05rem;color:var(--v-tx);letter-spacing:0}
-body.vuelo .sec-vac{font-family:var(--v-sans);font-weight:600;background:var(--v-surface-3);color:var(--v-tx-2)}
+body.vuelo .sec-vac{font-family:var(--v-sans);font-weight:600;background:var(--v-surface-2);color:var(--v-tx-2)}
 body.vuelo .sec-doc{font-family:var(--v-sans);font-size:0.76rem;color:var(--v-tx-2)}
-body.vuelo .doc-role{font-size:0.62rem;padding:1px 7px;background:var(--v-surface-3);color:var(--v-tx-3)}
+body.vuelo .doc-role{font-size:0.62rem;padding:1px 7px;background:var(--v-surface-2);color:var(--v-tx-2)}
 body.vuelo .ses{font-family:var(--v-sans);font-size:0.78rem;color:var(--v-tx-2);padding:4px 0}
 body.vuelo .ses-T,body.vuelo .ses-P,body.vuelo .ses-L,body.vuelo .ses-S{font-size:0.66rem;padding:2px 8px}
 body.vuelo .ses-T{background:var(--v-amber-bg);color:var(--v-amber)}
@@ -595,6 +596,8 @@ body.vuelo .rate-btn{border:1px solid var(--v-hair);background:var(--v-surface-2
 body.vuelo .rate-btn:hover{border-color:var(--v-accent);color:var(--v-accent-strong)}
 body.vuelo .star-inp.on{color:var(--v-amber)}
 body.vuelo .ses-edit{border-bottom-color:var(--v-hair)}
+/* modals.js pone la tipografía antigua en línea en algunos botones */
+body.vuelo .modal-body button{font-family:var(--v-sans)!important}
 body.vuelo .ses-edit select,body.vuelo .ses-edit input{
   font-family:var(--v-sans);border:1px solid var(--v-hair);border-radius:8px;background:var(--v-surface-2);color:var(--v-tx);
 }
