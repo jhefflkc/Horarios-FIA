@@ -129,7 +129,8 @@ body.vuelo-oscuro{
   /* Carpeta y bajorrelieve */
   --v-folder-back:linear-gradient(180deg,#262525,#232222);
   --v-ticket:linear-gradient(180deg,#252525,#212121); --v-ticket-solid:#232323; --v-ticket-ink:rgba(255,255,255,.9);
-  --v-folder-front:linear-gradient(180deg,#1f1f1f,#2a2a2a 55%,#313131); --v-folder-tab:#1f1f1f;
+  --v-folder-front:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='132' viewBox='0 0 300 132'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%231f1f1f'/%3E%3Cstop offset='.55' stop-color='%232a2a2a'/%3E%3Cstop offset='1' stop-color='%23313131'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url%28%23g%29' d='M0 40Q0 26 14 26L140 26C152 26 156 23 162 15C168 5 173 1 187 1L278 1Q300 1 300 23L300 106Q300 132 274 132L26 132Q0 132 0 106Z'/%3E%3Cpath fill='none' stroke='rgba%28255,255,255,.085%29' stroke-width='1' d='M.5 40Q.5 26.5 14 26.5L140 26.5C152 26.5 156 23.5 162 15.5C168 5.5 173 1.5 187 1.5L278 1.5Q299.5 1.5 299.5 23'/%3E%3C/svg%3E");
+  --v-ticket-date:#959595; --v-badge-bg:#383838; --v-badge-ink:#ffffff;
   --v-folder-rim:rgba(255,255,255,.085);
   --v-deboss-ink:#1b1b1b;
   --v-deboss:0 1px 0 rgba(255,255,255,.07),0 2px 5px rgba(255,255,255,.05),0 -1px 0 rgba(0,0,0,.35);
@@ -183,7 +184,8 @@ body.vuelo-claro{
 
   --v-folder-back:linear-gradient(180deg,#e1e5e9,#d8dde2);
   --v-ticket:linear-gradient(180deg,#fbfaf8,#f3f2ef); --v-ticket-solid:#f5f4f1; --v-ticket-ink:#2b3338;
-  --v-folder-front:linear-gradient(180deg,#e7eaed,#eef0f2 55%,#f3f4f5); --v-folder-tab:#e7eaed;
+  --v-folder-front:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='132' viewBox='0 0 300 132'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23e7eaed'/%3E%3Cstop offset='.55' stop-color='%23eef0f2'/%3E%3Cstop offset='1' stop-color='%23f3f4f5'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url%28%23g%29' d='M0 40Q0 26 14 26L140 26C152 26 156 23 162 15C168 5 173 1 187 1L278 1Q300 1 300 23L300 106Q300 132 274 132L26 132Q0 132 0 106Z'/%3E%3Cpath fill='none' stroke='%23ffffff' stroke-width='1' d='M.5 40Q.5 26.5 14 26.5L140 26.5C152 26.5 156 23.5 162 15.5C168 5.5 173 1.5 187 1.5L278 1.5Q299.5 1.5 299.5 23'/%3E%3C/svg%3E");
+  --v-ticket-date:#646a6f; --v-badge-bg:#e3e6e9; --v-badge-ink:#2b3338;
   --v-folder-rim:#ffffff;
   --v-deboss-ink:#cdd3d9;
   --v-deboss:0 1px 0 rgba(255,255,255,.95),0 -1px 0 rgba(30,50,70,.22);
@@ -494,36 +496,48 @@ body.vuelo .conf-bar::after{content:"";position:absolute;left:84px;top:7px;botto
 /* Área del horario */
 body.vuelo .sched-area{background:transparent;padding:14px 22px 18px}
 
-/* Estado vacío: la carpeta con billetes. ::before son los billetes, el
-   <svg> hijo hace de lengüeta y ::after es el frente con el rótulo en
-   bajorrelieve (decorativo; el mensaje real va en h3 y p) */
+/* Estado vacío: la carpeta «FLIGHT LOG» de la referencia. render.js pone
+   dentro dos billetes con el periodo y la facultad (fecha, sello «EN
+   ARMADO», ruta ✈ ─── • LIM) y el frente con el rótulo en bajorrelieve.
+   Es decorativa; el mensaje real va en h3 y p. Nunca entra en el PDF. */
 body.vuelo .empty{gap:14px}
 body.vuelo .empty-box{
-  position:relative;width:272px;height:176px;border:none;border-radius:24px;overflow:hidden;
+  position:relative;width:300px;height:220px;border:none;border-radius:26px;overflow:hidden;
   background:var(--v-folder-back);
   box-shadow:inset 0 1px 0 var(--v-folder-rim),inset 0 0 0 1px var(--v-hair),var(--v-shadow-3);
 }
-body.vuelo .empty-box::before{
-  content:"EN ARMADO";position:absolute;left:26px;right:30px;top:20px;height:76px;
-  box-sizing:border-box;padding:12px 14px 0 0;text-align:right;border-radius:12px;
-  font:700 11px/1 var(--v-cond);letter-spacing:.03em;color:var(--v-ticket-ink);
-  background:linear-gradient(var(--v-hair-strong),var(--v-hair-strong)) left 18px top 52px/96px 1px no-repeat,var(--v-ticket);
+body.vuelo .empty-box > svg{display:none}
+body.vuelo .empty-box .v-folder{display:block;position:absolute;inset:0}
+body.vuelo .v-ticket{
+  position:absolute;left:24px;right:28px;top:18px;height:100px;box-sizing:border-box;padding:12px 16px;
+  display:grid;grid-template-columns:1fr auto;align-content:start;row-gap:6px;
+  border-radius:12px;background:var(--v-ticket);color:var(--v-ticket-ink);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),inset 0 0 0 1px var(--v-hair),0 10px 18px -8px rgba(0,0,0,.35);
   transform:rotate(-1.9deg);
-  box-shadow:14px 30px 0 -2px var(--v-ticket-solid),inset 0 1px 0 rgba(255,255,255,.05),0 10px 18px -6px rgba(0,0,0,.35);
 }
-body.vuelo .empty-box svg{
-  display:block;position:absolute;left:46%;width:54%;height:36px;bottom:95px;top:auto;opacity:1;
-  border-radius:22px 24px 0 0;background:var(--v-folder-tab);
-  box-shadow:inset 0 1px 0 var(--v-folder-rim),inset 1px 0 0 var(--v-hair);
+body.vuelo .v-ticket-2{left:34px;right:20px;top:82px;transform:rotate(2.2deg)}
+body.vuelo .v-t-date{font:500 13px/18px var(--v-sans);color:var(--v-ticket-date);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.vuelo .v-badge{
+  justify-self:end;height:20px;padding:0 8px;border-radius:7px;
+  font:700 12px/20px var(--v-cond);letter-spacing:.03em;text-transform:uppercase;
+  background:var(--v-badge-bg);color:var(--v-badge-ink);
 }
-body.vuelo .empty-box svg *{display:none}
-body.vuelo .empty-box::after{
-  content:"HORARIO";position:absolute;left:0;right:0;bottom:0;height:96px;box-sizing:border-box;
-  display:flex;align-items:flex-end;padding:0 0 16px 22px;border-radius:14px 0 24px 24px;
-  background:var(--v-folder-front);box-shadow:inset 0 1px 0 var(--v-folder-rim);
-  font-family:var(--v-exp);font-stretch:112.5%;font-weight:450;font-size:22px;line-height:1;letter-spacing:.01em;
-  color:var(--v-deboss-ink);text-shadow:var(--v-deboss);
+body.vuelo .v-t-route{grid-column:1/-1;justify-self:end;width:62%;display:flex;align-items:center;gap:7px;color:var(--v-ticket-date)}
+body.vuelo .v-t-route svg{transform:rotate(90deg);flex-shrink:0}
+body.vuelo .v-t-route i{flex:1;border-top:1.5px dashed var(--v-hair-strong)}
+body.vuelo .v-t-route em{width:5px;height:5px;border-radius:50%;background:var(--v-ticket-ink);flex-shrink:0}
+body.vuelo .v-t-code{font:600 22px/1 var(--v-mono);letter-spacing:.02em;color:var(--v-ticket-ink)}
+/* El frente: forma con la lengüeta en S (SVG por modo), su sombra sobre los
+   billetes y el rótulo en bajorrelieve */
+body.vuelo .v-folder-front{
+  position:absolute;left:0;right:0;bottom:0;height:132px;box-sizing:border-box;
+  display:flex;align-items:flex-end;padding:0 0 18px 22px;
+  background:var(--v-folder-front) 0 0/100% 100% no-repeat;
+  filter:drop-shadow(0 -3px 6px rgba(0,0,0,.28));
+  font-family:var(--v-exp);font-stretch:112.5%;font-weight:450;font-size:24px;line-height:1;letter-spacing:.01em;
+  text-transform:uppercase;color:var(--v-deboss-ink);text-shadow:var(--v-deboss);
 }
+body.vuelo-claro .v-folder-front{filter:drop-shadow(0 -2px 5px rgba(30,50,70,.12))}
 body.vuelo .empty h3{font:600 21px/26px var(--v-serif);color:var(--v-tx)}
 body.vuelo .empty p{font:400 15px/22px var(--v-serif);color:var(--v-tx-2);max-width:300px}
 body.vuelo .empty p::before{

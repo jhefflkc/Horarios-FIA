@@ -100,11 +100,24 @@ function drawTags(){
 }
 
 
+/* La carpeta del estado vacío del tema Vuelo: dos billetes con el periodo
+   y la facultad, y el frente con el rótulo. Es decorativa (aria-hidden) y
+   los temas anteriores la ocultan (styles.css). */
+function emptyFolderHTML(){
+  var esc=function(t){return String(t).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});};
+  var plane="<svg viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" fill=\"currentColor\"><path d=\"M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z\"/></svg>";
+  return "<div class=\"v-folder\" aria-hidden=\"true\">"+
+    "<div class=\"v-ticket\"><span class=\"v-t-date\">Semestre "+esc(getPeriod())+"</span><b class=\"v-badge\">En armado</b>"+
+      "<span class=\"v-t-route\">"+plane+"<i></i><em></em><span class=\"v-t-code\">LIM</span></span></div>"+
+    "<div class=\"v-ticket v-ticket-2\"><span class=\"v-t-date\">"+esc(facultyName)+"</span></div>"+
+    "<div class=\"v-folder-front\">Horario</div></div>";
+}
+
 function drawSched(){
   const keys=Object.keys(sel);
   const dp=document.getElementById("dp");
   if(!keys.length){
-    dp.innerHTML="<div class=\"empty\"><div class=\"empty-box\"><svg width=\"36\" height=\"36\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\" opacity=\"0.3\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"18\" rx=\"2\"/><line x1=\"16\" x2=\"16\" y1=\"2\" y2=\"6\"/><line x1=\"8\" x2=\"8\" y1=\"2\" y2=\"6\"/><line x1=\"3\" x2=\"21\" y1=\"10\" y2=\"10\"/></svg></div><h3>Tu horario aparecer\u00e1 aqu\u00ed</h3><p>Selecciona tus cursos del panel izquierdo para comenzar.</p></div>";
+    dp.innerHTML="<div class=\"empty\"><div class=\"empty-box\"><svg width=\"36\" height=\"36\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\" opacity=\"0.3\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"18\" rx=\"2\"/><line x1=\"16\" x2=\"16\" y1=\"2\" y2=\"6\"/><line x1=\"8\" x2=\"8\" y1=\"2\" y2=\"6\"/><line x1=\"3\" x2=\"21\" y1=\"10\" y2=\"10\"/></svg>"+emptyFolderHTML()+"</div><h3>Tu horario aparecer\u00e1 aqu\u00ed</h3><p>Selecciona tus cursos del panel izquierdo para comenzar.</p></div>";
     return;
   }
   const cells={};

@@ -847,6 +847,8 @@ body.stitch-light .btn-cal:hover{box-shadow:0 4px 28px rgba(8,145,178,0.5),0 0 0
   display:flex;align-items:center;justify-content:center;
   box-shadow:0 0 40px rgba(200,120,58,0.1);
 }
+/* La carpeta con billetes solo la muestra el tema Vuelo */
+.empty-box .v-folder{display:none}
 .empty h3{font-size:1rem;font-weight:700;color:var(--tx2)}
 .empty p{font-size:0.8rem;color:var(--tx3);line-height:1.7;max-width:240px}
 
