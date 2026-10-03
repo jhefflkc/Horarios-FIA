@@ -548,8 +548,9 @@ body.vuelo .score-pop-count{font-family:var(--v-serif);font-size:0.95rem;font-we
 body.vuelo .score-pop-note{font-family:var(--v-sans);color:var(--v-tx-3)}
 
 /* Ventanas */
-body.vuelo .overlay,body.vuelo .ann-overlay{background:rgba(0,0,0,0.06)}
-body.vuelo-oscuro .overlay,body.vuelo-oscuro .ann-overlay{background:rgba(0,0,0,0.2)}
+/* El velo se queda como en la base: solo el desenfoque leve, sin oscurecer
+   el fondo (decisión ya tomada para todos los temas) */
+body.vuelo .overlay,body.vuelo .ann-overlay{background:transparent}
 body.vuelo .modal{border-radius:var(--v-r-xl);max-width:520px}
 body.vuelo-claro .modal{background:rgba(250,251,252,0.82)}
 body.vuelo-oscuro .modal{background:rgba(48,47,45,0.82)}
@@ -704,8 +705,16 @@ body.vuelo :focus-visible{outline:2px solid var(--v-accent);outline-offset:2px}
   body.vuelo .stat-n{font-size:1.15rem}
   body.vuelo .conf-bar{margin:0.3rem 0.75rem 0}
   body.vuelo .sched-area{padding:0.6rem 0.5rem}
-  body.vuelo .action-btns{padding:4px}
+  body.vuelo .action-btns{padding:4px;gap:4px}
   body.vuelo .btn{padding:7px 12px;font-size:0.76rem}
+  /* En pantalla estrecha los botones secundarios quedan solo con icono
+     (llevan title/aria-label); así cabe la acción principal con su texto
+     y la barra deja de salirse por la derecha */
+  body.vuelo .btn-names,body.vuelo .btn-cal{font-size:0;gap:0;padding:9px;line-height:0}
+  body.vuelo .btn-names svg,body.vuelo .btn-cal svg{width:15px;height:15px}
+  /* el aviso «← Selecciona cursos…» no cabe junto a los botones y ya lo
+     explica el estado vacío */
+  body.vuelo .tags-zone .ph{display:none}
   /* Barra de pestañas iOS: vidrio y la activa con su píldora */
   body.vuelo .mob-tabs{
     background:var(--v-surface);border-top:1px solid var(--v-hair);
