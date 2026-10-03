@@ -36,8 +36,13 @@ var THEME_ORDER=["vuelo-claro","vuelo-oscuro","dark","stitch-dark","light","stit
 ```
 
 La lista completa de los antiguos está en `THEMES_LEGACY`, en el mismo archivo.
-Nada más que cambiar: sus etiquetas, iconos, colores de panel y del PDF siguen
-configurados.
+Sus etiquetas, iconos, colores de panel y del PDF siguen configurados.
+
+Falta un paso: sus tipografías (Plus Jakarta Sans, Roboto y Roboto Mono) ya
+no se descargan, para no cargar fuentes que nadie usa. En `index.html`, justo
+debajo del `<link>` de Google Fonts, hay una segunda línea comentada con
+ellas: quítale el comentario `<!-- … -->`. Sin ese paso el tema funciona, pero
+con las fuentes de respaldo del sistema.
 
 ## Cómo volver al estado exacto anterior
 

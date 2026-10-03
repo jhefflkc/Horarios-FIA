@@ -22,7 +22,11 @@ function downloadPDF(){
      un bloque a medio aparecer saldr\u00eda trasl\u00facido o desplazado en el PDF. */
   document.body.classList.add("exporting");
   void el.offsetWidth;   /* fuerza el recálculo del ancho antes de capturar */
-  html2canvas(el,{backgroundColor:bgCanvas,scale:2.8,useCORS:true,logging:false,scrollX:0,scrollY:0}).then(function(canvas){
+  /* Se espera a las tipografías: si la serif o la condensada aún no han
+     cargado, la captura saldría con la fuente de respaldo. */
+  (document.fonts?document.fonts.ready:Promise.resolve()).then(function(){
+    return html2canvas(el,{backgroundColor:bgCanvas,scale:2.8,useCORS:true,logging:false,scrollX:0,scrollY:0});
+  }).then(function(canvas){
     document.body.classList.remove("exporting");
     stickyEls.forEach(function(th){th.style.position="";});
     if(legend) legend.style.display="";
