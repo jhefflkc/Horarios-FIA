@@ -263,7 +263,7 @@ body.vuelo .sidebar-label{
 }
 /* El rombo de los temas anteriores pasa a ser el destello ✦ de la referencia */
 body.vuelo .lbl-glyph{
-  display:inline-block;width:8px;height:8px;margin-right:3px;font-size:0;vertical-align:1px;
+  display:inline-block;width:8px;height:8px;margin:-2px 3px 0 0;font-size:0;vertical-align:middle;
   background:var(--v-sparkle) center/8px 8px no-repeat;
 }
 body.vuelo .search-box{
