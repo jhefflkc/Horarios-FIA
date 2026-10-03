@@ -65,7 +65,9 @@ function toast(msg,type){
   document.getElementById("tmsg").textContent=msg;
   const tabs=document.querySelector(".mob-tabs");
   if(tabs&&tabs.offsetHeight>0){
-    t.style.bottom=(tabs.offsetHeight+12)+"px";
+    /* Se mide desde el borde superior real de la barra: en Vuelo la barra
+       flota separada del borde, así que su altura no basta */
+    t.style.bottom=(window.innerHeight-tabs.getBoundingClientRect().top+12)+"px";
   } else {
     t.style.bottom="";
   }
@@ -75,6 +77,9 @@ function toast(msg,type){
 
 
 document.addEventListener("mousemove",function(e){
+  /* Solo los temas Stitch usan el foco que sigue al ratón; con los demás
+     no se toca :root para no recalcular estilos en cada movimiento */
+  if(!/\bstitch-/.test(document.body.className)) return;
   document.documentElement.style.setProperty("--dot-x",e.clientX+"px");
   document.documentElement.style.setProperty("--dot-y",e.clientY+"px");
 });

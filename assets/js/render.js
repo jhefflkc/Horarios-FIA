@@ -83,7 +83,7 @@ function drawTags(){
   tz.querySelectorAll(".tag").forEach(function(t){
     t.querySelector(".tag-x").addEventListener("click",function(e){e.stopPropagation();toggle(t.dataset.cod);});
   });
-  bc.style.display="";st.style.display="flex";
+  bc.style.display="";st.style.display="";   /* "" deja mandar al CSS (flex, o rejilla en Vuelo móvil) */
   document.getElementById("btn-names").style.display="";
   let hrs=0;
   Object.values(sel).forEach(function(s){s.ss.forEach(function(x){hrs+=x.h1-x.h0;});});

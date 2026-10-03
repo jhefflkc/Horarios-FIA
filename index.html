@@ -17,12 +17,24 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<link rel="stylesheet" href="assets/styles.css?v=a2719f5a">
+<link rel="stylesheet" href="assets/styles.css?v=c0c8892e">
 <!-- Tema activo «Vuelo» (claro/oscuro). Va después de styles.css, que
      conserva los temas anteriores desactivados. -->
-<link rel="stylesheet" href="assets/theme-vuelo.css?v=a2719f5a">
+<link rel="stylesheet" href="assets/theme-vuelo.css?v=c0c8892e">
 </head>
 <body>
+<script>
+/* Pone el tema antes del primer pintado: sin esto se veía un instante el
+   tema Ámbar de la base hasta que cargaba theme.js, que luego lo confirma.
+   Mantener los nombres igual que THEME_ORDER y AUTO_THEMES (config.js). */
+(function(){
+  var t=null;try{t=localStorage.getItem("theme");}catch(e){}
+  if(t!=="vuelo-claro"&&t!=="vuelo-oscuro")
+    t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"vuelo-oscuro":"vuelo-claro";
+  document.body.className="vuelo "+t;
+  document.documentElement.style.background=t==="vuelo-oscuro"?"#313133":"#eef1f4";
+})();
+</script>
 
 <header>
   <div class="logo">
@@ -58,7 +70,7 @@
       <svg id="theme-icon-google" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="display:none">
         <path d="M12 2c.4 3.6 1.4 5.9 3.2 7.2C16.6 10.2 18.6 10.8 22 11c-3.6.4-5.9 1.4-7.2 3.2C13.8 15.6 13.2 17.6 13 21c-.4-3.6-1.4-5.9-3.2-7.2C8.4 12.8 6.4 12.2 3 12c3.6-.4 5.9-1.4 7.2-3.2C11.2 7.4 11.8 5.4 12 2z"/>
       </svg>
-      <span id="theme-label">Ámbar</span>
+      <span id="theme-label">Claro</span>
     </button>
   </div>
 </header>
@@ -110,7 +122,7 @@
           </svg>
           <span id="btn-names-lbl">Nombre</span>
         </button>
-        <button class="btn btn-clear" id="bclear" onclick="clearAll()" style="display:none">
+        <button class="btn btn-clear" id="bclear" onclick="clearAll()" style="display:none" title="Quitar todos los cursos" aria-label="Limpiar todo">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <polyline points="3 6 5 6 21 6"/>
             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
@@ -251,17 +263,17 @@
 <!-- SAB probe: used by JS to read the real env(safe-area-inset-bottom) value -->
 <div id="sab-probe" style="position:fixed;bottom:0;left:0;width:0;height:env(safe-area-inset-bottom,0px);pointer-events:none;visibility:hidden"></div>
 
-<script src="assets/data.js?v=a2719f5a"></script>
-<script src="assets/js/config.js?v=a2719f5a"></script>
-<script src="assets/js/state.js?v=a2719f5a"></script>
-<script src="assets/js/courses.js?v=a2719f5a"></script>
-<script src="assets/js/faculty.js?v=a2719f5a"></script>
-<script src="assets/js/render.js?v=a2719f5a"></script>
-<script src="assets/js/modals.js?v=a2719f5a"></script>
-<script src="assets/js/ratings.js?v=a2719f5a"></script>
-<script src="assets/js/announce.js?v=a2719f5a"></script>
-<script src="assets/js/exports.js?v=a2719f5a"></script>
-<script src="assets/js/theme.js?v=a2719f5a"></script>
-<script src="assets/js/main.js?v=a2719f5a"></script>
+<script src="assets/data.js?v=c0c8892e"></script>
+<script src="assets/js/config.js?v=c0c8892e"></script>
+<script src="assets/js/state.js?v=c0c8892e"></script>
+<script src="assets/js/courses.js?v=c0c8892e"></script>
+<script src="assets/js/faculty.js?v=c0c8892e"></script>
+<script src="assets/js/render.js?v=c0c8892e"></script>
+<script src="assets/js/modals.js?v=c0c8892e"></script>
+<script src="assets/js/ratings.js?v=c0c8892e"></script>
+<script src="assets/js/announce.js?v=c0c8892e"></script>
+<script src="assets/js/exports.js?v=c0c8892e"></script>
+<script src="assets/js/theme.js?v=c0c8892e"></script>
+<script src="assets/js/main.js?v=c0c8892e"></script>
 </body>
 </html>

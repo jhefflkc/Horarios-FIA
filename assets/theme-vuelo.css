@@ -59,7 +59,7 @@ body.vuelo{
      pasa de 5,2:1 en toda la zona del texto */
   --v-dl:
     radial-gradient(45% 120% at 104% -40%,rgba(255,255,255,.22),rgba(255,255,255,0) 70%),
-    linear-gradient(118deg,#3d628a 0%,#46698f 55%,#52789e 100%);
+    linear-gradient(118deg,#3d628a 0%,#43668c 55%,#476c92 100%);
   --v-suede:linear-gradient(180deg,#bccad5 0%,#b2c0cc 70%,#adbbc8 100%);
   --v-suede-ink:#33475a;          /* 5,1:1 sobre lo más oscuro del ante */
   --v-stitch:rgba(236,242,248,.85);
@@ -93,12 +93,14 @@ body.vuelo-oscuro{
   --v-sheet:#2b2b2d;                 /* billete: secciones, aviso de cruce */
   --v-wrap:rgba(255,255,255,.025);   /* tarjeta del horario */
   --v-export-bg:#363638;
-  --v-head-glass:rgba(49,49,51,.86);
+  --v-head-glass:rgba(49,49,51,.94);
   --v-modal:rgba(48,47,45,.84);      --v-modal-head:rgba(48,47,45,.95);
   --v-hair:rgba(255,255,255,.08);    --v-hair-strong:rgba(255,255,255,.16);
   --v-line:rgba(255,255,255,.10);    /* contorno de la tarjeta agrupada */
   --v-edge:rgba(255,255,255,.10);    --v-edge-hi:rgba(255,255,255,.12);
   --v-outline:0 0 0 0 transparent;
+  --v-field-line:#8c8b88;   /* borde de campos: 3,9:1 */
+  --v-thumb:#85847f;        /* barra de desplazamiento: 3,2:1 */
   --v-shadow-1:0 1px 2px rgba(0,0,0,.30);
   --v-shadow-2:0 6px 18px rgba(0,0,0,.28),0 1px 3px rgba(0,0,0,.20);
   --v-shadow-3:0 1px 0 rgba(0,0,0,.25),0 18px 40px -18px rgba(0,0,0,.55);
@@ -147,12 +149,14 @@ body.vuelo-claro{
   --v-sheet:#ffffff;
   --v-wrap:rgba(255,255,255,.55);
   --v-export-bg:#fafbfc;
-  --v-head-glass:rgba(246,248,250,.88);
+  --v-head-glass:rgba(246,248,250,.94);
   --v-modal:rgba(250,251,252,.86); --v-modal-head:rgba(250,251,252,.96);
   --v-hair:rgba(38,56,74,.09);     --v-hair-strong:rgba(38,56,74,.18);
   --v-line:rgba(38,56,74,.10);
   --v-edge:rgba(255,255,255,.90);  --v-edge-hi:#ffffff;
   --v-outline:0 0 0 1px rgba(30,50,70,.07);
+  --v-field-line:#7a848a;   /* 3,6:1 */
+  --v-thumb:#848e94;        /* 3,2:1 */
   --v-shadow-1:0 1px 2px rgba(38,56,74,.06);
   --v-shadow-2:0 6px 16px rgba(40,55,75,.10),0 1px 3px rgba(40,55,75,.07);
   --v-shadow-3:0 1px 2px rgba(30,50,70,.06),0 18px 40px -20px rgba(30,50,70,.28);
@@ -219,6 +223,7 @@ body.vuelo{
   --card:var(--v-fill-2);
   --card2:var(--v-fill-2);
   --line:var(--v-hair);
+  --line1:var(--v-hair);
   --line2:var(--v-line);
   --line3:var(--v-hair-strong);
   --tx:var(--v-tx);
@@ -238,6 +243,7 @@ body.vuelo{
   color:var(--v-tx);
   -webkit-font-smoothing:antialiased;
 }
+body.vuelo button,body.vuelo input,body.vuelo select,body.vuelo textarea{font-family:inherit}
 
 
 /* ── 3. Fondo y grano ───────────────────────────────────────────────── */
@@ -246,35 +252,37 @@ body.vuelo{
 body.vuelo-oscuro{
   background-color:#313133;
   background-image:
+    var(--v-grain-film),
     radial-gradient(55% 38% at 92% 46%,rgba(196,150,80,.12),rgba(196,150,80,0) 70%),
     radial-gradient(70% 30% at 0% 100%,rgba(46,96,140,.45),rgba(46,96,140,0) 72%),
-    radial-gradient(55% 26% at 100% 100%,rgba(46,96,140,.35),rgba(46,96,140,0) 70%),
     linear-gradient(180deg,#313133,#33322f 60%,#2f3133);
+  background-size:180px 180px,auto,auto,auto;
 }
 body.vuelo-claro{
   background-color:#eef1f4;
   background-image:
+    var(--v-grain-film),
     radial-gradient(60% 40% at 95% 8%,rgba(250,236,214,.85),rgba(250,236,214,0) 70%),
-    radial-gradient(70% 34% at 0% 100%,rgba(170,196,220,.60),rgba(170,196,220,0) 72%),
+    radial-gradient(70% 34% at 0% 100%,rgba(170,196,220,.50),rgba(170,196,220,0) 72%),
     radial-gradient(90% 60% at 30% -10%,rgba(255,255,255,.9),rgba(255,255,255,0) 60%),
     linear-gradient(180deg,#eef1f4,#e6eaee);
+  background-size:180px 180px,auto,auto,auto,auto;
 }
-/* Grano de película en una capa fija por encima de todo, sin capturar
-   eventos: varía ±2 niveles y conserva el color medio */
-body.vuelo::after{
-  content:"";position:fixed;inset:0;pointer-events:none;z-index:2147483000;
-  background:var(--v-grain-film) 0 0/180px;
-}
+/* El grano de película (varía ±2 niveles y conserva el color medio) es la
+   primera capa del fondo: se ve a través del vidrio y nunca tapa el texto */
 
 
 /* ── 4. Componentes ─────────────────────────────────────────────────── */
 
-/* Vidrio con filo de luz: cabecera, panel lateral y grupo de acciones */
+/* Vidrio con filo de luz: cabecera, panel lateral y grupo de acciones.
+   Detrás solo tienen el degradado liso del fondo, así que basta la
+   translucidez: un backdrop-filter no cambiaría nada visible y costaría un
+   repintado cada vez (el vidrio desenfocado queda para ventanas y avisos). */
 body.vuelo header,
 body.vuelo .sidebar,
 body.vuelo .action-btns{
   background:var(--v-surface);
-  -webkit-backdrop-filter:var(--v-glass-blur);backdrop-filter:var(--v-glass-blur);
+  -webkit-backdrop-filter:none;backdrop-filter:none;
   border:1px solid var(--v-edge);
   box-shadow:inset 0 1px 0 var(--v-edge-hi),var(--v-outline),var(--v-shadow-3);
 }
@@ -333,6 +341,7 @@ body.vuelo .search-box svg{color:var(--v-tx-3)}
 body.vuelo .search-box input{font:400 15px/20px var(--v-sans);color:var(--v-tx)}
 body.vuelo .search-box input::placeholder{color:var(--v-tx-3);opacity:1}
 body.vuelo .search-box:focus-within{background:var(--v-fill-2);box-shadow:0 0 0 3px var(--v-focus)}
+body.vuelo .search-box input:focus-visible{outline:none}
 /* Fila «I · Flyer»: icono en círculo y texto */
 body.vuelo .upload-row{
   border:none;background:transparent;border-radius:12px;padding:6px;gap:10px;
@@ -349,8 +358,9 @@ body.vuelo .c-row{
   background-color:var(--v-card);border:solid var(--v-line);border-width:0 1px;border-radius:0;
 }
 body.vuelo .c-row:first-child,body.vuelo .cy-head + .c-row{border-top-width:1px;border-radius:18px 18px 0 0}
-body.vuelo .c-row:last-child,body.vuelo .c-row:has(+ .cy-head){border-bottom-width:1px;border-radius:0 0 18px 18px}
-body.vuelo .c-row:only-child,body.vuelo .cy-head + .c-row:last-child,
+body.vuelo .c-row:last-child{border-bottom-width:1px;border-radius:0 0 18px 18px}
+body.vuelo .c-row:has(+ .cy-head){border-bottom-width:1px;border-radius:0 0 18px 18px}
+body.vuelo .c-row:only-child,body.vuelo .cy-head + .c-row:last-child{border-radius:18px}
 body.vuelo .cy-head + .c-row:has(+ .cy-head){border-radius:18px}
 body.vuelo .c-row + .c-row::before{content:"";position:absolute;top:0;left:16px;right:16px;height:1px;background:var(--v-hair)}
 body.vuelo .c-row::after{
@@ -358,13 +368,16 @@ body.vuelo .c-row::after{
   border-right:1.6px solid var(--v-tx-3);border-top:1.6px solid var(--v-tx-3);
   transform:translateY(-50%) rotate(45deg);
 }
-body.vuelo .c-row:hover{background-image:linear-gradient(var(--v-state),var(--v-state))}
+@media(hover:hover){
+  body.vuelo .c-row:hover{background-image:linear-gradient(var(--v-state),var(--v-state))}
+  body.vuelo .c-row:hover .c-secs{color:var(--v-tx-2)}
+}
 body.vuelo .c-row.sel{
   background-color:var(--v-card);border-color:var(--v-line);
   background-image:linear-gradient(var(--v-accent-soft),var(--v-accent-soft));
 }
 body.vuelo .c-row.sel::after{border-color:var(--v-accent-strong)}
-body.vuelo .c-row:hover .c-secs,body.vuelo .c-row.sel .c-secs{color:var(--v-tx-2)}
+body.vuelo .c-row.sel .c-secs{color:var(--v-tx-2)}
 /* Casilla redonda, como en Recordatorios */
 body.vuelo .cbox{width:22px;height:22px;margin:0;border-radius:50%;border:1.6px solid var(--v-tx-3);background:transparent;box-shadow:none}
 body.vuelo .c-row.sel .cbox{background:var(--v-accent);border-color:var(--v-accent);box-shadow:none}
@@ -457,10 +470,11 @@ body.vuelo .btn-dl:hover{
    permitido) y perforación. El display lo controla el JS. */
 body.vuelo .conf-bar{
   position:relative;margin:8px 22px 0;padding:10px 16px 10px 96px;border-radius:var(--v-r-md);
-  background:
-    radial-gradient(circle at 84px 0,var(--v-bg) 5px,transparent 5.5px),
-    radial-gradient(circle at 84px 100%,var(--v-bg) 5px,transparent 5.5px),
-    var(--v-sheet);
+  background:var(--v-sheet);
+  -webkit-mask:radial-gradient(circle at 84px 0,transparent 5px,#000 5.5px),radial-gradient(circle at 84px 100%,transparent 5px,#000 5.5px);
+  -webkit-mask-composite:source-in;
+  mask:radial-gradient(circle at 84px 0,transparent 5px,#000 5.5px),radial-gradient(circle at 84px 100%,transparent 5px,#000 5.5px);
+  mask-composite:intersect;
   border:1px solid var(--v-line);box-shadow:inset 0 1px 0 var(--v-edge-hi),var(--v-shadow-1);
   font:500 14px/20px var(--v-sans);color:var(--v-tx-2);
 }
@@ -518,12 +532,10 @@ body.vuelo .sched-wrap{
   background:var(--v-wrap);border:1px solid var(--v-line);border-radius:22px;padding:8px 10px 10px 6px;
   box-shadow:inset 0 1px 0 var(--v-edge-hi),var(--v-shadow-3);
 }
-/* Los días son fijos al desplazar: llevan vidrio para no montarse sobre
-   los bloques que pasan por debajo */
-body.vuelo table.sch thead th{
-  background:var(--v-head-glass);
-  -webkit-backdrop-filter:blur(14px) saturate(140%);backdrop-filter:blur(14px) saturate(140%);
-}
+/* Los días son fijos al desplazar: fondo casi opaco para no montarse sobre
+   los bloques que pasan por debajo (sin desenfoque: se repintaría en cada
+   fotograma del desplazamiento) */
+body.vuelo table.sch thead th{background:var(--v-head-glass)}
 body.vuelo table.sch thead th:first-child{border-top-left-radius:14px}
 body.vuelo table.sch thead th:last-child{border-top-right-radius:14px}
 body.vuelo .dhead{
@@ -557,7 +569,8 @@ body.vuelo .blk{
 }
 body.vuelo-oscuro .blk{box-shadow:inset 0 1px 0 rgba(255,255,255,.07),var(--v-shadow-1)}
 body.vuelo .blk::before{display:none}
-body.vuelo .blk:hover{filter:none;transform:translateY(-1px);box-shadow:var(--v-shadow-2)}
+body.vuelo .blk:hover{filter:none;transform:none}
+@media(hover:hover){body.vuelo .blk:hover{transform:translateY(-1px);box-shadow:var(--v-shadow-2)}}
 body.vuelo .blk-name{font:600 10.5px/12.5px var(--v-sans);letter-spacing:.01em}
 body.vuelo .blk-cod{font:600 11.5px/14px var(--v-mono);letter-spacing:0}
 body.vuelo .blk-cod-sm{font:600 10px/12px var(--v-mono);opacity:.88;margin-top:2px}
@@ -652,8 +665,8 @@ body.vuelo .sec{
   box-shadow:inset 0 1px 0 var(--v-edge-hi),var(--v-shadow-1);transition:box-shadow .15s,border-color .15s;
 }
 body.vuelo .sec:hover{transform:none;background:var(--v-sheet);border-color:var(--v-hair-strong);box-shadow:inset 0 1px 0 var(--v-edge-hi),var(--v-shadow-2)}
-body.vuelo .sec.soft-conf{background:var(--v-amber-bg);border-color:var(--v-stitch-warn)}
-body.vuelo .sec.soft-conf:hover{background:var(--v-amber-bg);border-color:var(--v-stitch-warn);box-shadow:var(--v-shadow-2)}
+body.vuelo .sec.soft-conf{background:var(--v-sheet);border:1.5px dashed var(--v-stitch-warn);box-shadow:inset 3px 0 0 var(--v-amber),var(--v-shadow-1)}
+body.vuelo .sec.soft-conf:hover{background:var(--v-sheet);border-color:var(--v-amber);box-shadow:inset 3px 0 0 var(--v-amber),var(--v-shadow-2)}
 /* sección bloqueada: «billete usado», contenido atenuado y el aviso entero */
 body.vuelo .sec.conf{opacity:1;background:transparent;border:1.5px dashed var(--v-hair-strong);box-shadow:none}
 body.vuelo .sec.conf .sec-name,body.vuelo .sec.conf .sec-vac,
@@ -670,23 +683,29 @@ body.vuelo .ses-L{background:var(--v-sage-bg);color:var(--v-sage)}
 body.vuelo .ses-S{background:var(--v-olive-bg);color:var(--v-olive)}
 body.vuelo .ses{font:400 14px/20px var(--v-sans);font-variant-numeric:tabular-nums;color:var(--v-tx-2);padding:6px 0}
 body.vuelo .ses + .ses{border-top:1px solid var(--v-hair)}
+/* el horario de la sesión no se parte; si no cabe, el aula baja entera */
+body.vuelo .ses{flex-wrap:wrap;row-gap:2px}
+body.vuelo .ses > span:nth-child(2){white-space:nowrap}
 
 /* Calificar y editar */
 body.vuelo .star-inp{min-width:28px;min-height:28px;color:var(--v-tx-3)}
 body.vuelo .star-inp.on,body.vuelo .rate-star{color:var(--v-amber)}
 body.vuelo-oscuro .star-inp.on,body.vuelo-oscuro .rate-star{color:#e2c98a}
 body.vuelo .rate-btn{
-  height:36px;padding:0 16px;border-radius:var(--v-pill);border:1px solid var(--v-line);background:var(--v-fill);
+  height:28px;padding:0 12px;border-radius:var(--v-pill);border:1px solid var(--v-line);background:var(--v-fill);
   color:var(--v-tx-2);font:600 14px var(--v-sans);
 }
 body.vuelo .rate-btn:hover{background:var(--v-accent-soft);color:var(--v-accent-strong);border-color:transparent}
 body.vuelo .ses-edit{border-bottom-color:var(--v-hair)}
 body.vuelo .ses-edit select,body.vuelo .ses-edit input{
-  height:36px;padding:0 10px;border:1px solid var(--v-line);border-radius:10px;
+  height:36px;padding:0 10px;border:1px solid var(--v-field-line);border-radius:10px;
   background:var(--v-fill);color:var(--v-tx);font:400 15px var(--v-sans);
 }
 body.vuelo .ses-edit select:focus,body.vuelo .ses-edit input:focus{outline:none;box-shadow:0 0 0 3px var(--v-focus);border-color:var(--v-accent)}
+body.vuelo .ses-edit input[type=number]{width:56px;padding:0 6px}
 body.vuelo .ses-edit-del{border:none;border-radius:10px;background:var(--v-rose-bg);color:var(--v-rose)}
+/* campos del modal de periodo (estilo en línea con --line2) */
+body.vuelo .modal-body input:not([type=number]):not([type=checkbox]){border-color:var(--v-field-line)!important}
 
 /* Anuncio: la cartera de ante con costura, igual en los dos modos (un
    objeto claro sobre la mesa). La costura queda fija y lo que se desplaza
@@ -754,7 +773,7 @@ body.vuelo .toast.er .tdot{background:var(--v-dot-er);box-shadow:none}
 /* Sin desenfoque disponible: superficies opacas */
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
   body.vuelo .toast{background:var(--v-pill-solid)}
-  body.vuelo header,body.vuelo .sidebar,body.vuelo .action-btns,body.vuelo .mob-tabs{background:var(--v-surface-solid)}
+  body.vuelo .modal,body.vuelo .score-pop{background:var(--v-surface-solid)}
 }
 
 /* Detalles globales */
@@ -762,24 +781,32 @@ body.vuelo ::selection{background:var(--v-select)}
 body.vuelo :focus-visible{outline:2px solid var(--v-accent);outline-offset:2px}
 body.vuelo .course-scroll::-webkit-scrollbar-thumb,
 body.vuelo .sched-area::-webkit-scrollbar-thumb,
-body.vuelo .modal::-webkit-scrollbar-thumb{background:var(--v-fill-2);border-radius:var(--v-pill)}
+body.vuelo .modal::-webkit-scrollbar-thumb{background:var(--v-thumb);border-radius:var(--v-pill)}
 @media (prefers-reduced-motion:reduce){
   body.vuelo .blk:hover,body.vuelo .btn-dl:hover{transform:none}
 }
 
 
-/* ── 5. Móvil ───────────────────────────────────────────────────────── */
+/* ── 5. Tableta y móvil ─────────────────────────────────────────────── */
+/* Entre 721 y 1100 px la cápsula de acciones con texto (≈610 px) dejaba
+   sin sitio a las etiquetas: los secundarios quedan solo con icono */
+@media(min-width:721px) and (max-width:1100px){
+  body.vuelo .btn-names,body.vuelo .btn-cal,body.vuelo .btn-clear{font-size:0;gap:0;width:36px;padding:0;justify-content:center}
+}
 @media(max-width:720px){
   body.vuelo-oscuro{
     background-image:
+      var(--v-grain-film),
       radial-gradient(55% 38% at 92% 46%,rgba(196,150,80,.12),rgba(196,150,80,0) 70%),
       radial-gradient(70% 30% at 0% 100%,rgba(46,96,140,.30),rgba(46,96,140,0) 72%),
       linear-gradient(180deg,#313133,#33322f 60%,#2f3133);
+    background-size:180px 180px,auto,auto,auto;
   }
   /* Cabecera a todo el ancho, en vidrio y sin radio */
   body.vuelo header{
-    margin:0;border-radius:0;border-width:0 0 1px;box-shadow:none;
+    margin:0;border-radius:0;border-width:0 0 1px;border-bottom-color:var(--v-hair);box-shadow:none;
     height:calc(52px + env(safe-area-inset-top,0px));
+    padding:env(safe-area-inset-top,0px) 12px 0;   /* la barra de estado en la app instalada */
   }
   body.vuelo .logo-gem{width:50px;height:30px;border-radius:7px;font-size:12px}
   body.vuelo .logo-text{font-size:16px}
@@ -808,7 +835,7 @@ body.vuelo .modal::-webkit-scrollbar-thumb{background:var(--v-fill-2);border-rad
   body.vuelo .sched-wrap{border-radius:18px;padding:6px 6px 8px 0}
   /* Al desplazar el horario a los lados, la columna de horas se queda fija */
   body.vuelo table.sch td:first-child{position:sticky;left:0;z-index:5;background:var(--v-surface-solid)}
-  body.vuelo table.sch th:first-child{left:0;z-index:11}
+  body.vuelo table.sch th:first-child{left:0;z-index:12;background:var(--v-surface-solid)}
   body.vuelo .stats{display:grid;grid-template-columns:repeat(3,1fr);row-gap:10px;padding:8px 12px 10px}
   body.vuelo .stat{padding:0 10px;font-size:11px}
   body.vuelo .stat-n{font-size:18px;line-height:22px}
@@ -819,7 +846,6 @@ body.vuelo .modal::-webkit-scrollbar-thumb{background:var(--v-fill-2);border-rad
     left:16px;right:16px;bottom:calc(10px + env(safe-area-inset-bottom,0px));
     height:58px;padding:5px;gap:4px;
     border-radius:var(--v-pill);border:1px solid var(--v-edge);background:var(--v-surface);
-    -webkit-backdrop-filter:var(--v-glass-blur);backdrop-filter:var(--v-glass-blur);
     box-shadow:inset 0 1px 0 var(--v-edge-hi),var(--v-outline),var(--v-shadow-3);
   }
   body.vuelo .mob-tab{
@@ -830,10 +856,12 @@ body.vuelo .modal::-webkit-scrollbar-thumb{background:var(--v-fill-2);border-rad
   body.vuelo .mob-tab.on{background:var(--v-slate-bg);color:var(--v-slate)}
   body.vuelo .mob-tab.on svg{color:var(--v-slate)}
   body.vuelo .toast{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
-  /* Ventanas como hoja inferior de iOS, con su asa */
-  body.vuelo .overlay{align-items:flex-end;padding:0}
+  /* Ventanas como hoja inferior de iOS, con su asa; cubren la barra de
+     pestañas como en iOS (el aviso emergente sigue por encima) */
+  body.vuelo .overlay{align-items:flex-end;padding:0;z-index:10000}
+  body.vuelo .ann-overlay{z-index:10001}
   body.vuelo .modal{
-    max-width:none;max-height:88vh;border-radius:26px 26px 0 0;border-bottom:none;
+    max-width:none;max-height:88vh;max-height:88dvh;border-radius:26px 26px 0 0;border-bottom:none;
     padding-bottom:env(safe-area-inset-bottom,0px);
   }
   body.vuelo .modal-top{padding-top:26px}
