@@ -30,7 +30,9 @@ function downloadPDF(){
     const pdf=new window.jspdf.jsPDF({orientation:W>H?"landscape":"portrait",unit:"px",format:[W+56,H+72]});
     pdf.setFillColor(...bgOuter);pdf.rect(0,0,W+56,H+72,"F");
     pdf.setFillColor(...bgInner);pdf.roundedRect(28,16,W,H+28,6,6,"F");
-    pdf.setTextColor(...txtPri);pdf.setFontSize(9);pdf.setFont("helvetica","bold");
+    /* En Vuelo el nombre va en serif, como en la cabecera de la página */
+    const serif=THEME_FAMILY[currentTheme]==="vuelo";
+    pdf.setTextColor(...txtPri);pdf.setFontSize(serif?10:9);pdf.setFont(serif?"times":"helvetica","bold");
     pdf.text(facultyLabel,36,28);
     pdf.setTextColor(...txtSec);pdf.setFontSize(7);pdf.setFont("helvetica","normal");
     pdf.text("HORARIO "+getPeriod()+"  \u00b7  Generado desde Horarios FIA "+getPeriod(),36,36);

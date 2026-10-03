@@ -36,6 +36,8 @@ body.vuelo{
      textura sin aclarar ni oscurecer la base. Probados en pantalla. */
   --v-grain-film:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='11' stitchTiles='stitch' result='t'/%3E%3CfeColorMatrix in='t' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1 0 0 0 -.5' result='hi'/%3E%3CfeColorMatrix in='t' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 0 .5' result='lo'/%3E%3CfeMerge%3E%3CfeMergeNode in='lo'/%3E%3CfeMergeNode in='hi'/%3E%3C/feMerge%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='.12'/%3E%3C/svg%3E");
   --v-grain-paper:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.5 .78' numOctaves='3' seed='4' stitchTiles='stitch' result='t'/%3E%3CfeDiffuseLighting in='t' surfaceScale='1.1' diffuseConstant='1' lighting-color='%23fff' result='l'%3E%3CfeDistantLight azimuth='235' elevation='36'/%3E%3C/feDiffuseLighting%3E%3CfeColorMatrix in='l' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 .8 0 0 0 -.392' result='hi'/%3E%3CfeColorMatrix in='l' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -.8 0 0 0 .392' result='lo'/%3E%3CfeMerge%3E%3CfeMergeNode in='lo'/%3E%3CfeMergeNode in='hi'/%3E%3C/feMerge%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='.2'/%3E%3C/svg%3E");
+  /* el mismo papel a media intensidad: en oscuro el grano completo parece cuero */
+  --v-grain-paper-soft:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.5 .78' numOctaves='3' seed='4' stitchTiles='stitch' result='t'/%3E%3CfeDiffuseLighting in='t' surfaceScale='1.1' diffuseConstant='1' lighting-color='%23fff' result='l'%3E%3CfeDistantLight azimuth='235' elevation='36'/%3E%3C/feDiffuseLighting%3E%3CfeColorMatrix in='l' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 .8 0 0 0 -.392' result='hi'/%3E%3CfeColorMatrix in='l' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -.8 0 0 0 .392' result='lo'/%3E%3CfeMerge%3E%3CfeMergeNode in='lo'/%3E%3CfeMergeNode in='hi'/%3E%3C/feMerge%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='.1'/%3E%3C/svg%3E");
   --v-grain-suede:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='s' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='4' seed='9' stitchTiles='stitch' result='f'/%3E%3CfeDiffuseLighting in='f' surfaceScale='1.2' lighting-color='%23fff' result='l'%3E%3CfeDistantLight azimuth='250' elevation='40'/%3E%3C/feDiffuseLighting%3E%3CfeColorMatrix in='l' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 .8 0 0 0 -.376' result='hi'/%3E%3CfeColorMatrix in='l' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -.8 0 0 0 .376' result='lo'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.045' numOctaves='2' seed='2' stitchTiles='stitch' result='m'/%3E%3CfeColorMatrix in='m' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -.12 0 0 0 .06' result='mo'/%3E%3CfeMerge%3E%3CfeMergeNode in='mo'/%3E%3CfeMergeNode in='lo'/%3E%3CfeMergeNode in='hi'/%3E%3C/feMerge%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)' opacity='.25'/%3E%3C/svg%3E");
 
   /* Geometría */
@@ -66,7 +68,7 @@ body.vuelo-oscuro{
 
   --v-tx:#f9f8f8;
   --v-tx-2:#bdbcb8;
-  --v-tx-3:#a9a8a4;
+  --v-tx-3:#b0afab;
   --v-tx-4:#6e6d6d;
 
   --v-accent:#9bb4ca;        /* azul polvo de la tarjeta, aclarado */
@@ -79,6 +81,8 @@ body.vuelo-oscuro{
   --v-slate:#d6dcff;  --v-slate-bg:#484b66;
   --v-sage:#aedfb7;   --v-sage-bg:#354f3a;
   --v-rose:#ffc0ba;   --v-rose-bg:#5f3d3b;
+  --v-blue:#bcdcf5;   --v-blue-bg:#34506a;
+  --v-head-glass:rgba(49,49,51,0.62);   /* cabecera fija de la tabla */
 
   --v-shadow:0 18px 50px rgba(0,0,0,0.38),0 2px 8px rgba(0,0,0,0.22);
   --v-shadow-sm:0 6px 18px rgba(0,0,0,0.28),0 1px 3px rgba(0,0,0,0.2);
@@ -122,6 +126,8 @@ body.vuelo-claro{
   --v-slate:#40436d;  --v-slate-bg:#dcdff8;
   --v-sage:#33633e;   --v-sage-bg:#dff3e2;
   --v-rose:#87423e;   --v-rose-bg:#ffe5e2;
+  --v-blue:#2a5677;   --v-blue-bg:#dcebf7;
+  --v-head-glass:rgba(238,241,244,0.62);
 
   --v-shadow:0 18px 44px rgba(40,55,75,0.13),0 2px 8px rgba(40,55,75,0.07);
   --v-shadow-sm:0 6px 16px rgba(40,55,75,0.10),0 1px 3px rgba(40,55,75,0.07);
@@ -255,6 +261,11 @@ body.vuelo .sidebar-label{
   background:none;-webkit-text-fill-color:currentColor;color:var(--v-tx-3);
   font-family:var(--v-sans);font-size:0.72rem;font-weight:600;letter-spacing:0.02em;
 }
+/* El rombo de los temas anteriores pasa a ser el destello ✦ de la referencia */
+body.vuelo .lbl-glyph{
+  display:inline-block;width:8px;height:8px;margin-right:3px;font-size:0;vertical-align:1px;
+  background:var(--v-sparkle) center/8px 8px no-repeat;
+}
 body.vuelo .search-box{
   border:none;border-radius:12px;background:var(--v-surface-2);
   box-shadow:inset 0 1px 2px rgba(0,0,0,0.06);
@@ -275,6 +286,9 @@ body.vuelo #faculty-selector .chip{
   background:var(--v-surface-2)!important;color:var(--v-tx-2)!important;
   font-family:var(--v-sans)!important;font-weight:600!important;
 }
+/* faculty.js marca la activa con la clase «on» (el estilo en línea de los
+   temas anteriores queda tapado por los !important de arriba) */
+body.vuelo #faculty-selector button.on{background:var(--v-slate-bg)!important;color:var(--v-slate)!important}
 
 /* Filas de curso: lista agrupada con separadores insertados y chevron */
 body.vuelo .course-scroll{padding:0.35rem 0 1rem}
@@ -295,7 +309,10 @@ body.vuelo .c-row::after{
 body.vuelo .c-row:hover{background:var(--v-surface-2)}
 body.vuelo .c-row.sel{background:color-mix(in srgb,var(--v-accent) 16%,transparent)}
 body.vuelo .c-row.sel::after{border-color:var(--v-accent)}
-body.vuelo .c-row.conf{opacity:0.4}
+/* Práctica bloqueada: se atenúa el contenido pero el aviso se lee entero */
+body.vuelo .c-row.conf{opacity:1}
+body.vuelo .c-row.conf .cbox,body.vuelo .c-row.conf .c-name,
+body.vuelo .c-row.conf .c-cod,body.vuelo .c-row.conf .c-secs{opacity:0.45}
 /* Casilla redonda, como en las listas de iOS */
 body.vuelo .cbox{
   width:20px;height:20px;border-radius:50%;margin-top:0;
@@ -309,9 +326,14 @@ body.vuelo .c-name{
 body.vuelo .c-meta{gap:8px;margin-top:4px}
 body.vuelo .c-cod{
   font-family:var(--v-mono);font-size:0.66rem;font-weight:600;letter-spacing:0.02em;
-  padding:1px 7px;border-radius:6px;background:var(--v-surface-2)!important;color:var(--v-tx-2)!important;
+  padding:1px 7px;border-radius:6px;background:var(--v-surface-2);color:var(--v-tx-2);
 }
-body.vuelo .c-row.sel .c-cod{background:color-mix(in srgb,var(--v-accent) 20%,transparent)!important;color:var(--v-accent-strong)!important}
+/* El código lleva el tinte de su especialidad, como los chips de la
+   referencia: CB ámbar, IA salvia, IS azul polvo, IH pizarra */
+body.vuelo .cyCB .c-cod{background:var(--v-amber-bg);color:var(--v-amber)}
+body.vuelo .cyIA .c-cod{background:var(--v-sage-bg);color:var(--v-sage)}
+body.vuelo .cyIS .c-cod{background:var(--v-blue-bg);color:var(--v-blue)}
+body.vuelo .cyIH .c-cod{background:var(--v-slate-bg);color:var(--v-slate)}
 body.vuelo .c-secs{font-family:var(--v-sans);font-size:0.72rem;color:var(--v-tx-3)}
 
 /* Badges condensados, como «IN PROGRESS» */
@@ -407,7 +429,7 @@ body.vuelo .conf-bar svg{display:none}
 body.vuelo .conf-bar::before{
   content:'CRUCE';position:absolute;left:12px;top:50%;transform:translateY(-50%);
   font-family:var(--v-cond);font-weight:700;font-size:0.72rem;letter-spacing:0.08em;
-  padding:3px 10px;border-radius:6px;background:var(--v-rose-bg);color:var(--v-rose);
+  padding:3px 10px;border-radius:6px;background:var(--v-amber-bg);color:var(--v-amber);
 }
 /* el corte del billete */
 body.vuelo .conf-bar::after{
@@ -447,6 +469,12 @@ body.vuelo .empty h3{font-family:var(--v-serif);font-weight:500;font-size:1.35re
 body.vuelo .empty p{font-family:var(--v-serif);font-size:0.95rem;color:var(--v-tx-3);max-width:280px}
 
 /* Tabla */
+/* Los días son fijos al desplazar: llevan vidrio para no montarse sobre los
+   bloques que pasan por debajo (en reposo casi no se nota) */
+body.vuelo table.sch thead th{
+  background:var(--v-head-glass);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+}
 body.vuelo .dhead{
   background:transparent;border:none;border-radius:var(--v-pill);
   font-family:var(--v-sans);font-size:0.72rem;font-weight:600;letter-spacing:0.02em;
@@ -477,14 +505,17 @@ body.vuelo .blk{
   box-shadow:inset 0 1px 0 rgba(255,255,255,0.22),0 1px 2px rgba(0,0,0,0.10);
 }
 body.vuelo-oscuro .blk{box-shadow:inset 0 1px 0 rgba(255,255,255,0.08),0 1px 2px rgba(0,0,0,0.3)}
-body.vuelo .blk::before{
-  inset:0;background:var(--v-grain-paper) 0 0/240px;opacity:0.85;border-radius:inherit;
-}
+/* El grano va como capa de fondo del propio bloque, por debajo del texto
+   (un ::before absoluto se pintaba encima de la letra) */
+body.vuelo .blk::before{display:none}
 body.vuelo .blk:hover{filter:none;transform:translateY(-1px);box-shadow:var(--v-shadow-sm)}
+/* Cursos simultáneos: sin grano ni elevación; la letra es muy pequeña */
+body.vuelo .cell-blocks .blk{background-image:none}
+body.vuelo .cell-blocks .blk:hover{transform:none;box-shadow:none}
 body.vuelo .blk-name{font-family:var(--v-sans);font-weight:700;font-size:0.6rem;letter-spacing:0.01em}
 body.vuelo .blk-cod{font-family:var(--v-mono);font-weight:700;font-size:0.66rem;letter-spacing:0.02em}
 body.vuelo .blk-cod-sm{font-family:var(--v-mono);opacity:0.9}
-body.vuelo .blk-secc{font-weight:500;opacity:0.9}
+body.vuelo .blk-secc{font-weight:500}
 body.vuelo .blk-type{
   font-size:0.58rem;padding:1px 6px;margin-top:4px;border-radius:5px;
   background:rgba(0,0,0,0.12);color:inherit;
@@ -517,7 +548,8 @@ body.vuelo-oscuro .p6{--v-paper:#573d2e;--v-ink:#f1c5ad;--v-ink-edge:#d09574}
 body.vuelo-oscuro .p7{--v-paper:#4e3c53;--v-ink:#e4c4ee;--v-ink-edge:#bb94c7}
 
 /* Papel y tinta para todo lo que lleve clase de curso */
-body.vuelo .blk{background:var(--v-paper);color:var(--v-ink)}
+body.vuelo .blk{background:var(--v-grain-paper) 0 0/240px,var(--v-paper);color:var(--v-ink)}
+body.vuelo-oscuro .blk{background-image:var(--v-grain-paper-soft)}
 /* Las etiquetas traen color en línea (palHex); aquí manda el papel del
    curso para que la etiqueta sea idéntica a su bloque */
 body.vuelo .tag[class*=" p"]{background:var(--v-paper)!important;color:var(--v-ink)!important}
@@ -545,6 +577,8 @@ body.vuelo .stat-n{
   color:var(--v-tx);letter-spacing:-0.01em;
 }
 body.vuelo #sc{font-size:1.05rem;padding-top:0.3rem}
+/* la unidad junto a la cifra, como «2,628 km» */
+body.vuelo #sh::after{content:"\00a0h";font:600 0.75rem var(--v-sans);color:var(--v-tx-3);letter-spacing:0}
 /* Score: el círculo con icono de «I · Flyer» */
 body.vuelo .score-pill{
   align-self:center;margin-left:auto;border:1px solid var(--v-hair);
@@ -599,14 +633,15 @@ body.vuelo .sec:hover{background:var(--v-surface-3);border-color:var(--v-hair);t
 body.vuelo .sec.soft-conf{background:var(--v-amber-bg);border-color:transparent}
 body.vuelo .sec.soft-conf:hover{border-color:transparent;box-shadow:var(--v-shadow-sm)}
 body.vuelo .sec-name{font-family:var(--v-serif);font-weight:600;font-size:1.05rem;color:var(--v-tx);letter-spacing:0}
-body.vuelo .sec-vac{font-family:var(--v-sans);font-weight:600;background:var(--v-surface-2);color:var(--v-tx-2)}
+/* vacantes: valor a la derecha como en las listas de iOS, sin píldora */
+body.vuelo .sec-vac{font-family:var(--v-sans);font-weight:600;font-size:0.72rem;background:none;padding:0;color:var(--v-tx-2)}
 body.vuelo .sec-doc{font-family:var(--v-sans);font-size:0.76rem;color:var(--v-tx-2)}
 body.vuelo .doc-role{font-size:0.62rem;padding:1px 7px;background:var(--v-surface-2);color:var(--v-tx-2)}
 body.vuelo .ses{font-family:var(--v-sans);font-size:0.78rem;color:var(--v-tx-2);padding:4px 0}
 body.vuelo .ses-T,body.vuelo .ses-P,body.vuelo .ses-L,body.vuelo .ses-S{font-size:0.66rem;padding:2px 8px}
 body.vuelo .ses-T{background:var(--v-amber-bg);color:var(--v-amber)}
 body.vuelo .ses-P{background:var(--v-sage-bg);color:var(--v-sage)}
-body.vuelo .ses-L{background:var(--v-rose-bg);color:var(--v-rose)}
+body.vuelo .ses-L{background:var(--v-blue-bg);color:var(--v-blue)}
 body.vuelo .ses-S{background:var(--v-slate-bg);color:var(--v-slate)}
 body.vuelo .rate-star{color:var(--v-amber)}
 body.vuelo .rate-btn{border:1px solid var(--v-hair);background:var(--v-surface-2);color:var(--v-tx-2);font-family:var(--v-sans)}
@@ -623,6 +658,7 @@ body.vuelo .ses-edit-del{background:var(--v-rose-bg);border:none;color:var(--v-r
 /* Anuncio: la cartera de ante con costura */
 body.vuelo .ann-modal{
   position:relative;border-radius:30px;border:none;max-width:560px;
+  overflow:hidden;   /* desplaza la hoja, no la cartera: la costura se queda */
   background:linear-gradient(165deg,#c9d4de 0%,#aebfce 100%);
   box-shadow:inset 0 1px 0 rgba(255,255,255,0.6),inset 0 -2px 6px rgba(60,85,110,0.2),var(--v-shadow);
   color:#24313d;
@@ -643,20 +679,21 @@ body.vuelo .ann-modal::after{
 body.vuelo-oscuro .ann-modal::after{border-color:rgba(214,226,238,0.35)}
 body.vuelo .ann-top,body.vuelo .ann-foot{
   background:transparent;border:none;-webkit-backdrop-filter:none;backdrop-filter:none;
-  position:relative;z-index:1;
+  position:relative;z-index:1;flex-shrink:0;
 }
 body.vuelo .ann-top{padding:1.7rem 1.8rem 0.6rem}
 body.vuelo .ann-title{
   font-family:var(--v-serif);font-weight:700;font-size:1rem;letter-spacing:0.16em;text-transform:uppercase;
-  color:rgba(70,95,120,0.85);text-shadow:0 1px 0 rgba(255,255,255,0.55),0 -1px 0 rgba(50,75,100,0.25);
+  color:#364a5c;text-shadow:0 1px 0 rgba(255,255,255,0.55);   /* ≥ 4.5:1 sobre el ante */
 }
-body.vuelo-oscuro .ann-title{color:rgba(30,42,54,0.9);text-shadow:0 1px 0 rgba(255,255,255,0.12),0 -1px 0 rgba(0,0,0,0.45)}
+body.vuelo-oscuro .ann-title{color:#d5e0ea;text-shadow:0 -1px 0 rgba(0,0,0,0.45)}
 body.vuelo .ann-title svg{color:currentColor}
 body.vuelo .ann-x{background:rgba(255,255,255,0.35);color:#2f4152}
 body.vuelo-oscuro .ann-x{background:rgba(0,0,0,0.2);color:#dbe5ee}
 /* El texto va sobre una hoja de papel dentro de la cartera */
 body.vuelo .ann-body{
   position:relative;z-index:1;margin:0.4rem 1.4rem;padding:1.3rem 1.4rem;border-radius:18px;
+  flex:1 1 auto;min-height:0;overflow-y:auto;
   background:rgba(252,252,251,0.86);color:#2b2f35;
   box-shadow:0 1px 0 rgba(255,255,255,0.7) inset,0 6px 18px rgba(40,60,85,0.18);
 }
@@ -742,6 +779,9 @@ body.vuelo :focus-visible{outline:2px solid var(--v-accent);outline-offset:2px}
   }
   body.vuelo .mob-tab.on,body.vuelo .mob-tab.on svg{color:var(--v-accent-strong)}
   body.vuelo .modal{max-height:88vh}
+  /* Al desplazar el horario a los lados, la columna de horas se queda fija */
+  body.vuelo table.sch td:first-child{position:sticky;left:0;z-index:2;background:var(--v-bg)}
+  body.vuelo table.sch th:first-child{left:0;z-index:11}
 }
 
 
@@ -759,3 +799,6 @@ body.vuelo.exporting #printable *::before,body.vuelo.exporting #printable *::aft
 }
 body.vuelo.exporting .blk::before,body.vuelo.exporting .dhead.now::after{display:none}
 body.vuelo.exporting .cell-mt{background:transparent!important;border:1px solid var(--v-hair)}
+body.vuelo.exporting .blk{background-image:none!important}
+body.vuelo.exporting table.sch thead th{background:transparent!important}
+body.vuelo.exporting table.sch td:first-child{position:static!important}
