@@ -962,7 +962,10 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
 /* Sin límite de líneas: el nombre se ve completo, envolviendo lo que haga falta */
 .blk-name{
   font-size:0.58rem;font-weight:700;line-height:1.15;
-  overflow-wrap:break-word;hyphens:auto;
+  /* Palabras siempre enteras: sin guiones automáticos (en español partían
+     «ABASTECI-MIENTO»). Así el ancho mínimo de cada columna incluye la
+     palabra más larga y, si no cabe, el horario se desplaza a los lados. */
+  overflow-wrap:normal;hyphens:manual;
   /* Tope de ancho pedido: sin él, un nombre largo en una sola línea
      reclamaría toda la columna y estiraría el horario a lo ancho. */
   max-width:19ch;
@@ -989,7 +992,9 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
 /* `flex:1` daba a cada píldora la mitad exacta aunque una necesitara más.
    Con base automática el reparto sigue lo que ocupa cada contenido, y el
    mínimo evita que la más corta se quede sin espacio legible. */
-.cell-blocks .blk{flex:1 1 auto;width:auto;min-width:0;padding:3px 5px}
+/* min-width:auto = la palabra más larga: un bloque nunca se encoge por
+   debajo de ella (con 0 se recortaba «ABASTECIMIENTO» en celdas compartidas) */
+.cell-blocks .blk{flex:1 1 auto;width:auto;min-width:auto;padding:3px 5px}
 /* Al compartir celda hay la mitad de ancho: se reduce la letra para que las
    palabras largas quepan enteras en vez de partirse a mitad */
 .cell-blocks .blk .blk-name{font-size:0.5rem;line-height:1.1}

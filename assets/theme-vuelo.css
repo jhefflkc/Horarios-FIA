@@ -501,7 +501,9 @@ body.vuelo-oscuro table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,
 /* Bloques de curso: billetes de papel con grano. Sin borde lateral: el
    color va en el papel mismo, como las tarjetas de las referencias. */
 body.vuelo .blk{
-  border-left:none;border-radius:var(--v-r-md);padding:7px 9px;overflow:hidden;
+  border-left:none;border-radius:var(--v-r-md);padding:7px 9px;
+  /* sin overflow:hidden: con él, min-width:auto valdría 0 y el bloque se
+     encogería por debajo de su palabra más larga */
   box-shadow:inset 0 1px 0 rgba(255,255,255,0.22),0 1px 2px rgba(0,0,0,0.10);
 }
 body.vuelo-oscuro .blk{box-shadow:inset 0 1px 0 rgba(255,255,255,0.08),0 1px 2px rgba(0,0,0,0.3)}
