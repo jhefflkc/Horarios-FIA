@@ -3,9 +3,9 @@
 function downloadPDF(){
   const el=document.getElementById("printable");
   if(!el){toast("Primero selecciona cursos para generar el horario","er");return;}
-  /* El tema activo manda: antes se comprobaban clases sueltas y cualquier
-     tema no contemplado —como Google— salía con el marco oscuro. */
-  const pdfC=PDF_THEME[localStorage.getItem("theme")||"dark"]||PDF_THEME.dark;
+  /* El tema que se ve en pantalla manda. No basta con lo guardado: en modo
+     automático no se guarda nada y el PDF salía con el marco de otro tema. */
+  const pdfC=PDF_THEME[currentTheme]||PDF_THEME[defaultTheme()]||PDF_THEME[THEME_ORDER[0]];
   const bgCanvas=pdfC.canvas;
   const bgOuter=pdfC.outer;
   const bgInner=pdfC.inner;

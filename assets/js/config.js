@@ -100,8 +100,8 @@ var THEME_ICON={"vuelo-claro":"dark","vuelo-oscuro":"light",
    que el marco del PDF se pinta a mano: cada tema necesita su entrada aquí o
    el PDF saldrá con los colores de otro. */
 var PDF_THEME={
-  ["vuelo-claro"]: {canvas:"#eef1f4",outer:[238,241,244],inner:[250,251,252],pri:[29,35,39],   sec:[90,100,105]},
-  ["vuelo-oscuro"]:{canvas:"#313133",outer:[49,49,51],   inner:[54,54,56],   pri:[249,248,248],sec:[158,157,153]},
+  ["vuelo-claro"]: {canvas:"#fafbfc",outer:[238,241,244],inner:[250,251,252],pri:[29,35,39],   sec:[90,100,105]},
+  ["vuelo-oscuro"]:{canvas:"#363638",outer:[49,49,51],   inner:[54,54,56],   pri:[249,248,248],sec:[158,157,153]},
   dark:            {canvas:"#0c0905",outer:[12,9,5],     inner:[19,14,8],    pri:[200,150,100],sec:[110,100,80]},
   ["stitch-dark"]: {canvas:"#0d0d0f",outer:[13,13,15],   inner:[17,17,19],   pri:[229,229,231],sec:[142,142,147]},
   light:           {canvas:"#fdf6ee",outer:[253,246,238],inner:[255,250,244],pri:[90,58,24],   sec:[138,98,72]},
