@@ -23,10 +23,20 @@
 
 body.vuelo{
   /* Tipografías */
-  --v-serif:"Newsreader","Source Serif 4",Georgia,"Times New Roman",serif;
-  --v-sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",system-ui,sans-serif;
-  --v-cond:"Barlow Condensed","Arial Narrow",sans-serif;
-  --v-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  /* Calibradas contra las referencias: Source Serif 4 ≈ New York/Charter,
+     Inter ≈ SF Pro, Sofia Sans Condensed ≈ SF Condensed (familia propia,
+     porque html2canvas ignora font-stretch), IBM Plex Mono ≈ SF Mono */
+  --v-serif:"Source Serif 4","New York",Charter,Georgia,serif;
+  --v-sans:"Inter",-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;
+  --v-cond:"Sofia Sans Condensed","Arial Narrow",sans-serif;
+  --v-mono:"IBM Plex Mono","JetBrains Mono",ui-monospace,monospace;
+  --v-exp:"Archivo",sans-serif;   /* ancha: solo decorativa, nunca en el PDF */
+
+  /* Granos de media cero (crestas claras, valles oscuros por alfa): dan
+     textura sin aclarar ni oscurecer la base. Probados en pantalla. */
+  --v-grain-film:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='11' stitchTiles='stitch' result='t'/%3E%3CfeColorMatrix in='t' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1 0 0 0 -.5' result='hi'/%3E%3CfeColorMatrix in='t' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 0 .5' result='lo'/%3E%3CfeMerge%3E%3CfeMergeNode in='lo'/%3E%3CfeMergeNode in='hi'/%3E%3C/feMerge%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='.12'/%3E%3C/svg%3E");
+  --v-grain-paper:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.5 .78' numOctaves='3' seed='4' stitchTiles='stitch' result='t'/%3E%3CfeDiffuseLighting in='t' surfaceScale='1.1' diffuseConstant='1' lighting-color='%23fff' result='l'%3E%3CfeDistantLight azimuth='235' elevation='36'/%3E%3C/feDiffuseLighting%3E%3CfeColorMatrix in='l' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 .8 0 0 0 -.392' result='hi'/%3E%3CfeColorMatrix in='l' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -.8 0 0 0 .392' result='lo'/%3E%3CfeMerge%3E%3CfeMergeNode in='lo'/%3E%3CfeMergeNode in='hi'/%3E%3C/feMerge%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='.2'/%3E%3C/svg%3E");
+  --v-grain-suede:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='s' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='4' seed='9' stitchTiles='stitch' result='f'/%3E%3CfeDiffuseLighting in='f' surfaceScale='1.2' lighting-color='%23fff' result='l'%3E%3CfeDistantLight azimuth='250' elevation='40'/%3E%3C/feDiffuseLighting%3E%3CfeColorMatrix in='l' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 .8 0 0 0 -.376' result='hi'/%3E%3CfeColorMatrix in='l' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -.8 0 0 0 .376' result='lo'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.045' numOctaves='2' seed='2' stitchTiles='stitch' result='m'/%3E%3CfeColorMatrix in='m' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -.12 0 0 0 .06' result='mo'/%3E%3CfeMerge%3E%3CfeMergeNode in='mo'/%3E%3CfeMergeNode in='lo'/%3E%3CfeMergeNode in='hi'/%3E%3C/feMerge%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)' opacity='.25'/%3E%3C/svg%3E");
 
   /* Geometría */
   --v-r-xl:26px;       /* paneles y ventanas */
@@ -77,7 +87,7 @@ body.vuelo-oscuro{
   --v-emboss:0 1px 0 rgba(255,255,255,0.08),0 -1px 0 rgba(0,0,0,0.65);   /* bajorrelieve */
   --v-deboss-ink:#1d1d1e;
 
-  --v-grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.22 0 0 0 -0.06'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --v-sparkle:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23d1dadc' d='M4 0C4.4 2.6 5.4 3.6 8 4C5.4 4.4 4.4 5.4 4 8C3.6 5.4 2.6 4.4 0 4C2.6 3.6 3.6 2.6 4 0Z'/%3E%3C/svg%3E");
   color-scheme:dark;
 }
 
@@ -120,7 +130,7 @@ body.vuelo-claro{
   --v-emboss:0 1px 0 rgba(255,255,255,0.85),0 -1px 0 rgba(40,60,85,0.16);
   --v-deboss-ink:#c9d0d8;
 
-  --v-grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.12 0 0 0 0 0.16 0 0 0 0 0.22 0.26 0 0 0 -0.08'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --v-sparkle:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%237a868c' d='M4 0C4.4 2.6 5.4 3.6 8 4C5.4 4.4 4.4 5.4 4 8C3.6 5.4 2.6 4.4 0 4C2.6 3.6 3.6 2.6 4 0Z'/%3E%3C/svg%3E");
   color-scheme:light;
 }
 
@@ -160,7 +170,6 @@ body.vuelo{
     radial-gradient(60% 55% at 92% 48%,var(--v-glow-warm) 0%,transparent 70%),
     radial-gradient(55% 45% at 0% 100%,var(--v-glow-cool) 0%,transparent 72%),
     linear-gradient(180deg,var(--v-bg) 0%,var(--v-bg-deep) 100%);
-  background-attachment:fixed;
   -webkit-font-smoothing:antialiased;
 }
 body.vuelo-claro{
@@ -173,6 +182,12 @@ body.vuelo-claro{
 
 
 /* ── 3. Materiales ──────────────────────────────────────────────────── */
+/* Grano de película en una capa fija, por encima de todo y sin capturar
+   eventos. Varía ±2 niveles y conserva el color medio. */
+body.vuelo::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:2147483000;
+  background:var(--v-grain-film) 0 0/180px;
+}
 /* Vidrio: superficie translúcida, desenfoque, borde fino y filo de luz */
 body.vuelo header,
 body.vuelo .sidebar,
@@ -204,7 +219,7 @@ body.vuelo .logo-gem{
 body.vuelo-oscuro .logo-gem{background:linear-gradient(160deg,#55697d,#3d4e5f)}
 body.vuelo .logo-gem::before{
   content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
-  background:var(--v-grain);opacity:0.9;
+  background:var(--v-grain-suede) 0 0/200px;
 }
 body.vuelo .logo-gem::after{
   content:'';position:absolute;inset:3.5px;border-radius:10px;pointer-events:none;
@@ -212,13 +227,13 @@ body.vuelo .logo-gem::after{
 }
 body.vuelo-oscuro .logo-gem::after{border-color:rgba(220,232,244,0.45)}
 body.vuelo .logo-text{
-  font-family:var(--v-serif);font-weight:600;font-size:1.32rem;letter-spacing:-0.01em;
+  font-family:var(--v-serif);font-weight:600;font-size:1.25rem;letter-spacing:0;
   color:var(--v-tx);line-height:1;
 }
 body.vuelo .logo-text span{color:var(--v-tx-3);font-weight:400}
 body.vuelo .logo-sub{
-  font-family:var(--v-sans);font-size:0.62rem;font-weight:600;letter-spacing:0.14em;
-  text-transform:uppercase;color:var(--v-tx-3);margin-top:4px;
+  font-family:var(--v-serif);font-style:italic;font-weight:700;font-size:0.74rem;
+  letter-spacing:0.005em;text-transform:none;color:var(--v-tx-3);margin-top:3px;
 }
 body.vuelo .header-mid{
   font-family:var(--v-serif);font-style:italic;font-size:0.92rem;letter-spacing:0;
@@ -238,7 +253,7 @@ body.vuelo .sidebar{border-radius:var(--v-r-xl)}
 body.vuelo .sidebar-top{border-bottom:1px solid var(--v-hair);padding:1.2rem 1.15rem 1rem}
 body.vuelo .sidebar-label{
   background:none;-webkit-text-fill-color:currentColor;color:var(--v-tx-3);
-  font-family:var(--v-sans);font-size:0.68rem;font-weight:700;letter-spacing:0.09em;
+  font-family:var(--v-sans);font-size:0.72rem;font-weight:600;letter-spacing:0.02em;
 }
 body.vuelo .search-box{
   border:none;border-radius:12px;background:var(--v-surface-2);
@@ -315,7 +330,7 @@ body.vuelo .c-conf-tag-soft,body.vuelo .sec-warn{background:var(--v-amber-bg);co
 /* Cabeceras de ciclo (cuando el interruptor esté activo) */
 body.vuelo .cy-head{
   background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;
-  font-family:var(--v-sans);font-size:0.66rem;letter-spacing:0.09em;color:var(--v-tx-3);
+  font-family:var(--v-sans);font-size:0.72rem;font-weight:600;letter-spacing:0.02em;color:var(--v-tx-3);
   padding:1rem 1.35rem 0.4rem;position:static;
 }
 body.vuelo .cy-head-n{font-family:var(--v-mono);background:var(--v-surface-2);color:var(--v-tx-3)}
@@ -375,7 +390,7 @@ body.vuelo-oscuro .btn-dl{
 }
 body.vuelo-oscuro .btn-dl:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,0.8),0 0 28px 4px rgba(214,228,234,0.32)}
 body.vuelo .btn-dl::after{
-  content:'';position:absolute;inset:0;pointer-events:none;background:var(--v-grain);opacity:0.55;
+  content:'';position:absolute;inset:0;pointer-events:none;background:var(--v-grain-paper) 0 0/240px;
 }
 body.vuelo .btn-dl svg{filter:none}
 body.vuelo .btn-dl:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,0.5),0 6px 20px rgba(60,95,135,0.36)}
@@ -421,7 +436,7 @@ body.vuelo .empty-box::after{
   /* frente de la carpeta con su solapa y el rótulo en bajorrelieve */
   content:'HORARIO';position:absolute;left:0;right:0;bottom:0;height:92px;
   display:flex;align-items:flex-end;padding:0 0 16px 22px;box-sizing:border-box;
-  font-family:var(--v-sans);font-weight:800;font-size:1.65rem;letter-spacing:0.02em;
+  font-family:var(--v-exp);font-stretch:112.5%;font-weight:450;font-size:1.6rem;letter-spacing:0.01em;
   color:var(--v-deboss-ink);text-shadow:var(--v-emboss);
   background:var(--v-sunken);border-top:1px solid var(--v-edge-hi);
   clip-path:polygon(0 18%,52% 18%,60% 0,100% 0,100% 100%,0 100%);
@@ -434,7 +449,7 @@ body.vuelo .empty p{font-family:var(--v-serif);font-size:0.95rem;color:var(--v-t
 /* Tabla */
 body.vuelo .dhead{
   background:transparent;border:none;border-radius:var(--v-pill);
-  font-family:var(--v-sans);font-size:0.66rem;font-weight:700;letter-spacing:0.12em;
+  font-family:var(--v-sans);font-size:0.72rem;font-weight:600;letter-spacing:0.02em;
   color:var(--v-tx-3);padding:8px 4px 10px;margin:0 2px 4px;
 }
 body.vuelo .dhead.now{background:none;color:var(--v-tx);border:none;position:relative}
@@ -463,7 +478,7 @@ body.vuelo .blk{
 }
 body.vuelo-oscuro .blk{box-shadow:inset 0 1px 0 rgba(255,255,255,0.08),0 1px 2px rgba(0,0,0,0.3)}
 body.vuelo .blk::before{
-  inset:0;background:var(--v-grain);opacity:0.7;border-radius:inherit;
+  inset:0;background:var(--v-grain-paper) 0 0/240px;opacity:0.85;border-radius:inherit;
 }
 body.vuelo .blk:hover{filter:none;transform:translateY(-1px);box-shadow:var(--v-shadow-sm)}
 body.vuelo .blk-name{font-family:var(--v-sans);font-weight:700;font-size:0.6rem;letter-spacing:0.01em}
@@ -559,9 +574,10 @@ body.vuelo .modal-top{
 }
 /* el separador con destello «———— ✦» de la referencia */
 body.vuelo .modal-top::after{
-  content:'✦';position:absolute;left:1.6rem;bottom:-10px;
-  padding-left:62px;font-size:0.7rem;line-height:1;color:var(--v-tx-3);
-  background:linear-gradient(var(--v-tx-4),var(--v-tx-4)) left 50%/52px 1px no-repeat;
+  content:'';position:absolute;left:1.6rem;bottom:-8px;width:62px;height:8px;
+  background:
+    linear-gradient(var(--v-tx-4),var(--v-tx-4)) left 50%/46px 1px no-repeat,
+    var(--v-sparkle) right center/8px 8px no-repeat;
 }
 body.vuelo .modal-ttl{
   font-family:var(--v-serif);font-weight:600;font-size:1.5rem;line-height:1.15;letter-spacing:-0.01em;color:var(--v-tx);
@@ -618,7 +634,7 @@ body.vuelo-oscuro .ann-modal{
 }
 body.vuelo .ann-modal::before{
   content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
-  background:var(--v-grain);opacity:0.9;
+  background:var(--v-grain-suede) 0 0/200px;
 }
 body.vuelo .ann-modal::after{
   content:'';position:absolute;inset:9px;border-radius:22px;pointer-events:none;
@@ -656,7 +672,7 @@ body.vuelo .ann-body hr{
     linear-gradient(currentColor,currentColor) left 50%/52px 1px no-repeat;
   opacity:0.35;position:relative;
 }
-body.vuelo .ann-body hr::after{content:'✦';position:absolute;left:62px;top:-3px;font-size:0.7rem}
+body.vuelo .ann-body hr::after{content:'';position:absolute;left:54px;top:2px;width:8px;height:8px;background:var(--v-sparkle) center/8px 8px no-repeat;opacity:1}
 body.vuelo .ann-body code{font-family:var(--v-mono);background:rgba(0,0,0,0.06)}
 body.vuelo .ann-body a{color:var(--v-accent)}
 body.vuelo .ann-body blockquote{border-left-color:var(--v-accent);color:inherit;opacity:0.75}
@@ -732,6 +748,14 @@ body.vuelo :focus-visible{outline:2px solid var(--v-accent);outline-offset:2px}
 /* ── 6. Exportación a PDF ───────────────────────────────────────────── */
 /* html2canvas no entiende backdrop-filter ni las mezclas, y el grano solo
    ensucia la impresión: durante la captura todo queda plano y nítido. */
-body.vuelo.exporting .blk::before{display:none}
-body.vuelo.exporting .blk{box-shadow:none}
+/* Probado con html2canvas 1.4.1: cualquier box-shadow interior pinta un
+   marco opaco de esquinas cuadradas, los exteriores no salen, y las
+   mezclas, filtros y vidrios se ignoran. Todo plano dentro de #printable. */
+body.vuelo.exporting #printable,body.vuelo.exporting #printable *,
+body.vuelo.exporting #printable *::before,body.vuelo.exporting #printable *::after{
+  box-shadow:none!important;text-shadow:none!important;filter:none!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  mix-blend-mode:normal!important;background-blend-mode:normal!important;font-stretch:100%!important;
+}
+body.vuelo.exporting .blk::before,body.vuelo.exporting .dhead.now::after{display:none}
 body.vuelo.exporting .cell-mt{background:transparent!important;border:1px solid var(--v-hair)}
