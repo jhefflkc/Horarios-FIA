@@ -44,6 +44,13 @@ debajo del `<link>` de Google Fonts, hay una segunda línea comentada con
 ellas: quítale el comentario `<!-- … -->`. Sin ese paso el tema funciona, pero
 con las fuentes de respaldo del sistema.
 
+Un detalle menor: al principio de `<body>` en `index.html` hay un script corto
+que pone el tema Vuelo antes del primer pintado (para que no asome otro tema
+mientras cargan los JS). Solo conoce `vuelo-claro` y `vuelo-oscuro`; si alguien
+tiene guardado un tema antiguo, verá Vuelo una fracción de segundo antes de que
+`theme.js` aplique el suyo. Para evitarlo, añade ese tema a la condición del
+script.
+
 ## Cómo volver al estado exacto anterior
 
 ```bash
