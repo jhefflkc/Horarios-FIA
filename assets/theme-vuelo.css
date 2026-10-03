@@ -99,7 +99,7 @@ body.vuelo-oscuro{
   --v-sheet:#2b2b2d;                /* billete: secciones, aviso de cruce */
   --v-wrap:rgba(255,255,255,.025);--v-wrap-solid:#363638;
   --v-export-bg:#363638;
-  --v-modal:rgba(72,74,76,.90);--v-modal-head:rgba(70,72,74,.97);--v-modal-solid:#46484a;   /* vidrio gris de la referencia */
+  --v-modal:rgba(72,74,76,.90);--v-modal-head:rgb(70,72,74);--v-modal-solid:#46484a;   /* vidrio gris de la referencia */
   --v-hair:rgba(255,255,255,.08);--v-hair-strong:rgba(255,255,255,.16);--v-line:rgba(255,255,255,.10);
   --v-edge:rgba(255,255,255,.10);--v-edge-hi:rgba(255,255,255,.12);
   --v-outline:0 0 0 0 transparent;
@@ -162,7 +162,7 @@ body.vuelo-claro{
   --v-sheet:#ffffff;
   --v-wrap:rgba(255,255,255,.60);--v-wrap-solid:#f9f8f7;
   --v-export-bg:#fbfaf8;
-  --v-modal:rgba(250,250,248,.90);--v-modal-head:rgba(250,250,248,.97);--v-modal-solid:#f8f7f5;
+  --v-modal:rgba(250,250,248,.90);--v-modal-head:rgb(250,250,248);--v-modal-solid:#f8f7f5;
   --v-hair:rgba(48,44,38,.10);--v-hair-strong:rgba(48,44,38,.20);--v-line:rgba(48,44,38,.11);
   --v-edge:rgba(255,255,255,.90);--v-edge-hi:#ffffff;
   --v-outline:0 0 0 1px rgba(48,44,38,.07);
@@ -186,7 +186,7 @@ body.vuelo-claro{
   --v-star:#6e5419;
   --v-field-line:#7e8186;--v-thumb:#7e8186;
   --v-sep:#7a868c;--v-sparkle:var(--v-sparkle-light);
-  --v-meter:linear-gradient(90deg,#8e7a5e,#5f7f9b);   /* 3,5:1 en ambos extremos */
+  --v-meter:linear-gradient(90deg,#7a6850,#4f6f8b);   /* ≥3:1 sobre su pista */
   --v-meter-track:rgba(48,44,38,.08);--v-meter-glow:0 0 0 transparent;
 
   --v-folder-back:linear-gradient(180deg,#e3e1dc,#dad8d2);
@@ -319,7 +319,8 @@ body.vuelo .search-box svg{color:var(--v-tx-3)}
 body.vuelo .search-box input{font:400 15px/20px var(--v-sans);color:var(--v-tx)}
 body.vuelo .search-box input::placeholder{color:var(--v-tx-3);opacity:1}
 body.vuelo .search-box input:focus-visible{outline:none}
-body.vuelo .search-box:focus-within{background:var(--v-fill-2);border:none;box-shadow:0 0 0 3px var(--v-focus)}
+body.vuelo .search-box:focus-within{background:var(--v-fill-2);border:none;box-shadow:0 0 0 2px var(--v-accent)}
+body.vuelo-oscuro .search-box input::placeholder{color:#bdbcb8}   /* tx-3 bajaba de 4,5:1 sobre el relleno */
 /* Fila «I · Flyer»: icono en círculo y texto */
 body.vuelo .upload-row{border:none;background:transparent;border-radius:12px;padding:6px;gap:10px;font:500 13px/18px var(--v-sans);color:var(--v-tx-2)}
 body.vuelo .upload-row svg{box-sizing:content-box;width:14px;height:14px;padding:7px;border-radius:50%;background:var(--v-fill-2);color:var(--v-tx)}
@@ -466,7 +467,10 @@ body.vuelo .empty-box{
   background:var(--v-folder-back);
   box-shadow:inset 0 1px 0 var(--v-folder-rim),inset 0 0 0 1px var(--v-hair),var(--v-shadow-3);
 }
+body.vuelo .empty-box{flex-shrink:0}
 body.vuelo .empty-box > svg{display:none}
+body.vuelo .v-ticket{text-align:left}
+@media(max-height:540px){body.vuelo .empty-box{display:none}}
 body.vuelo .empty-box .v-folder{display:block;position:absolute;inset:0}
 body.vuelo .v-ticket{
   position:absolute;left:24px;right:28px;top:18px;height:100px;box-sizing:border-box;padding:12px 16px;
@@ -508,7 +512,9 @@ body.vuelo .sched-wrap{
 }
 /* los días son fijos al desplazar: fondo opaco (sin desenfoque, que se
    repintaría en cada fotograma) para no montarse sobre los bloques */
-body.vuelo table.sch thead th{background:var(--v-wrap-solid)}
+body.vuelo table.sch thead th{background:var(--v-wrap-solid);top:-14px}   /* -14 = relleno superior del área */
+body.vuelo table.sch td:first-child{position:sticky;left:-22px;z-index:5;background:var(--v-wrap-solid)}
+body.vuelo table.sch thead th:first-child{position:sticky;left:-22px;top:-14px;z-index:12}
 body.vuelo table.sch thead th:first-child{border-top-left-radius:14px}
 body.vuelo table.sch thead th:last-child{border-top-right-radius:14px}
 body.vuelo .dhead{
@@ -582,6 +588,7 @@ body.vuelo .stat{
   flex-direction:column-reverse;align-items:flex-start;gap:2px;padding:0 22px;border-left:1px solid var(--v-hair);
   font:500 12px/16px var(--v-sans);letter-spacing:.015em;color:var(--v-tx-3);
 }
+body.vuelo .stat{justify-content:flex-end}   /* en column-reverse alinea las cifras arriba */
 body.vuelo .stat:first-child{padding-left:0;border-left:none}
 body.vuelo .stat-colon{display:none}
 body.vuelo .stat-n{font:600 24px/26px var(--v-serif);font-variant-numeric:lining-nums proportional-nums;letter-spacing:-.02em;color:var(--v-tx)}
@@ -666,6 +673,9 @@ body.vuelo .sec-doc{font:400 13px/18px var(--v-sans);color:var(--v-tx-2)}
 body.vuelo .doc-role{background:var(--v-fill-2);color:var(--v-tx-2)}
 /* tipos de sesión: Teoría neutro como «IN PROGRESS» (el ámbar ya es
    aviso), P pizarra, L salvia, S oliva */
+@media(min-width:721px){
+  body.vuelo .ses > .ses-T,body.vuelo .ses > .ses-P,body.vuelo .ses > .ses-L,body.vuelo .ses > .ses-S{min-width:70px;box-sizing:border-box;justify-content:center}
+}
 body.vuelo .ses-T{background:var(--v-fill-2);color:var(--v-tx)}
 body.vuelo .ses-P{background:var(--v-slate-bg);color:var(--v-slate)}
 body.vuelo .ses-L{background:var(--v-sage-bg);color:var(--v-sage)}
@@ -687,7 +697,13 @@ body.vuelo .ses-edit select,body.vuelo .ses-edit input{
   height:36px;padding:0 10px;border:1px solid var(--v-field-line);border-radius:10px;
   background:var(--v-fill);color:var(--v-tx);font:400 15px var(--v-sans);
 }
-body.vuelo .ses-edit input[type=number]{width:56px;padding:0 6px}
+/* dos filas ordenadas en rejilla: tipo, día y horas; debajo el aula, que
+   ocupa todo el ancho y no se recorta, y la × */
+body.vuelo .ses-edit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 48px auto 48px;align-items:center}
+body.vuelo .ses-edit select{min-width:0;padding:0 4px 0 8px}
+body.vuelo .ses-edit input[type=number]{width:48px;padding:0 4px}
+body.vuelo .ses-edit input[type=text]{grid-column:1/5;width:auto;min-width:0;padding:0 10px}
+body.vuelo .ses-edit-del{grid-column:5;justify-self:stretch}
 body.vuelo .ses-edit select:focus,body.vuelo .ses-edit input:focus{outline:none;box-shadow:0 0 0 3px var(--v-focus);border-color:var(--v-accent)}
 body.vuelo .ses-edit-del{height:36px;padding:0 12px;border:none;border-radius:10px;background:var(--v-rose-bg);color:var(--v-rose)}
 
@@ -715,8 +731,9 @@ body.vuelo .ann-title svg{color:currentColor}
 body.vuelo .ann-x{background:rgba(255,255,255,.35);color:var(--v-suede-btn-ink)}
 body.vuelo .ann-x:hover{background:rgba(255,255,255,.55);color:var(--v-suede-btn-ink)}
 body.vuelo .ann-body{
-  position:relative;z-index:1;flex:1 1 auto;min-height:0;overflow-y:auto;margin:6px 22px 0;padding:22px 24px 40px;
-  border-radius:14px;color:var(--v-card-ink);background:var(--v-grain-paper-lite) 0 0/240px,var(--v-flyer-light);
+  position:relative;z-index:1;flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;overflow-wrap:anywhere;
+  margin:6px 22px 0;padding:22px 24px 40px;
+  border-radius:14px 14px 0 0;color:var(--v-card-ink);background:var(--v-grain-paper-lite) 0 0/240px,var(--v-flyer-light);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.8),inset 0 0 0 1px rgba(255,255,255,.4),0 8px 22px -8px rgba(40,60,85,.35);
 }
 body.vuelo .ann-body h1{font:600 22px/1.25 var(--v-serif);color:inherit}
@@ -726,7 +743,7 @@ body.vuelo .ann-body p,body.vuelo .ann-body li{font:400 16px/1.6 var(--v-serif);
 body.vuelo .ann-body strong{font-weight:700;color:inherit}
 body.vuelo .ann-body a{color:var(--v-card-link);text-decoration:underline;text-underline-offset:2px}
 body.vuelo .ann-body blockquote{border-left:2px solid #7c9bb7;color:var(--v-card-ink-2);font:italic 400 15px/1.6 var(--v-serif)}
-body.vuelo .ann-body code{font:500 13px var(--v-mono);background:rgba(43,47,53,.06);color:inherit;border-radius:5px;padding:1px 5px}
+body.vuelo .ann-body code{font:500 13px var(--v-mono);background:rgba(43,47,53,.06);color:inherit;border-radius:5px;padding:1px 5px;word-break:break-all}
 body.vuelo .ann-body hr{
   border:none;height:8px;margin:1.2em 0;
   background:linear-gradient(#8e9aa1,#8e9aa1) left center/46px 1px no-repeat,var(--v-sparkle-light) 54px center/8px 8px no-repeat;
@@ -758,6 +775,7 @@ body.vuelo .ann-btn-skip{background:rgba(255,255,255,.35);color:var(--v-suede-bt
 body.vuelo .ann-btn-skip:hover{background:rgba(255,255,255,.5);color:var(--v-suede-btn-ink)}
 body.vuelo .ann-btn-ok{background:#f3f5f6;color:#22303d;border:none;box-shadow:0 2px 8px rgba(40,60,85,.25)}
 body.vuelo .ann-btn-ok:hover{background:#fff}
+body.vuelo .ann-modal :focus-visible{outline-color:var(--v-suede-btn-ink)}   /* la cartera es igual en ambos modos */
 
 /* Aviso emergente: la píldora esmerilada clara, igual en los dos modos */
 body.vuelo .toast{
@@ -792,6 +810,24 @@ body.vuelo .modal::-webkit-scrollbar-thumb,body.vuelo .ann-body::-webkit-scrollb
    etiquetas: los secundarios quedan solo con icono (llevan aria-label) */
 @media(min-width:721px) and (max-width:1100px){
   body.vuelo .btn-names,body.vuelo .btn-cal,body.vuelo .btn-clear{font-size:0;gap:0;width:36px;padding:0;justify-content:center}
+}
+@media(min-width:721px){
+  body.vuelo .topbar{flex-wrap:wrap}
+  body.vuelo .tags-zone{min-width:min(100%,330px)}
+  body.vuelo .action-btns{margin-left:auto}
+}
+@media(min-width:721px) and (max-width:860px){
+  body.vuelo .stats{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;row-gap:10px}
+  body.vuelo .score-pill{grid-column:1/-1;justify-self:start;margin-left:0}
+}
+/* Móvil apaisado y ventanas bajas: cabecera compacta y el horario con un
+   alto mínimo; el resto se desplaza en vez de dejar el horario en 0 px */
+@media(min-width:721px) and (max-height:500px){
+  body.vuelo header{height:48px;margin-top:6px}
+  body.vuelo .header-mid{display:none}
+  body.vuelo .topbar{padding:8px 22px 4px}
+  body.vuelo .main{overflow-y:auto}
+  body.vuelo .sched-area{flex:1 0 auto;min-height:220px;max-height:calc(100dvh - 80px)}
 }
 
 @media(max-width:720px){
@@ -831,9 +867,10 @@ body.vuelo .modal::-webkit-scrollbar-thumb,body.vuelo .ann-body::-webkit-scrollb
   body.vuelo .conf-bar{margin:6px 12px 0;font-size:13px}
   body.vuelo .sched-area{padding:8px 8px 12px}
   body.vuelo .sched-wrap{border-radius:18px;padding:6px 6px 8px 0}
-  /* al desplazar el horario a los lados, la columna de horas y la esquina se quedan fijas */
-  body.vuelo table.sch td:first-child{position:sticky;left:0;z-index:5;background:var(--v-wrap-solid)}
-  body.vuelo table.sch thead th:first-child{position:sticky;left:0;top:0;z-index:12;background:var(--v-wrap-solid)}
+  /* días, horas y esquina fijos pegados al borde (relleno del área: 8 px) */
+  body.vuelo table.sch thead th{top:-8px}
+  body.vuelo table.sch td:first-child{left:-8px}
+  body.vuelo table.sch thead th:first-child{left:-8px;top:-8px}
   body.vuelo .stats{display:grid;grid-template-columns:repeat(3,1fr);row-gap:10px;padding:8px 12px 10px}
   body.vuelo .stat{padding:0 10px;font-size:11px}
   body.vuelo .stat-n{font-size:18px;line-height:22px}
@@ -848,6 +885,11 @@ body.vuelo .modal::-webkit-scrollbar-thumb,body.vuelo .ann-body::-webkit-scrollb
   body.vuelo .mob-tab svg{width:20px;height:20px;color:inherit}
   body.vuelo .mob-tab.on{background:rgba(47,55,57,.10);color:var(--v-pill-ink)}
   body.vuelo .mob-tab.on svg{color:inherit}
+  body.vuelo .mob-tab:focus-visible{outline-color:var(--v-pill-ink)}
+  body.vuelo .tag-x{position:relative}
+  body.vuelo .tag-x::before{content:"";position:absolute;inset:-13px}
+  body.vuelo .modal-x,body.vuelo .ann-x{position:relative}
+  body.vuelo .modal-x::before,body.vuelo .ann-x::before{content:"";position:absolute;inset:-7px}
   body.vuelo .toast{bottom:calc(80px + env(safe-area-inset-bottom,0px))}   /* respaldo: main.js pone el valor exacto */
   /* las ventanas cubren la barra de pestañas (9999), como en iOS */
   body.vuelo .overlay,body.vuelo .ann-overlay{z-index:10000}
@@ -862,6 +904,10 @@ body.vuelo .modal::-webkit-scrollbar-thumb,body.vuelo .ann-body::-webkit-scrollb
   body.vuelo .ann-body{margin:6px 14px 0;padding:18px 18px 36px}
   body.vuelo .ann-foot{padding:34px 18px 22px calc(var(--pk) + 18px)}
 }
+@media(max-width:359px){
+  body.vuelo .ann-btn-skip,body.vuelo .ann-btn-ok{padding:0 14px}
+  body.vuelo .ann-foot{gap:8px}
+}
 
 
 /* ── 5. Exportación a PDF ───────────────────────────────────────────── */
@@ -875,11 +921,16 @@ body.vuelo.exporting #printable *::before,body.vuelo.exporting #printable *::aft
   -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
   mix-blend-mode:normal!important;background-blend-mode:normal!important;
   font-stretch:100%!important;font-variant-numeric:normal!important;font-feature-settings:normal!important;
-  transition:none!important;animation:none!important;
+  transition:none!important;animation-duration:0s!important;animation-delay:0s!important;
 }
+/* html2canvas mide la línea base de cada familia con su peso normal (la
+   cara 500 de la mono) y dibujaba la 600 entre 3 y 7 px más arriba */
+body.vuelo.exporting #printable .blk-cod,body.vuelo.exporting #printable .blk-cod-sm,
+body.vuelo.exporting #printable .blk-room{font-weight:500!important}
 body.vuelo.exporting .sched-wrap{background:var(--v-export-bg)!important;border-color:transparent}
 body.vuelo.exporting table.sch thead th{background:transparent!important}
 body.vuelo.exporting table.sch td:first-child,
 body.vuelo.exporting table.sch th:first-child{position:static!important;background:transparent!important}
+body.vuelo.exporting table.sch thead th{top:0!important}
 body.vuelo.exporting .dhead.now{background:transparent!important;color:var(--v-tx-3)!important}
 body.vuelo.exporting .blk{transform:none!important}

@@ -117,6 +117,9 @@ function drawSched(){
   const keys=Object.keys(sel);
   const dp=document.getElementById("dp");
   if(!keys.length){
+    /* sin cursos no puede haber cruces: el aviso se retira (antes seguía a
+       la vista tras «Limpiar todo» o al cambiar de facultad) */
+    document.getElementById("conf").classList.remove("on");
     dp.innerHTML="<div class=\"empty\"><div class=\"empty-box\"><svg width=\"36\" height=\"36\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\" opacity=\"0.3\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"18\" rx=\"2\"/><line x1=\"16\" x2=\"16\" y1=\"2\" y2=\"6\"/><line x1=\"8\" x2=\"8\" y1=\"2\" y2=\"6\"/><line x1=\"3\" x2=\"21\" y1=\"10\" y2=\"10\"/></svg>"+emptyFolderHTML()+"</div><h3>Tu horario aparecer\u00e1 aqu\u00ed</h3><p>Selecciona tus cursos del panel izquierdo para comenzar.</p></div>";
     return;
   }

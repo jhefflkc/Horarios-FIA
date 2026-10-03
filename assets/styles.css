@@ -885,7 +885,9 @@ body.stitch-light .btn-cal:hover{box-shadow:0 4px 28px rgba(8,145,178,0.5),0 0 0
    cursos a la misma hora dejan menos de 70px a cada uno y palabras como
    «SOCIOCULTURAL» ya no caben enteras; se prefiere desplazamiento lateral
    antes que partirlas. */
-.sched-wrap{min-width:780px}
+/* llena el área y crece con la tabla si esta pide más (la regla de
+   exportación, más abajo, sigue mandando al generar el PDF) */
+.sched-wrap{min-width:max(780px,100%);width:fit-content}
 .sched-hdr{
   display:flex;align-items:center;gap:12px;margin-bottom:1.3rem;
 }
@@ -1397,10 +1399,14 @@ body.theming .c-cod,body.theming .cbox,body.theming .sched-area{
              color 0.38s var(--ease),
              border-color 0.38s var(--ease);
 }
-/* Nada debe animarse mientras se captura el PDF */
-body.exporting *,body.exporting *::before,body.exporting *::after{
-  animation:none !important;transition:none !important;
+/* Nada debe animarse en la captura del PDF. Duración cero y no
+   «animation:none»: quitar el nombre de la animación y devolverlo la
+   reinicia, y la cabecera, el panel y los bloques volvían a aparecer. */
+body.exporting #printable *,body.exporting #printable *::before,body.exporting #printable *::after{
+  animation-duration:0s !important;animation-delay:0s !important;transition:none !important;
 }
+/* Mientras se mide la maqueta de exportación (exports.js), sin transiciones */
+body.v-measure *,body.v-measure *::before,body.v-measure *::after{transition:none !important}
 /* Y el horario se ajusta a su contenido solo durante la captura: en
    pantalla se estira para llenar la ventana, lo cual está bien, pero en el
    PDF ese ancho sobrante no aporta nada y encoge el texto al escalar. */

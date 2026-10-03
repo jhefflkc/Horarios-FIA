@@ -17,10 +17,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<link rel="stylesheet" href="assets/styles.css?v=4c9dbb14">
+<link rel="stylesheet" href="assets/styles.css?v=6b44a616">
 <!-- Tema activo «Vuelo» (claro/oscuro). Va después de styles.css, que
      conserva los temas anteriores desactivados. -->
-<link rel="stylesheet" href="assets/theme-vuelo.css?v=4c9dbb14">
+<link rel="stylesheet" href="assets/theme-vuelo.css?v=6b44a616">
 </head>
 <body>
 <script>
@@ -33,6 +33,8 @@
     t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"vuelo-oscuro":"vuelo-claro";
   document.body.className="vuelo "+t;
   document.documentElement.style.background=t==="vuelo-oscuro"?"#313133":"#efeeea";
+  var m=document.querySelector('meta[name="theme-color"]');
+  if(m) m.setAttribute("content",t==="vuelo-oscuro"?"#313133":"#efeeea");
 })();
 </script>
 
@@ -74,6 +76,16 @@
     </button>
   </div>
 </header>
+<script>
+/* El botón de tema muestra el modo real desde el primer pintado (theme.js
+   lo confirma después) */
+(function(){
+  var d=document.body.classList.contains("vuelo-oscuro");
+  document.getElementById("theme-label").textContent=d?"Oscuro":"Claro";
+  document.getElementById("theme-icon-stitch").style.display="none";
+  document.getElementById(d?"theme-icon-light":"theme-icon-dark").style.display="";
+})();
+</script>
 
 <div class="app">
 
@@ -91,7 +103,7 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
         </svg>
-        <input id="q" type="text" placeholder="Buscar curso o c&oacute;digo..." oninput="drawList()">
+        <input id="q" type="text" placeholder="Buscar curso o c&oacute;digo..." aria-label="Buscar curso o c&oacute;digo" oninput="drawList()">
       </div>
       <label class="upload-row" for="file-input">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -173,6 +185,12 @@
             <line x1="8" x2="8" y1="2" y2="6"/>
             <line x1="3" x2="21" y1="10" y2="10"/>
           </svg>
+          <!-- la carpeta del tema Vuelo; render.js la vuelve a pintar con el periodo -->
+          <div class="v-folder" aria-hidden="true">
+            <div class="v-ticket"><span class="v-t-date">Semestre</span><b class="v-badge">En armado</b><span class="v-t-route"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg><i></i><em></em><span class="v-t-code">LIM</span></span></div>
+            <div class="v-ticket v-ticket-2"><span class="v-t-date">Sin cursos a&uacute;n</span></div>
+            <div class="v-folder-front">Horario</div>
+          </div>
         </div>
         <h3>Tu horario aparecer&aacute; aqu&iacute;</h3>
         <p>Selecciona tus cursos del panel izquierdo para comenzar a armar tu semestre.</p>
@@ -220,8 +238,8 @@
         <div class="modal-ttl" id="mttl"></div>
         <div class="modal-sub" id="msub"></div>
       </div>
-      <button class="modal-x" onclick="modalClose()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <button class="modal-x" onclick="modalClose()" aria-label="Cerrar" title="Cerrar">
+        <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/>
         </svg>
       </button>
@@ -267,17 +285,17 @@
 <!-- SAB probe: used by JS to read the real env(safe-area-inset-bottom) value -->
 <div id="sab-probe" style="position:fixed;bottom:0;left:0;width:0;height:env(safe-area-inset-bottom,0px);pointer-events:none;visibility:hidden"></div>
 
-<script src="assets/data.js?v=4c9dbb14"></script>
-<script src="assets/js/config.js?v=4c9dbb14"></script>
-<script src="assets/js/state.js?v=4c9dbb14"></script>
-<script src="assets/js/courses.js?v=4c9dbb14"></script>
-<script src="assets/js/faculty.js?v=4c9dbb14"></script>
-<script src="assets/js/render.js?v=4c9dbb14"></script>
-<script src="assets/js/modals.js?v=4c9dbb14"></script>
-<script src="assets/js/ratings.js?v=4c9dbb14"></script>
-<script src="assets/js/announce.js?v=4c9dbb14"></script>
-<script src="assets/js/exports.js?v=4c9dbb14"></script>
-<script src="assets/js/theme.js?v=4c9dbb14"></script>
-<script src="assets/js/main.js?v=4c9dbb14"></script>
+<script src="assets/data.js?v=6b44a616"></script>
+<script src="assets/js/config.js?v=6b44a616"></script>
+<script src="assets/js/state.js?v=6b44a616"></script>
+<script src="assets/js/courses.js?v=6b44a616"></script>
+<script src="assets/js/faculty.js?v=6b44a616"></script>
+<script src="assets/js/render.js?v=6b44a616"></script>
+<script src="assets/js/modals.js?v=6b44a616"></script>
+<script src="assets/js/ratings.js?v=6b44a616"></script>
+<script src="assets/js/announce.js?v=6b44a616"></script>
+<script src="assets/js/exports.js?v=6b44a616"></script>
+<script src="assets/js/theme.js?v=6b44a616"></script>
+<script src="assets/js/main.js?v=6b44a616"></script>
 </body>
 </html>

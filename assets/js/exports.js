@@ -12,38 +12,56 @@ function downloadPDF(){
   const txtPri=pdfC.pri;
   const txtSec=pdfC.sec;
   toast("Generando PDF\u2026","ok");
-  /* Temporarily remove sticky positioning so html2canvas captures the full table correctly */
-  const stickyEls=el.querySelectorAll("thead th");
-  stickyEls.forEach(function(th){th.style.position="static";});
-  /* Hide legend \u2014 not needed in PDF since name mode is available */
+  /* La maqueta de exportación (clase «exporting»: horario compacto y plano,
+     sin cabecera fija ni leyenda) se aplica solo a la copia del documento
+     que dibuja html2canvas, así la pantalla no cambia mientras se genera. */
+  function prepare(doc){
+    doc.body.classList.add("exporting");
+    const p=doc.getElementById("printable");
+    if(!p) return;
+    p.querySelectorAll("thead th").forEach(function(th){th.style.position="static";});
+    const lg=p.querySelector(".sched-legend");
+    if(lg) lg.style.display="none";
+  }
+  /* Tamaño de esa maqueta, medido sin que llegue a pintarse (la clase se
+     pone y se quita en la misma tarea; «v-measure» evita transiciones al
+     volver). Con él se limita el lienzo a 16 MP, el tope de Safari en iOS. */
   const legend=el.querySelector(".sched-legend");
+  document.body.classList.add("v-measure","exporting");
   if(legend) legend.style.display="none";
-  /* Congela las animaciones: html2canvas captura el estado del momento y
-     un bloque a medio aparecer saldr\u00eda trasl\u00facido o desplazado en el PDF. */
-  document.body.classList.add("exporting");
-  void el.offsetWidth;   /* fuerza el recálculo del ancho antes de capturar */
-  /* Se espera a las tipografías: si la serif o la condensada aún no han
-     cargado, la captura saldría con la fuente de respaldo. */
-  (document.fonts?document.fonts.ready:Promise.resolve()).then(function(){
-    return html2canvas(el,{backgroundColor:bgCanvas,scale:2.8,useCORS:true,logging:false,scrollX:0,scrollY:0});
+  const r=el.getBoundingClientRect();
+  document.body.classList.remove("exporting");
+  if(legend) legend.style.display="";
+  void el.offsetWidth;
+  document.body.classList.remove("v-measure");
+  const sc=Math.min(2.8,Math.sqrt(16e6/Math.max(1,r.width*r.height)));
+  /* Se espera a las tipografías: si alguna aún no ha cargado, la captura
+     saldría con la de respaldo. La mono 500 se pide aparte porque es la que
+     usa html2canvas para medir la línea base de la mono. */
+  const fonts=document.fonts?Promise.all([document.fonts.ready,
+    document.fonts.load('500 10px "IBM Plex Mono"',"A0").catch(function(){})]):Promise.resolve();
+  fonts.then(function(){
+    return html2canvas(el,{backgroundColor:bgCanvas,scale:sc,useCORS:true,logging:false,scrollX:0,scrollY:0,onclone:prepare});
   }).then(function(canvas){
-    document.body.classList.remove("exporting");
-    stickyEls.forEach(function(th){th.style.position="";});
-    if(legend) legend.style.display="";
-    const W=canvas.width/2.8, H=canvas.height/2.8;
-    const pdf=new window.jspdf.jsPDF({orientation:W>H?"landscape":"portrait",unit:"px",format:[W+56,H+72]});
-    pdf.setFillColor(...bgOuter);pdf.rect(0,0,W+56,H+72,"F");
-    pdf.setFillColor(...bgInner);pdf.roundedRect(28,16,W,H+28,6,6,"F");
+    const W=canvas.width/sc, H=canvas.height/sc;
+    /* Cabecera: título y subtítulo a tamaño legible (las unidades de jsPDF
+       en «px» son puntos ×1,333); la tarjeta baja 6 px más que la imagen
+       para que se vean sus cuatro esquinas redondeadas */
+    const PH=H+98;
+    const pdf=new window.jspdf.jsPDF({orientation:W>H?"landscape":"portrait",unit:"px",format:[W+56,PH]});
+    pdf.setFillColor(...bgOuter);pdf.rect(0,0,W+56,PH,"F");
+    pdf.setFillColor(...bgInner);pdf.roundedRect(28,16,W,H+54,6,6,"F");
     /* En Vuelo el nombre va en serif, como en la cabecera de la página */
     const serif=THEME_FAMILY[currentTheme]==="vuelo";
-    pdf.setTextColor(...txtPri);pdf.setFontSize(serif?10:9);pdf.setFont(serif?"times":"helvetica","bold");
-    pdf.text(facultyLabel,36,28);
-    pdf.setTextColor(...txtSec);pdf.setFontSize(7);pdf.setFont("helvetica","normal");
-    pdf.text("HORARIO "+getPeriod()+"  \u00b7  Generado desde Horarios FIA "+getPeriod(),36,36);
-    pdf.addImage(canvas.toDataURL("image/png"),"PNG",28,44,W,H);
+    pdf.setTextColor(...txtPri);pdf.setFontSize(20);pdf.setFont(serif?"times":"helvetica","bold");
+    pdf.text(facultyLabel,38,38);
+    pdf.setTextColor(...txtSec);pdf.setFontSize(13);pdf.setFont("helvetica","normal");
+    pdf.text("HORARIO "+getPeriod()+"  \u00b7  Generado desde Horarios FIA "+getPeriod(),38,55);
+    /* "FAST": la imagen va comprimida (antes pesaba 15–40 MB) */
+    pdf.addImage(canvas.toDataURL("image/png"),"PNG",28,64,W,H,undefined,"FAST");
     pdf.save("horario-"+facultyLabel.split(" \u00b7 ")[0].toLowerCase()+"-"+getPeriod()+".pdf");
     toast("\u2713 PDF descargado correctamente","ok");
-  }).catch(function(e){document.body.classList.remove("exporting");stickyEls.forEach(function(th){th.style.position="";});if(legend) legend.style.display="";toast("Error al generar: "+e.message,"er");});
+  }).catch(function(e){toast("Error al generar: "+e.message,"er");});
 }
 
 

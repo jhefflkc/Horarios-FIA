@@ -54,5 +54,10 @@ script.
 ## Cómo volver al estado exacto anterior
 
 ```bash
-git checkout 38f8233 -- assets/styles.css assets/js/theme.js assets/js/config.js index.html
+git checkout 38f8233 -- index.html assets/styles.css assets/js/
 ```
+
+Restaura `index.html`, los estilos y todos los JS (dependen unos de otros),
+pero no `assets/data.js`, así que se conservan los horarios actuales.
+`assets/theme-vuelo.css` queda en disco sin enlazar; bórralo si quieres el
+árbol idéntico al de entonces.
