@@ -65,7 +65,9 @@ function toast(msg,type){
   document.getElementById("tmsg").textContent=msg;
   const tabs=document.querySelector(".mob-tabs");
   if(tabs&&tabs.offsetHeight>0){
-    t.style.bottom=(tabs.offsetHeight+12)+"px";
+    /* Se mide desde el borde superior real de la barra: en Vuelo la barra
+       flota separada del borde, así que su altura no basta */
+    t.style.bottom=(window.innerHeight-tabs.getBoundingClientRect().top+12)+"px";
   } else {
     t.style.bottom="";
   }
@@ -75,18 +77,19 @@ function toast(msg,type){
 
 
 document.addEventListener("mousemove",function(e){
+  /* Solo los temas Stitch usan el foco que sigue al ratón; con los demás
+     no se toca :root para no recalcular estilos en cada movimiento */
+  if(!/\bstitch-/.test(document.body.className)) return;
   document.documentElement.style.setProperty("--dot-x",e.clientX+"px");
   document.documentElement.style.setProperty("--dot-y",e.clientY+"px");
 });
 
 
 window.addEventListener("DOMContentLoaded",function(){
-  /* Google es el tema de entrada. Solo se aplica a quien no haya elegido
-     uno todavía: si hay preferencia guardada, manda esa. Se comprueba que
-     siga siendo un tema válido por si alguna vez se retira alguno. */
-  var saved=localStorage.getItem("theme");
-  if(!saved||THEME_ORDER.indexOf(saved)<0) saved=DEFAULT_THEME;
-  applyTheme(saved);
+  /* Si el usuario eligió un tema (y sigue activo), manda ese; si no, el de
+     entrada, que por defecto sigue la preferencia claro/oscuro del sistema.
+     No se guarda: solo se guarda una elección hecha con el botón. */
+  applyTheme(savedTheme()||defaultTheme(),false);
   initFacultySelector();
   switchFaculty(Object.keys(ALL_DATA)[0]);
   fetchAnnounce();

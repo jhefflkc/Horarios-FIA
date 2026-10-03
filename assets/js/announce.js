@@ -73,10 +73,18 @@ function md2html(md){
       out+="<ul>"+ul.map(function(l){return"<li>"+txt(l)+"</li>";}).join("")+"</ul>";continue;
     }
     if(OL.test(ln)){
-      flush();var ol=[];
-      while(i<lines.length&&OL.test(lines[i])) ol.push(lines[i++].replace(OL,""));
+      /* Una lista «1. 2. 3.» con líneas en blanco entre elementos sigue
+         siendo una sola lista (antes salía «1. 1. 1.»); y si empieza en otro
+         número, se respeta con start */
+      flush();var ol=[],n0=parseInt(ln,10)||1;
+      while(i<lines.length){
+        if(OL.test(lines[i])){ol.push(lines[i++].replace(OL,""));continue;}
+        var j=i;while(j<lines.length&&!lines[j].trim()) j++;
+        if(j>i&&j<lines.length&&OL.test(lines[j])){i=j;continue;}
+        break;
+      }
       i--;
-      out+="<ol>"+ol.map(function(l){return"<li>"+txt(l)+"</li>";}).join("")+"</ol>";continue;
+      out+="<ol"+(n0!==1?" start=\""+n0+"\"":"")+">"+ol.map(function(l){return"<li>"+txt(l)+"</li>";}).join("")+"</ol>";continue;
     }
     para.push(ln);
   }

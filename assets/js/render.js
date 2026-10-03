@@ -39,7 +39,8 @@ function drawList(){
     const isSoft=!isSel&&!isConf&&anySoftConflict(c);
     const ss=sel[c.cod];
     const meta=ss?"Secc. "+ss.secc+" \u00b7 "+ss.ss.length+" ses.":c.secs.length+(c.secs.length>1?" secc.":"\u00a0secc.");
-    h+="<div class=\"c-row cy"+c.esp+(isSel?" sel":"")+(isConf?" conf":"")+"\" data-cod=\""+c.cod+"\">";
+    /* «multi»: al pulsarla se abre la ventana de secciones (el tema muestra un chevrón) */
+    h+="<div class=\"c-row cy"+c.esp+(c.secs.length>1?" multi":"")+(isSel?" sel":"")+(isConf?" conf":"")+"\" data-cod=\""+c.cod+"\">";
     h+="<div class=\"cbox\"></div>";
     h+="<div class=\"c-info\">";
     h+="<div class=\"c-name\">"+c.curso+"</div>";
@@ -76,14 +77,14 @@ function drawTags(){
   let h="";
   keys.forEach(function(cod){
     const s=sel[cod];const p=pal[cod]||"p0";const hex=palHex(p);
-    h+="<div class=\"tag\" style=\"background:"+hex+"1e;border-color:"+hex+"50;color:"+hex+"\" data-cod=\""+cod+"\">";
+    h+="<div class=\"tag "+p+"\" style=\"background:"+hex+"1e;border-color:"+hex+"50;color:"+hex+"\" data-cod=\""+cod+"\">";
     h+=cod+" <span style=\"opacity:0.6\">"+s.secc+"</span><i class=\"tag-x\">\u00d7</i></div>";
   });
   tz.innerHTML=h;
   tz.querySelectorAll(".tag").forEach(function(t){
     t.querySelector(".tag-x").addEventListener("click",function(e){e.stopPropagation();toggle(t.dataset.cod);});
   });
-  bc.style.display="";st.style.display="flex";
+  bc.style.display="";st.style.display="";   /* "" deja mandar al CSS (flex, o rejilla en Vuelo móvil) */
   document.getElementById("btn-names").style.display="";
   let hrs=0;
   Object.values(sel).forEach(function(s){s.ss.forEach(function(x){hrs+=x.h1-x.h0;});});
@@ -99,11 +100,27 @@ function drawTags(){
 }
 
 
+/* La carpeta del estado vacío del tema Vuelo: dos billetes con el periodo
+   y la facultad, y el frente con el rótulo. Es decorativa (aria-hidden) y
+   los temas anteriores la ocultan (styles.css). */
+function emptyFolderHTML(){
+  var esc=function(t){return String(t).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});};
+  var plane="<svg viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" fill=\"currentColor\"><path d=\"M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z\"/></svg>";
+  return "<div class=\"v-folder\" aria-hidden=\"true\">"+
+    "<div class=\"v-ticket\"><span class=\"v-t-date\">Semestre "+esc(getPeriod())+"</span><b class=\"v-badge\">En armado</b>"+
+      "<span class=\"v-t-route\">"+plane+"<i></i><em></em><span class=\"v-t-code\">LIM</span></span></div>"+
+    "<div class=\"v-ticket v-ticket-2\"><span class=\"v-t-date\">Sin cursos a\u00fan</span></div>"+
+    "<div class=\"v-folder-front\">Horario</div></div>";
+}
+
 function drawSched(){
   const keys=Object.keys(sel);
   const dp=document.getElementById("dp");
   if(!keys.length){
-    dp.innerHTML="<div class=\"empty\"><div class=\"empty-box\"><svg width=\"36\" height=\"36\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\" opacity=\"0.3\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"18\" rx=\"2\"/><line x1=\"16\" x2=\"16\" y1=\"2\" y2=\"6\"/><line x1=\"8\" x2=\"8\" y1=\"2\" y2=\"6\"/><line x1=\"3\" x2=\"21\" y1=\"10\" y2=\"10\"/></svg></div><h3>Tu horario aparecer\u00e1 aqu\u00ed</h3><p>Selecciona tus cursos del panel izquierdo para comenzar.</p></div>";
+    /* sin cursos no puede haber cruces: el aviso se retira (antes seguía a
+       la vista tras «Limpiar todo» o al cambiar de facultad) */
+    document.getElementById("conf").classList.remove("on");
+    dp.innerHTML="<div class=\"empty\"><div class=\"empty-box\"><svg width=\"36\" height=\"36\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\" opacity=\"0.3\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"18\" rx=\"2\"/><line x1=\"16\" x2=\"16\" y1=\"2\" y2=\"6\"/><line x1=\"8\" x2=\"8\" y1=\"2\" y2=\"6\"/><line x1=\"3\" x2=\"21\" y1=\"10\" y2=\"10\"/></svg>"+emptyFolderHTML()+"</div><h3>Tu horario aparecer\u00e1 aqu\u00ed</h3><p>Selecciona tus cursos del panel izquierdo para comenzar.</p></div>";
     return;
   }
   const cells={};

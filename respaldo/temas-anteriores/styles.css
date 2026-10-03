@@ -761,8 +761,6 @@ body.google .sec-vac{background:var(--g-surf-3);color:var(--tx2);font-weight:500
   font-style:normal;font-size:0.72rem;opacity:0.6;transition:opacity 0.15s;
 }
 .tag-x:hover{opacity:1}
-/* envoltorio de los botones secundarios: solo el tema Vuelo lo dibuja */
-.action-seg{display:contents}
 .action-btns{
   display:flex;align-items:center;gap:8px;flex-shrink:0;
   padding:7px 10px;border-radius:14px;border:1px solid var(--line2);
@@ -849,8 +847,6 @@ body.stitch-light .btn-cal:hover{box-shadow:0 4px 28px rgba(8,145,178,0.5),0 0 0
   display:flex;align-items:center;justify-content:center;
   box-shadow:0 0 40px rgba(200,120,58,0.1);
 }
-/* La carpeta con billetes solo la muestra el tema Vuelo */
-.empty-box .v-folder{display:none}
 .empty h3{font-size:1rem;font-weight:700;color:var(--tx2)}
 .empty p{font-size:0.8rem;color:var(--tx3);line-height:1.7;max-width:240px}
 
@@ -885,9 +881,7 @@ body.stitch-light .btn-cal:hover{box-shadow:0 4px 28px rgba(8,145,178,0.5),0 0 0
    cursos a la misma hora dejan menos de 70px a cada uno y palabras como
    «SOCIOCULTURAL» ya no caben enteras; se prefiere desplazamiento lateral
    antes que partirlas. */
-/* llena el área y crece con la tabla si esta pide más (la regla de
-   exportación, más abajo, sigue mandando al generar el PDF) */
-.sched-wrap{min-width:max(780px,100%);width:fit-content}
+.sched-wrap{min-width:780px}
 .sched-hdr{
   display:flex;align-items:center;gap:12px;margin-bottom:1.3rem;
 }
@@ -968,10 +962,7 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
 /* Sin límite de líneas: el nombre se ve completo, envolviendo lo que haga falta */
 .blk-name{
   font-size:0.58rem;font-weight:700;line-height:1.15;
-  /* Palabras siempre enteras: sin guiones automáticos (en español partían
-     «ABASTECI-MIENTO»). Así el ancho mínimo de cada columna incluye la
-     palabra más larga y, si no cabe, el horario se desplaza a los lados. */
-  overflow-wrap:normal;hyphens:manual;
+  overflow-wrap:break-word;hyphens:auto;
   /* Tope de ancho pedido: sin él, un nombre largo en una sola línea
      reclamaría toda la columna y estiraría el horario a lo ancho. */
   max-width:19ch;
@@ -998,9 +989,7 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
 /* `flex:1` daba a cada píldora la mitad exacta aunque una necesitara más.
    Con base automática el reparto sigue lo que ocupa cada contenido, y el
    mínimo evita que la más corta se quede sin espacio legible. */
-/* min-width:auto = la palabra más larga: un bloque nunca se encoge por
-   debajo de ella (con 0 se recortaba «ABASTECIMIENTO» en celdas compartidas) */
-.cell-blocks .blk{flex:1 1 auto;width:auto;min-width:auto;padding:3px 5px}
+.cell-blocks .blk{flex:1 1 auto;width:auto;min-width:0;padding:3px 5px}
 /* Al compartir celda hay la mitad de ancho: se reduce la letra para que las
    palabras largas quepan enteras en vez de partirse a mitad */
 .cell-blocks .blk .blk-name{font-size:0.5rem;line-height:1.1}
@@ -1399,14 +1388,10 @@ body.theming .c-cod,body.theming .cbox,body.theming .sched-area{
              color 0.38s var(--ease),
              border-color 0.38s var(--ease);
 }
-/* Nada debe animarse en la captura del PDF. Duración cero y no
-   «animation:none»: quitar el nombre de la animación y devolverlo la
-   reinicia, y la cabecera, el panel y los bloques volvían a aparecer. */
-body.exporting #printable *,body.exporting #printable *::before,body.exporting #printable *::after{
-  animation-duration:0s !important;animation-delay:0s !important;transition:none !important;
+/* Nada debe animarse mientras se captura el PDF */
+body.exporting *,body.exporting *::before,body.exporting *::after{
+  animation:none !important;transition:none !important;
 }
-/* Mientras se mide la maqueta de exportación (exports.js), sin transiciones */
-body.v-measure *,body.v-measure *::before,body.v-measure *::after{transition:none !important}
 /* Y el horario se ajusta a su contenido solo durante la captura: en
    pantalla se estira para llenar la ventana, lo cual está bien, pero en el
    PDF ese ancho sobrante no aporta nada y encoge el texto al escalar. */

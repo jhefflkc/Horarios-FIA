@@ -63,6 +63,8 @@ function updateScorePill(){
   });
   if(!count){pill.style.display="none";return;}
   document.getElementById("score-val").textContent=(sum/count).toFixed(1);
+  /* el medidor del tema Vuelo (0 a 1); los demás temas no lo usan */
+  pill.style.setProperty("--score",(sum/count/5).toFixed(3));
   document.getElementById("score-pop-count").textContent=count+(count===1?" curso evaluado":" cursos evaluados")+" para el Score";
   pill.style.display="inline-flex";
 }

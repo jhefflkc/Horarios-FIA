@@ -245,7 +245,8 @@ def write_data_js(all_data):
     print(f"OK: {len(siglas)} facultad(es) {siglas}, {total} sesiones totales → {DATA_JS}")
 
 
-ASSET_RE = re.compile(r'(assets/(?:js/[\w.-]+\.js|styles\.css|data\.js))(\?v=[0-9a-f]+)?"')
+# Cualquier .css o .js bajo assets/ (hojas de tema incluidas)
+ASSET_RE = re.compile(r'(assets/[\w./-]+\.(?:css|js))(\?v=[0-9a-f]+)?"')
 
 
 def stamp_assets():

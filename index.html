@@ -6,14 +6,37 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#efeeea">
 <title>FIA-Horarios</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=Inter:opsz,wght@14..32,400..700&family=Sofia+Sans+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@500;600&family=Archivo:wdth,wght@112.5,450&display=swap" rel="stylesheet">
+<!-- Tipografías que solo usan los temas anteriores (Ámbar, Grafito, Crema,
+     Glacial y Google). Están desactivados: al reactivar uno, descomentar esta
+     línea (ver respaldo/temas-anteriores/README.md).
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<link rel="stylesheet" href="assets/styles.css?v=e4abfa2f">
+<link rel="stylesheet" href="assets/styles.css?v=6b44a616">
+<!-- Tema activo «Vuelo» (claro/oscuro). Va después de styles.css, que
+     conserva los temas anteriores desactivados. -->
+<link rel="stylesheet" href="assets/theme-vuelo.css?v=6b44a616">
 </head>
 <body>
+<script>
+/* Pone el tema antes del primer pintado: sin esto se veía un instante el
+   tema Ámbar de la base hasta que cargaba theme.js, que luego lo confirma.
+   Mantener los nombres igual que THEME_ORDER y AUTO_THEMES (config.js). */
+(function(){
+  var t=null;try{t=localStorage.getItem("theme");}catch(e){}
+  if(t!=="vuelo-claro"&&t!=="vuelo-oscuro")
+    t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"vuelo-oscuro":"vuelo-claro";
+  document.body.className="vuelo "+t;
+  document.documentElement.style.background=t==="vuelo-oscuro"?"#313133":"#efeeea";
+  var m=document.querySelector('meta[name="theme-color"]');
+  if(m) m.setAttribute("content",t==="vuelo-oscuro"?"#313133":"#efeeea");
+})();
+</script>
 
 <header>
   <div class="logo">
@@ -49,10 +72,20 @@
       <svg id="theme-icon-google" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="display:none">
         <path d="M12 2c.4 3.6 1.4 5.9 3.2 7.2C16.6 10.2 18.6 10.8 22 11c-3.6.4-5.9 1.4-7.2 3.2C13.8 15.6 13.2 17.6 13 21c-.4-3.6-1.4-5.9-3.2-7.2C8.4 12.8 6.4 12.2 3 12c3.6-.4 5.9-1.4 7.2-3.2C11.2 7.4 11.8 5.4 12 2z"/>
       </svg>
-      <span id="theme-label">Ámbar</span>
+      <span id="theme-label">Claro</span>
     </button>
   </div>
 </header>
+<script>
+/* El botón de tema muestra el modo real desde el primer pintado (theme.js
+   lo confirma después) */
+(function(){
+  var d=document.body.classList.contains("vuelo-oscuro");
+  document.getElementById("theme-label").textContent=d?"Oscuro":"Claro";
+  document.getElementById("theme-icon-stitch").style.display="none";
+  document.getElementById(d?"theme-icon-light":"theme-icon-dark").style.display="";
+})();
+</script>
 
 <div class="app">
 
@@ -61,7 +94,7 @@
     <div class="sidebar-top">
       <div id="faculty-selector" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:0.6rem"></div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem">
-        <span class="sidebar-label" id="period-label" style="margin-bottom:0;display:inline">&#9670; Cursos disponibles &mdash; 2026-1</span>
+        <span class="sidebar-label" id="period-label" style="margin-bottom:0;display:inline"><span class="lbl-glyph">&#9670;</span> Cursos disponibles &mdash; 2026-1</span>
         <button onclick="openPeriodModal()" title="Editar per&iacute;odo"
           style="display:none">
         </button>
@@ -70,7 +103,7 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
         </svg>
-        <input id="q" type="text" placeholder="Buscar curso o c&oacute;digo..." oninput="drawList()">
+        <input id="q" type="text" placeholder="Buscar curso o c&oacute;digo..." aria-label="Buscar curso o c&oacute;digo" oninput="drawList()">
       </div>
       <label class="upload-row" for="file-input">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -94,21 +127,24 @@
         <span class="ph">&#8592; Selecciona cursos para armar tu horario</span>
       </div>
       <div class="action-btns">
-        <button class="btn btn-names" id="btn-names" onclick="toggleNames()" style="display:none" title="Alternar entre código y nombre del curso">
+        <!-- action-seg agrupa los secundarios (cápsula en Vuelo); con
+             display:contents los temas anteriores no notan el envoltorio -->
+        <div class="action-seg">
+        <button class="btn btn-names" id="btn-names" onclick="toggleNames()" style="display:none" title="Alternar entre código y nombre del curso" aria-label="Alternar entre código y nombre del curso">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <polyline points="4 7 4 4 20 4 20 7"/><line x1="9" x2="15" y1="20" y2="20"/>
             <line x1="12" x2="12" y1="4" y2="20"/>
           </svg>
           <span id="btn-names-lbl">Nombre</span>
         </button>
-        <button class="btn btn-clear" id="bclear" onclick="clearAll()" style="display:none">
+        <button class="btn btn-clear" id="bclear" onclick="clearAll()" style="display:none" title="Quitar todos los cursos" aria-label="Limpiar todo">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <polyline points="3 6 5 6 21 6"/>
             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
           </svg>
           Limpiar todo
         </button>
-        <button class="btn btn-cal" onclick="exportICS()">
+        <button class="btn btn-cal" onclick="exportICS()" title="Exportar calendario (.ics)" aria-label="Exportar calendario">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
             <line x1="16" y1="2" x2="16" y2="6"/>
@@ -117,7 +153,8 @@
           </svg>
           Exportar Calendario
         </button>
-        <button class="btn btn-dl" onclick="downloadPDF()">
+        </div>
+        <button class="btn btn-dl" onclick="downloadPDF()" aria-label="Descargar PDF">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
             <polyline points="14 2 14 8 20 8"/>
@@ -148,6 +185,12 @@
             <line x1="8" x2="8" y1="2" y2="6"/>
             <line x1="3" x2="21" y1="10" y2="10"/>
           </svg>
+          <!-- la carpeta del tema Vuelo; render.js la vuelve a pintar con el periodo -->
+          <div class="v-folder" aria-hidden="true">
+            <div class="v-ticket"><span class="v-t-date">Semestre</span><b class="v-badge">En armado</b><span class="v-t-route"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg><i></i><em></em><span class="v-t-code">LIM</span></span></div>
+            <div class="v-ticket v-ticket-2"><span class="v-t-date">Sin cursos a&uacute;n</span></div>
+            <div class="v-folder-front">Horario</div>
+          </div>
         </div>
         <h3>Tu horario aparecer&aacute; aqu&iacute;</h3>
         <p>Selecciona tus cursos del panel izquierdo para comenzar a armar tu semestre.</p>
@@ -156,9 +199,9 @@
 
     <!-- Stats bar -->
     <div class="stats" id="stats" style="display:none">
-      <div class="stat">Cursos seleccionados: <span class="stat-n" id="sn">0</span></div>
-      <div class="stat">Horas por semana: <span class="stat-n" id="sh">0</span></div>
-      <div class="stat">Especialidades: <span class="stat-n" id="sc">&mdash;</span></div>
+      <div class="stat"><span class="stat-l">Cursos seleccionados<span class="stat-colon">:</span></span> <span class="stat-n" id="sn">0</span></div>
+      <div class="stat"><span class="stat-l">Horas por semana<span class="stat-colon">:</span></span> <span class="stat-n" id="sh">0</span></div>
+      <div class="stat"><span class="stat-l">Especialidades<span class="stat-colon">:</span></span> <span class="stat-n" id="sc">&mdash;</span></div>
       <div class="score-pill" id="score-pill" style="display:none" onclick="toggleScorePop(event)">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
         Score&nbsp;<span class="score-pill-val" id="score-val">—</span>
@@ -195,8 +238,8 @@
         <div class="modal-ttl" id="mttl"></div>
         <div class="modal-sub" id="msub"></div>
       </div>
-      <button class="modal-x" onclick="modalClose()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <button class="modal-x" onclick="modalClose()" aria-label="Cerrar" title="Cerrar">
+        <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/>
         </svg>
       </button>
@@ -242,17 +285,17 @@
 <!-- SAB probe: used by JS to read the real env(safe-area-inset-bottom) value -->
 <div id="sab-probe" style="position:fixed;bottom:0;left:0;width:0;height:env(safe-area-inset-bottom,0px);pointer-events:none;visibility:hidden"></div>
 
-<script src="assets/data.js?v=e4abfa2f"></script>
-<script src="assets/js/config.js?v=e4abfa2f"></script>
-<script src="assets/js/state.js?v=e4abfa2f"></script>
-<script src="assets/js/courses.js?v=e4abfa2f"></script>
-<script src="assets/js/faculty.js?v=e4abfa2f"></script>
-<script src="assets/js/render.js?v=e4abfa2f"></script>
-<script src="assets/js/modals.js?v=e4abfa2f"></script>
-<script src="assets/js/ratings.js?v=e4abfa2f"></script>
-<script src="assets/js/announce.js?v=e4abfa2f"></script>
-<script src="assets/js/exports.js?v=e4abfa2f"></script>
-<script src="assets/js/theme.js?v=e4abfa2f"></script>
-<script src="assets/js/main.js?v=e4abfa2f"></script>
+<script src="assets/data.js?v=6b44a616"></script>
+<script src="assets/js/config.js?v=6b44a616"></script>
+<script src="assets/js/state.js?v=6b44a616"></script>
+<script src="assets/js/courses.js?v=6b44a616"></script>
+<script src="assets/js/faculty.js?v=6b44a616"></script>
+<script src="assets/js/render.js?v=6b44a616"></script>
+<script src="assets/js/modals.js?v=6b44a616"></script>
+<script src="assets/js/ratings.js?v=6b44a616"></script>
+<script src="assets/js/announce.js?v=6b44a616"></script>
+<script src="assets/js/exports.js?v=6b44a616"></script>
+<script src="assets/js/theme.js?v=6b44a616"></script>
+<script src="assets/js/main.js?v=6b44a616"></script>
 </body>
 </html>
