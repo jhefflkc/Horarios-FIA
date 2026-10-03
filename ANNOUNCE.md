@@ -1,5 +1,4 @@
 # Bienvenido a Horarios FIA 2026-2
-Actualizado por completo
 ## ¿Cómo usarlo?
 
 1. Busca tus cursos en el panel de la izquierda
