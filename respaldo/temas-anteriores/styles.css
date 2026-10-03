@@ -1,0 +1,1417 @@
+/* Horarios FIA — hoja de estilos completa.
+   Los temas viven al principio: cada `body.<tema>` define sus variables de color.
+   Más abajo van los componentes (cabecera, panel de cursos, tabla, modales). */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --dot-x:-9999px;
+  --dot-y:-9999px;
+  /* Movimiento compartido por todos los temas (curvas de Material 3) */
+  --ease:cubic-bezier(0.2,0,0,1);
+  --ease-out:cubic-bezier(0.05,0.7,0.1,1);
+  --dur:0.2s;
+  --dur-fast:0.12s;
+  --bg:#0c0905;
+  --panel:#130e08;
+  --surface:#1b160f;
+  --surface2:#231d14;
+  --card:#2c251a;
+  --card2:#362e20;
+  --line:rgba(240,180,100,0.07);
+  --line2:rgba(240,180,100,0.12);
+  --line3:rgba(240,180,100,0.22);
+  --tx:#f6ede0;
+  --tx2:#c8a87c;
+  --tx3:#78604a;
+  --tx4:#3c2c1e;
+  --accent:#c8783a;
+  --accent2:#dc9a52;
+  --accent3:#f0b870;
+  --glow:rgba(200,120,58,0.35);
+  --float-bg:rgba(19,14,8,0.92);
+  --float-shadow:0 12px 40px rgba(0,0,0,0.55),0 1px 0 rgba(255,180,80,0.06) inset;
+  --float-btn-bg:rgba(19,14,8,0.92);
+  --float-btn-shadow:0 6px 24px rgba(0,0,0,0.5),0 1px 0 rgba(255,180,80,0.07) inset;
+}
+body.light{
+  --bg:#fdf6ee;
+  --panel:#fffaf4;
+  --surface:#fef3e2;
+  --surface2:#fde8c8;
+  --card:#f8ddb0;
+  --card2:#f0cc90;
+  --line:rgba(0,0,0,0.08);
+  --line2:rgba(0,0,0,0.12);
+  --line3:rgba(0,0,0,0.22);
+  --tx:#2a1a08;
+  --tx2:#5a3a18;
+  --tx3:#8a6248;
+  --tx4:#b89070;
+  --float-bg:rgba(255,250,244,0.92);
+  --float-shadow:0 8px 32px rgba(0,0,0,0.12),0 1px 0 rgba(255,255,255,0.8) inset;
+  --float-btn-bg:rgba(255,250,244,0.92);
+  --float-btn-shadow:0 6px 24px rgba(0,0,0,0.1),0 1px 0 rgba(255,255,255,0.9) inset;
+  --accent3:#9a4e10;
+}
+body.light header{background:rgba(255,250,244,0.92)}
+body.light .c-row:hover{background:rgba(0,0,0,0.03)}
+body.light table.sch tbody tr:nth-child(odd) td:not(:first-child) .cell-mt{background:rgba(0,0,0,0.018)}
+body.light table.sch tbody tr:nth-child(even) td:not(:first-child) .cell-mt{background:rgba(0,0,0,0.008)}
+body.light table.sch tbody tr:hover .cell-mt{background:rgba(0,0,0,0.04)}
+body.light .logo-text{color:var(--tx)}
+body.light .p0{background:rgba(200,100,50,0.14);color:#a04020}
+body.light .p1{background:rgba(70,140,60,0.14);color:#2e6e22}
+body.light .p2{background:rgba(200,160,30,0.14);color:#8a6808}
+body.light .p3{background:rgba(180,80,40,0.14);color:#8c3018}
+body.light .p4{background:rgba(120,140,40,0.14);color:#4a5c18}
+body.light .p5{background:rgba(40,140,110,0.14);color:#186850}
+body.light .p6{background:rgba(180,130,30,0.14);color:#7a5208}
+body.light .p7{background:rgba(80,130,50,0.14);color:#285a10}
+
+/* ── Stitch Dark (Grafito) ───────────────────────────────── */
+body.stitch-dark{
+  --bg:#0d0d0f;
+  --panel:#111113;
+  --surface:rgba(255,255,255,0.055);
+  --surface2:rgba(255,255,255,0.085);
+  --card:rgba(255,255,255,0.10);
+  --card2:rgba(255,255,255,0.13);
+  --line:rgba(255,255,255,0.042);
+  --line2:rgba(255,255,255,0.09);
+  --line3:rgba(255,255,255,0.16);
+  --tx:#f2f2f4;
+  --tx2:#aeaeb2;
+  --tx3:#636366;
+  --tx4:#3a3a3c;
+  --accent:#4f8ef7;
+  --accent2:#76aaff;
+  --accent3:#a0c4ff;
+  --glow:rgba(79,142,247,0.22);
+  --float-bg:rgba(16,16,20,0.58);
+  --float-shadow:0 16px 60px rgba(0,0,0,0.70),0 1px 0 rgba(255,255,255,0.08) inset;
+  --float-btn-bg:rgba(16,16,20,0.52);
+  --float-btn-shadow:0 8px 32px rgba(0,0,0,0.55),0 1px 0 rgba(255,255,255,0.07) inset;
+  background-image:
+    radial-gradient(ellipse 90% 65% at 12% 30%,rgba(79,142,247,0.09) 0%,transparent 62%),
+    radial-gradient(ellipse 65% 70% at 88% 78%,rgba(120,70,210,0.07) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 40% at 55% 10%,rgba(40,180,220,0.04) 0%,transparent 55%),
+    radial-gradient(circle,rgba(255,255,255,0.028) 1px,transparent 1px);
+  background-size:auto,auto,auto,22px 22px;
+}
+body.stitch-dark header{background:rgba(10,10,14,0.68);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px)}
+body.stitch-dark header::after{background:linear-gradient(90deg,transparent,#4f8ef7 50%,transparent);opacity:0.4}
+body.stitch-dark .c-row:hover{background:rgba(255,255,255,0.04)}
+body.stitch-dark table.sch tbody tr:nth-child(odd) td:not(:first-child) .cell-mt{background:rgba(255,255,255,0.025)}
+body.stitch-dark table.sch tbody tr:nth-child(even) td:not(:first-child) .cell-mt{background:rgba(255,255,255,0.01)}
+body.stitch-dark table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.05)}
+body.stitch-dark .logo-text{color:#f5f5f7}
+body.stitch-dark .sched-legend{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.08)}
+body.stitch-dark .p0{background:rgba(99,142,247,0.18);border-left-color:#4f8ef7;color:#90b8ff}
+body.stitch-dark .p1{background:rgba(52,199,89,0.15);border-left-color:#34c759;color:#5dd67a}
+body.stitch-dark .p2{background:rgba(255,214,10,0.14);border-left-color:#ffd60a;color:#ffd60a}
+body.stitch-dark .p3{background:rgba(255,69,58,0.15);border-left-color:#ff453a;color:#ff8a82}
+body.stitch-dark .p4{background:rgba(100,210,255,0.15);border-left-color:#64d2ff;color:#64d2ff}
+body.stitch-dark .p5{background:rgba(94,92,230,0.18);border-left-color:#5e5ce6;color:#b8b2ff}
+body.stitch-dark .p6{background:rgba(255,159,10,0.15);border-left-color:#ff9f0a;color:#ffa843}
+body.stitch-dark .p7{background:rgba(48,209,88,0.14);border-left-color:#30d158;color:#64dd8a}
+
+/* ── Stitch Light (Glacial) ──────────────────────────────── */
+body.stitch-light{
+  --bg:#efefef;
+  --panel:#f8f8f8;
+  --surface:rgba(255,255,255,0.68);
+  --surface2:rgba(255,255,255,0.85);
+  --card:rgba(0,0,0,0.04);
+  --card2:rgba(0,0,0,0.07);
+  --line:rgba(0,0,0,0.045);
+  --line2:rgba(0,0,0,0.095);
+  --line3:rgba(0,0,0,0.17);
+  --tx:#1c1c1e;
+  --tx2:#3a3a3c;
+  --tx3:#8e8e93;
+  --tx4:#c7c7cc;
+  --accent:#2563eb;
+  --accent2:#3b82f6;
+  --accent3:#1d4ed8;
+  --glow:rgba(37,99,235,0.13);
+  --float-bg:rgba(255,255,255,0.58);
+  --float-shadow:0 12px 48px rgba(0,0,0,0.10),0 1px 0 rgba(255,255,255,0.95) inset;
+  --float-btn-bg:rgba(255,255,255,0.55);
+  --float-btn-shadow:0 8px 28px rgba(0,0,0,0.09),0 1px 0 rgba(255,255,255,0.95) inset;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 18% 22%,rgba(0,0,0,0.025) 0%,transparent 60%),
+    radial-gradient(ellipse 65% 70% at 82% 80%,rgba(0,0,0,0.018) 0%,transparent 58%),
+    radial-gradient(ellipse 55% 45% at 60% 5%,rgba(0,0,0,0.012) 0%,transparent 55%),
+    radial-gradient(circle,rgba(0,0,0,0.052) 1px,transparent 1px);
+  background-size:auto,auto,auto,22px 22px;
+}
+body.stitch-light header{background:rgba(250,250,250,0.68);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px)}
+body.stitch-light header::after{background:linear-gradient(90deg,transparent,rgba(0,0,0,0.12) 50%,transparent);opacity:0.38}
+body.stitch-light .logo-text{color:var(--tx)}
+body.stitch-light .c-row:hover{background:rgba(0,0,0,0.03)}
+body.stitch-light table.sch tbody tr:nth-child(odd) td:not(:first-child) .cell-mt{background:rgba(0,0,0,0.018)}
+body.stitch-light table.sch tbody tr:nth-child(even) td:not(:first-child) .cell-mt{background:rgba(0,0,0,0.008)}
+body.stitch-light table.sch tbody tr:hover .cell-mt{background:rgba(0,0,0,0.04)}
+body.stitch-light .sched-legend{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.08)}
+body.stitch-light .p0{background:rgba(37,99,235,0.12);border-left-color:#2563eb;color:#1d4ed8}
+body.stitch-light .p1{background:rgba(22,163,74,0.12);border-left-color:#16a34a;color:#166534}
+body.stitch-light .p2{background:rgba(202,138,4,0.12);border-left-color:#d97706;color:#92400e}
+body.stitch-light .p3{background:rgba(220,38,38,0.12);border-left-color:#dc2626;color:#991b1b}
+body.stitch-light .p4{background:rgba(8,145,178,0.12);border-left-color:#0891b2;color:#0e7490}
+body.stitch-light .p5{background:rgba(124,58,237,0.12);border-left-color:#7c3aed;color:#5b21b6}
+body.stitch-light .p6{background:rgba(234,88,12,0.12);border-left-color:#ea580c;color:#9a3412}
+body.stitch-light .p7{background:rgba(5,150,105,0.12);border-left-color:#059669;color:#065f46}
+
+/* ── Google (Material 3, esquema claro) ──────────────────────
+   Paleta clara de Material tal como la usan Gmail, Drive y Calendar.
+   Todo el tema se apoya en los tokens de abajo: para pasarlo a oscuro
+   bastaría con cambiar este bloque, no las reglas que vienen después. */
+body.google{
+  /* — Tokens de Material — */
+  --g-prim:#0b57d0;             /* primario: azul de Google */
+  --g-on-prim:#ffffff;
+  --g-prim-cont:#d3e3fd;        /* contenedor primario (selección) */
+  --g-on-prim-cont:#041e49;
+  --g-prim-cont-h:#c2d7f8;
+  --g-surf:#ffffff;
+  --g-surf-1:#f8fafd;           /* contenedor bajo */
+  --g-surf-2:#f0f4f9;           /* contenedor (barra lateral de Gmail) */
+  --g-surf-3:#e9eef6;           /* contenedor alto */
+  --g-surf-4:#dde3ea;
+  --g-outline:#c4c7c5;
+  --g-state:0,0,0;              /* capa de estado sobre superficie clara */
+  --g-err-cont:#fce8e6;
+  --g-on-err-cont:#b3261e;
+  --g-warn-cont:#fef7e0;
+  --g-on-warn-cont:#7a5900;
+  /* — Movimiento de Material 3 — */
+  --g-ease:cubic-bezier(0.2,0,0,1);
+  --g-ease-out:cubic-bezier(0.05,0.7,0.1,1);
+  --g-dur:0.2s;
+
+  /* — Variables que consume el resto de la hoja — */
+  --bg:#f0f4f9;
+  --panel:#ffffff;
+  --surface:var(--g-surf-1);
+  --surface2:var(--g-surf-2);
+  --card:var(--g-surf-3);
+  --card2:var(--g-surf-4);
+  --line:rgba(0,0,0,0.06);
+  --line2:rgba(0,0,0,0.09);
+  --line3:rgba(0,0,0,0.16);
+  --tx:#1f1f1f;
+  --tx2:#444746;
+  --tx3:#5f6368;
+  --tx4:#9aa0a6;
+  --accent:var(--g-prim);
+  --accent2:#1a73e8;
+  --accent3:#0842a0;
+  --glow:rgba(11,87,208,0.12);
+  --float-bg:rgba(255,255,255,0.86);
+  --float-shadow:0 1px 3px rgba(60,64,67,0.20),0 4px 12px rgba(60,64,67,0.12);
+  --float-btn-bg:rgba(255,255,255,0.90);
+  --float-btn-shadow:0 1px 3px rgba(60,64,67,0.22),0 2px 8px rgba(60,64,67,0.10);
+  background-image:
+    radial-gradient(ellipse 70% 55% at 14% 0%,rgba(11,87,208,0.045) 0%,transparent 62%),
+    radial-gradient(ellipse 60% 60% at 88% 88%,rgba(26,115,232,0.035) 0%,transparent 58%);
+}
+body.google,
+body.google .hbtn,body.google .btn,body.google .chip,
+body.google input,body.google select,body.google textarea{
+  font-family:'Roboto','Plus Jakarta Sans',sans-serif;
+}
+
+/* ── Cabecera ─────────────────────────────────────────────── */
+body.google header{
+  background:rgba(255,255,255,0.85);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border:none;border-radius:28px;
+  box-shadow:0 1px 2px rgba(60,64,67,0.16),0 2px 8px rgba(60,64,67,0.10);
+}
+body.google header::after{display:none}
+body.google .logo-gem{background:var(--g-prim-cont);border-radius:16px;box-shadow:none}
+body.google .logo-text{color:var(--tx);font-weight:700;letter-spacing:0}
+body.google .logo-text span{color:var(--g-prim)}
+body.google .logo-sub{font-family:'Roboto',sans-serif;letter-spacing:0.7px;color:var(--tx3)}
+
+/* ── Paneles ──────────────────────────────────────────────── */
+body.google .sidebar{
+  border:none;border-radius:28px;background:var(--g-surf);
+  backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
+}
+body.google .sidebar-label{
+  background:none;-webkit-text-fill-color:currentColor;color:var(--tx3);
+  font-family:'Roboto',sans-serif;font-weight:500;letter-spacing:1.4px;
+}
+body.google .search-box{border-radius:999px;border:none;background:var(--g-surf-2)}
+body.google .search-box:focus-within{background:var(--g-surf-3);border:none;box-shadow:none}
+body.google .sched-area{background:transparent}
+
+/* ── Botones y chips: píldora completa, relleno tonal ─────── */
+body.google .hbtn,body.google .btn{
+  border-radius:999px;border:none;background:var(--g-surf-2);color:var(--tx2);
+  font-size:0.82rem;font-weight:500;letter-spacing:0.1px;padding:9px 20px;
+}
+body.google .hbtn:hover,body.google .btn:hover{background:var(--g-surf-3);color:var(--tx)}
+body.google .btn-dl{background:var(--g-prim);color:var(--g-on-prim);font-weight:500}
+body.google .btn-dl:hover{background:#0a4bb5;color:var(--g-on-prim)}
+body.google .btn-cal{background:var(--g-prim-cont);color:var(--g-on-prim-cont);box-shadow:none}
+body.google .btn-cal:hover{background:var(--g-prim-cont-h);box-shadow:none}
+body.google .btn-names.active{background:var(--g-prim-cont);border:none;color:var(--g-on-prim-cont)}
+body.google .chip{border-radius:999px;border:none;background:var(--g-surf-2);color:var(--tx2)}
+body.google .chip:hover{background:var(--g-surf-3);color:var(--tx)}
+body.google .chip.on{background:var(--g-prim-cont);color:var(--g-on-prim-cont);border:none}
+body.google .tag{border-radius:999px;border:none}
+body.google .score-pill{border-radius:999px;border:none;background:var(--g-prim-cont);color:var(--g-on-prim-cont)}
+body.google .score-pill:hover{background:var(--g-prim-cont-h);box-shadow:none}
+body.google .score-pop{border:none;border-radius:16px;background:var(--g-surf)}
+body.google .score-pop-count{color:var(--g-prim)}
+
+/* ── Lista de cursos: patrón del panel de navegación ───────
+   Filas transparentes; solo la seleccionada se vuelve píldora. */
+body.google .c-row{
+  background:transparent;border:none;border-left:none;
+  margin:2px 8px;padding:0.6rem 1rem;border-radius:999px;
+  transition:background var(--g-dur) var(--g-ease),color var(--g-dur) var(--g-ease);
+}
+body.google .c-row:hover{background:rgba(var(--g-state),0.05)}
+body.google .c-row:active{background:rgba(var(--g-state),0.09)}
+body.google .c-row.sel{background:var(--g-prim-cont);border-left:none}
+body.google .c-row.sel:hover{background:var(--g-prim-cont-h)}
+body.google .c-row.sel .c-name{color:var(--g-on-prim-cont)}
+body.google .c-row.sel .c-cod{color:var(--g-prim)}
+body.google .cbox{
+  border-radius:4px;border:2px solid var(--tx3);
+  transition:background var(--g-dur) var(--g-ease),border-color var(--g-dur) var(--g-ease);
+}
+body.google .c-row.sel .cbox{background:var(--g-prim);border-color:var(--g-prim);box-shadow:none}
+body.google .c-row.sel .cbox::after{border-left-color:#fff;border-bottom-color:#fff}
+body.google .c-cod{border-radius:999px;padding:1px 8px;font-weight:500}
+
+/* ── Diálogos ─────────────────────────────────────────────
+   Material los quiere amplios: mucho aire, título ligero y las
+   opciones como tarjetas rellenas sin borde. */
+body.google .modal,body.google .ann-modal{
+  border:none;border-radius:28px;background:var(--g-surf);
+  box-shadow:0 8px 24px rgba(60,64,67,0.22),0 2px 6px rgba(60,64,67,0.12);
+}
+body.google .modal-top,body.google .ann-top,body.google .ann-foot{
+  background:var(--g-surf);border-color:transparent;
+}
+body.google .modal-top{padding:1.6rem 1.75rem 0.9rem}
+body.google .modal-body{padding:0.4rem 1.75rem 1.75rem}
+body.google .modal-ttl,body.google .ann-title{font-weight:400;font-size:1.35rem;letter-spacing:0;color:var(--tx)}
+body.google .modal-sub{font-weight:400;font-size:0.78rem;color:var(--tx3);margin-top:6px}
+body.google .modal-x,body.google .ann-x{
+  border-radius:999px;background:transparent;color:var(--tx2);width:40px;height:40px;
+}
+body.google .modal-x:hover,body.google .ann-x:hover{background:rgba(var(--g-state),0.07);color:var(--tx)}
+/* Tarjetas de sección: relleno tonal para que se despeguen del blanco */
+body.google .sec{
+  border-radius:16px;border:none;background:var(--g-surf-2);
+  padding:16px 18px;margin-bottom:10px;
+}
+body.google .sec:hover{background:var(--g-surf-3);box-shadow:none;transform:none}
+body.google .sec.soft-conf{border:none;background:var(--g-warn-cont)}
+body.google .sec.soft-conf:hover{border:none;background:#fdf1cf;box-shadow:none}
+body.google .sec-top{margin-bottom:10px}
+body.google .sec-name{font-weight:500;letter-spacing:0.3px;font-size:0.9rem;color:var(--tx)}
+body.google .sec-doc{font-size:0.75rem;color:var(--tx2);line-height:1.5}
+body.google .sec-docs .sec-doc{margin-bottom:6px}
+body.google .doc-role{border:none;background:var(--g-surf-3);color:var(--tx3);border-radius:999px}
+/* Filas de sesión como chips de asistencia */
+body.google .ses{padding:5px 0;font-size:0.76rem;color:var(--tx2)}
+body.google .ses-T,body.google .ses-P,body.google .ses-L,body.google .ses-S{
+  border-radius:999px;padding:3px 10px;font-weight:500;font-size:0.62rem;letter-spacing:0.3px;
+}
+body.google .ses-T{background:#fef7e0;color:#7a5900}
+body.google .ses-P{background:#e6f4ea;color:#137333}
+body.google .ses-L{background:#fee9e0;color:#a8400a}
+body.google .ses-S{background:#e0f7f5;color:#00695c}
+/* Botones del anuncio */
+body.google .ann-btn-skip{border-radius:999px;border:none;background:transparent;color:var(--g-prim)}
+body.google .ann-btn-skip:hover{background:rgba(11,87,208,0.08);color:var(--g-prim)}
+body.google .ann-btn-ok{border-radius:999px;border:none;background:var(--g-prim);color:var(--g-on-prim)}
+body.google .ann-btn-ok:hover{background:#0a4bb5}
+body.google .rate-btn{border-radius:999px;border:none;background:var(--g-prim-cont);color:var(--g-on-prim-cont)}
+/* Aviso emergente en claro, a juego con el resto del tema. Los snackbars
+   de Material son oscuros incluso en esquema claro, pero aquí desentonaba. */
+body.google .toast{
+  border-radius:999px;border:none;
+  background:var(--g-surf);color:var(--tx);font-weight:500;
+  box-shadow:0 3px 8px rgba(60,64,67,0.22),0 1px 3px rgba(60,64,67,0.14);
+}
+body.google .toast.ok .tdot{background:#1e8e3e;box-shadow:none}
+body.google .toast.er .tdot{background:#d93025;box-shadow:none}
+body.google .toast.warn .tdot{background:#e37400;box-shadow:none}
+
+/* ── Horario ──────────────────────────────────────────────── */
+body.google .dhead{
+  border:none;background:var(--g-surf-2);border-radius:14px 14px 0 0;
+  font-weight:500;letter-spacing:0.6px;color:var(--tx2);
+}
+body.google .dhead.now{background:var(--g-prim-cont);color:var(--g-on-prim-cont);border:none}
+body.google .cell-mt{border-radius:8px}
+body.google table.sch tbody tr:nth-child(odd) td:not(:first-child) .cell-mt{background:rgba(var(--g-state),0.028)}
+body.google table.sch tbody tr:nth-child(even) td:not(:first-child) .cell-mt{background:rgba(var(--g-state),0.012)}
+body.google table.sch tbody tr:hover .cell-mt{background:rgba(var(--g-state),0.055)}
+body.google .blk{border-radius:14px}
+body.google .sched-legend{border-radius:16px;border:none;background:var(--g-surf-1)}
+body.google .empty-box{border:none;border-radius:28px;background:var(--g-surf-2);box-shadow:none}
+/* Cursos: tonos 200 de la paleta de Google, como los eventos de Calendar */
+body.google .p0{background:#aecbfa;border-left-color:#669df6;color:#062e6f}
+body.google .p1{background:#a8dab5;border-left-color:#5bb974;color:#0d652d}
+body.google .p2{background:#fde293;border-left-color:#fbbc04;color:#5c4200}
+body.google .p3{background:#f6aea9;border-left-color:#ee675c;color:#5c1512}
+body.google .p4{background:#a7e8eb;border-left-color:#4ecde6;color:#0b4f4d}
+body.google .p5{background:#d7aefb;border-left-color:#af5cf7;color:#3c1a5b}
+body.google .p6{background:#fdc69c;border-left-color:#fa903e;color:#5f2b01}
+body.google .p7{background:#a5dfcf;border-left-color:#4db6a2;color:#0b4f3f}
+body.google .blk::before{background:none}
+body.google .blk:hover{filter:brightness(0.97)}
+body.google .blk-type{background:rgba(0,0,0,0.13)}
+body.google .blk-secc,body.google .blk-room{opacity:0.7}
+
+/* ── Avisos ───────────────────────────────────────────────── */
+body.google .conf-bar{border:none;border-radius:16px;background:var(--g-err-cont);color:var(--g-on-err-cont)}
+body.google .sec-conf,body.google .c-conf-tag{
+  border:none;border-radius:999px;padding:2px 9px;
+  background:var(--g-err-cont);color:var(--g-on-err-cont);
+}
+body.google .sec-warn,body.google .c-conf-tag-soft{
+  border:none;background:var(--g-warn-cont);color:var(--g-on-warn-cont);
+}
+/* Especialidades, en la misma familia de tonos */
+body.google .cyCB .cy-pill{color:#7a5900;background:#fef7e0;border-color:transparent}
+body.google .cyIA .cy-pill{color:#137333;background:#e6f4ea;border-color:transparent}
+body.google .cyIS .cy-pill{color:#01697d;background:#e0f7fa;border-color:transparent}
+body.google .cyIH .cy-pill{color:#6b2a8f;background:#f3e8fd;border-color:transparent}
+body.google .cyCB .cy-line{background:linear-gradient(90deg,rgba(251,188,4,0.5),transparent)}
+body.google .cyIA .cy-line{background:linear-gradient(90deg,rgba(91,185,116,0.5),transparent)}
+body.google .cyIS .cy-line{background:linear-gradient(90deg,rgba(78,205,230,0.5),transparent)}
+body.google .cyIH .cy-line{background:linear-gradient(90deg,rgba(175,92,247,0.5),transparent)}
+
+/* ── Tipografía ───────────────────────────────────────────
+   Material no usa negritas fuertes: el 500 marca lo importante. */
+body.google .logo-text{font-size:1.15rem}
+body.google .logo-sub{font-size:0.66rem;font-weight:400;letter-spacing:0.4px;text-transform:none}
+body.google .c-name{font-size:0.84rem;font-weight:500;letter-spacing:0.1px;color:var(--tx)}
+body.google .c-meta,body.google .c-secs{font-weight:400}
+body.google .stat{font-weight:400}
+body.google .stat-n{font-weight:500;color:var(--g-prim)}
+body.google .empty h3{font-weight:400;font-size:1.05rem}
+body.google .ann-body h1{font-weight:400;font-size:1.3rem}
+body.google .ann-body h2{font-weight:500}
+body.google .ann-body p,body.google .ann-body li{font-weight:400;line-height:1.6}
+body.google .ann-body a{color:var(--g-prim)}
+body.google .ann-body code{background:var(--g-surf-2)}
+body.google .ann-body blockquote{border-left-color:var(--g-prim)}
+/* Roboto Mono para códigos, horas y secciones */
+body.google .logo-sub,body.google .sidebar-label,body.google .c-cod,
+body.google .sec-name,body.google .stat-n,body.google .dhead,
+body.google table.sch td:first-child,body.google .blk-cod,body.google .blk-cod-sm,
+body.google .score-pill-val,body.google .btn-names{
+  font-family:'Roboto Mono','JetBrains Mono',monospace;
+}
+body.google table.sch td:first-child{color:var(--tx3)}
+
+/* ── Móvil ────────────────────────────────────────────────
+   Barra inferior al estilo de la navegación de Material: la
+   pestaña activa lleva su propia píldora de fondo. */
+@media(max-width:720px){
+  body.google header{
+    border-radius:0;margin:0;box-shadow:0 1px 2px rgba(60,64,67,0.14);
+    background:rgba(255,255,255,0.94);
+  }
+  body.google .sidebar,body.google .main{border-radius:0;margin:0;box-shadow:none}
+  body.google .mob-tabs{
+    background:var(--g-surf-2);border-top:none;
+    box-shadow:0 -1px 3px rgba(60,64,67,0.10);
+  }
+  body.google .mob-tab{
+    font-family:'Roboto',sans-serif;font-weight:500;font-size:0.62rem;
+    letter-spacing:0.2px;text-transform:none;color:var(--tx3);
+    position:relative;overflow:visible;
+  }
+  body.google .mob-tab svg{
+    position:relative;z-index:1;
+    transition:color var(--g-dur) var(--g-ease);
+  }
+  /* La píldora del indicador crece detrás del icono. Abarca solo el
+     icono (7–29px): más alta taparía la etiqueta, que empieza en 31px. */
+  body.google .mob-tab::before{
+    content:'';position:absolute;top:7px;left:50%;
+    width:56px;height:22px;margin-left:-28px;border-radius:999px;
+    background:var(--g-prim-cont);z-index:0;
+    transform:scaleX(0.4);opacity:0;
+    transition:transform var(--g-dur) var(--g-ease),opacity var(--g-dur) var(--g-ease);
+  }
+  body.google .mob-tab.on::before{transform:scaleX(1);opacity:1}
+  body.google .mob-tab.on,body.google .mob-tab.on svg{color:var(--g-on-prim-cont)}
+  body.google .topbar{background:transparent}
+  /* En pantalla estrecha el relleno de escritorio ensancha demasiado la
+     barra de acciones, así que se ajusta a la métrica compacta */
+  body.google .btn,body.google .hbtn{padding:8px 13px;font-size:0.76rem}
+  body.google .modal,body.google .ann-modal{border-radius:24px}
+  body.google .modal-top{padding:1.3rem 1.3rem 0.8rem}
+  body.google .modal-body{padding:0.4rem 1.3rem 1.3rem}
+  body.google .sec{padding:14px 15px}
+  body.google .c-row{margin:2px 6px;padding:0.6rem 0.85rem}
+}
+
+/* ── Movimiento y respuesta al tacto ──────────────────────── */
+body.google .btn,body.google .hbtn,body.google .chip,
+body.google .sec,body.google .tag,body.google .score-pill,
+body.google .modal-x,body.google .ann-x,body.google .rate-btn,
+body.google .ann-btn-ok,body.google .ann-btn-skip{
+  transition:background var(--g-dur) var(--g-ease),
+             color var(--g-dur) var(--g-ease),
+             box-shadow var(--g-dur) var(--g-ease),
+             transform 0.1s var(--g-ease-out);
+}
+body.google .btn:active,body.google .hbtn:active,body.google .chip:active,
+body.google .sec:active,body.google .modal-x:active,body.google .ann-x:active,
+body.google .rate-btn:active,body.google .ann-btn-ok:active,body.google .ann-btn-skip:active{
+  transform:scale(0.96);
+}
+body.google .btn-dl:hover,body.google .btn-cal:hover{
+  box-shadow:0 1px 3px rgba(60,64,67,0.24),0 4px 8px rgba(60,64,67,0.12);
+}
+body.google .blk{transition:transform 0.15s var(--g-ease-out),box-shadow 0.15s var(--g-ease)}
+body.google .blk:hover{
+  transform:scale(1.02);
+  box-shadow:0 2px 6px rgba(60,64,67,0.24);
+  z-index:5;
+}
+/* Las entradas de diálogo, velo y aviso son las compartidas del final
+   de la hoja; aquí no hace falta repetirlas. */
+body.google .sched-area::-webkit-scrollbar-thumb,
+body.google .course-scroll::-webkit-scrollbar-thumb,
+body.google .modal::-webkit-scrollbar-thumb,
+body.google .ann-modal::-webkit-scrollbar-thumb{
+  background:var(--g-outline);border-radius:999px;
+}
+body.google ::selection{background:var(--g-prim-cont);color:var(--g-on-prim-cont)}
+body.google :focus-visible{outline:2px solid var(--g-prim);outline-offset:2px}
+
+/* ── Onda al pulsar (la genera theme.js) ──────────────────── */
+body.google .btn,body.google .hbtn,body.google .chip,body.google .c-row,
+body.google .sec,body.google .rate-btn,body.google .modal-x,body.google .ann-x,
+body.google .ann-btn-ok,body.google .ann-btn-skip{
+  position:relative;overflow:hidden;
+}
+.g-ripple{
+  position:absolute;border-radius:50%;pointer-events:none;
+  background:currentColor;opacity:0.16;transform:scale(0);
+  animation:g-ripple 0.55s var(--g-ease-out) forwards;
+}
+@keyframes g-ripple{to{transform:scale(1);opacity:0}}
+
+/* Quien prefiera menos movimiento no recibe ninguna animación */
+@media (prefers-reduced-motion:reduce){
+  body.google *,body.google *::before,body.google *::after{
+    animation-duration:0.01ms !important;animation-iteration-count:1 !important;
+    transition-duration:0.01ms !important;
+  }
+  body.google .blk:hover,body.google .btn:active{transform:none}
+  .g-ripple{display:none}
+}
+
+/* ── Stitch: transparent sched-area so dot background shows ── */
+body.stitch-dark .sched-area,body.stitch-light .sched-area{background:transparent}
+/* ── Stitch: reforzar blur acrílico en sidebar y modal ── */
+body.stitch-dark .sidebar,body.stitch-light .sidebar{
+  backdrop-filter:blur(36px);-webkit-backdrop-filter:blur(36px);
+}
+body.stitch-dark .modal,body.stitch-light .modal{
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+}
+/* ── Stitch: html fondo sin color para que los gradientes del body sean visibles ── */
+body.stitch-dark~html,body.stitch-light~html{background:transparent}
+
+/* Dot spotlight: intense dots revealed only near cursor via CSS mask */
+body.stitch-dark::before,body.stitch-light::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background-size:22px 22px;
+  mask-image:radial-gradient(circle 130px at var(--dot-x,-9999px) var(--dot-y,-9999px),black 0%,transparent 100%);
+  -webkit-mask-image:radial-gradient(circle 130px at var(--dot-x,-9999px) var(--dot-y,-9999px),black 0%,transparent 100%);
+}
+body.stitch-dark::before{background-image:radial-gradient(circle,rgba(255,255,255,0.32) 1px,transparent 1px)}
+body.stitch-light::before{background-image:radial-gradient(circle,rgba(0,0,0,0.26) 1px,transparent 1px)}
+
+html{background:var(--bg);height:100%;overflow:hidden}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tx);height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;position:relative}
+
+/* ═══ HEADER ═════════════════════════════════════════ */
+header{
+  height:60px;padding:0 1.4rem;flex-shrink:0;z-index:200;
+  background:rgba(12,9,5,0.88);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border:1px solid var(--line2);
+  border-radius:16px;
+  margin:8px 10px 0;
+  box-shadow:0 4px 24px rgba(0,0,0,0.28),0 1px 0 rgba(255,255,255,0.05) inset;
+  display:flex;align-items:center;justify-content:space-between;
+  position:relative;overflow:hidden;
+}
+header::after{
+  content:'';position:absolute;inset-x:0;bottom:0;height:1.5px;
+  background:linear-gradient(90deg,transparent,#c8783a 25%,#8a7a2a 50%,#4a8a30 75%,transparent);
+  opacity:0.7;border-radius:0 0 16px 16px;
+}
+.logo{display:flex;align-items:center;gap:14px}
+.logo-gem{
+  width:64px;height:38px;border-radius:11px;flex-shrink:0;
+  background:linear-gradient(135deg,#c8783a,#8a7a2a,#4a8a30);
+  display:flex;align-items:center;justify-content:center;font-size:15px;gap:1px;
+  box-shadow:0 4px 16px rgba(200,120,58,0.4);
+  white-space:nowrap;flex-wrap:nowrap;
+}
+.logo-text{font-size:1.05rem;font-weight:800;color:#fff;letter-spacing:-0.5px;line-height:1.1}
+.logo-text span{color:var(--accent2)}
+.logo-sub{font-size:0.62rem;font-family:'JetBrains Mono',monospace;color:var(--tx3);letter-spacing:1.5px;margin-top:1px}
+.header-mid{
+  position:absolute;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:10px;
+  font-size:0.72rem;color:var(--tx3);letter-spacing:0.5px;
+}
+.hbtn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 15px;border-radius:8px;border:1px solid var(--line2);
+  background:var(--surface);color:var(--tx2);font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:0.79rem;font-weight:600;cursor:pointer;transition:all 0.15s;
+}
+.hbtn:hover{background:var(--card);border-color:var(--line3);color:var(--tx)}
+
+/* ═══ LAYOUT ══════════════════════════════════════════ */
+.app{display:flex;flex:1;overflow:hidden}
+
+/* ═══ LEFT PANEL ══════════════════════════════════════ */
+.sidebar{
+  width:348px;flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;
+  background:var(--float-bg);
+  margin:10px 0 10px 10px;
+  border-radius:18px;border:1px solid var(--line2);
+  box-shadow:var(--float-shadow);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+}
+
+/* Search + upload area */
+.sidebar-top{padding:1.1rem 1.2rem 0.9rem;border-bottom:1px solid var(--line);flex-shrink:0}
+.sidebar-label{
+  font-size:0.6rem;font-family:'JetBrains Mono',monospace;font-weight:600;
+  letter-spacing:2.5px;text-transform:uppercase;
+  background:linear-gradient(90deg,var(--accent2),var(--accent3));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:0.8rem;display:block;
+}
+.search-box{
+  display:flex;align-items:center;gap:9px;
+  background:var(--surface);border:1.5px solid var(--line2);border-radius:10px;
+  padding:0 13px;margin-bottom:0.75rem;transition:all 0.2s;
+}
+.search-box:focus-within{border-color:var(--accent);background:var(--surface2);box-shadow:0 0 0 4px rgba(200,120,58,0.12)}
+.search-box svg{color:var(--tx3);flex-shrink:0}
+.search-box input{
+  background:none;border:none;outline:none;width:100%;
+  padding:10px 0;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.85rem;
+  color:var(--tx);
+}
+.search-box input::placeholder{color:var(--tx4)}
+.upload-row{
+  display:flex;align-items:center;gap:8px;padding:8px 12px;
+  background:var(--surface2);border:1.5px dashed var(--line2);border-radius:9px;
+  color:var(--tx3);font-size:0.77rem;font-weight:500;cursor:pointer;transition:all 0.2s;
+}
+.upload-row:hover{border-color:var(--accent2);color:var(--accent3);background:rgba(200,120,58,0.06)}
+.upload-row svg{flex-shrink:0;color:inherit}
+#file-input{display:none}
+
+/* Cycle filter chips */
+.chips-bar{
+  padding:0.6rem 1.2rem;display:flex;gap:6px;flex-wrap:wrap;
+  border-bottom:1px solid var(--line);flex-shrink:0;
+}
+.chip{
+  font-size:0.66rem;font-weight:700;font-family:'JetBrains Mono',monospace;
+  padding:4px 10px;border-radius:20px;cursor:pointer;
+  border:1.5px solid var(--line2);background:transparent;color:var(--tx3);
+  transition:all 0.15s;white-space:nowrap;
+}
+.chip:hover{border-color:var(--accent2);color:var(--accent2)}
+.chip.on{background:rgba(200,120,58,0.18);border-color:rgba(200,120,58,0.5);color:var(--accent3)}
+
+/* Course list */
+.course-scroll{flex:1;overflow-y:auto;padding-bottom:1rem}
+.course-scroll::-webkit-scrollbar{width:3px}
+.course-scroll::-webkit-scrollbar-thumb{background:var(--card2);border-radius:2px}
+
+/* Cycle section divider */
+.cy-divider{
+  display:flex;align-items:center;gap:10px;padding:0.9rem 1.2rem 0.3rem;
+}
+.cy-pill{
+  font-size:0.59rem;font-weight:800;font-family:'JetBrains Mono',monospace;
+  letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;
+  border-radius:20px;border:1.5px solid;white-space:nowrap;flex-shrink:0;
+}
+.cy-line{flex:1;height:1px;border-radius:1px}
+
+/* Specialty palette */
+.cyCB .cy-pill{color:#fbbf24;background:rgba(251,191,36,0.12);border-color:rgba(251,191,36,0.35)}
+.cyCB .cy-line{background:linear-gradient(90deg,rgba(251,191,36,0.4),transparent)}
+.cyIA .cy-pill{color:#34d399;background:rgba(52,211,153,0.12);border-color:rgba(52,211,153,0.35)}
+.cyIA .cy-line{background:linear-gradient(90deg,rgba(52,211,153,0.4),transparent)}
+.cyIS .cy-pill{color:#22d3ee;background:rgba(34,211,238,0.12);border-color:rgba(34,211,238,0.35)}
+.cyIS .cy-line{background:linear-gradient(90deg,rgba(34,211,238,0.4),transparent)}
+.cyIH .cy-pill{color:#f472b6;background:rgba(244,114,182,0.12);border-color:rgba(244,114,182,0.35)}
+.cyIH .cy-line{background:linear-gradient(90deg,rgba(244,114,182,0.4),transparent)}
+
+/* Course row */
+/* Cabecera de grupo por ciclo en la lista de cursos */
+.cy-head{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:0.7rem 1.2rem 0.35rem;
+  font-size:0.62rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
+  color:var(--tx3);position:sticky;top:0;z-index:3;
+  background:var(--float-bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.cy-head-n{
+  font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;
+  letter-spacing:0;padding:1px 7px;border-radius:999px;
+  background:var(--card);color:var(--tx3);
+}
+body.google .cy-head{font-family:'Roboto',sans-serif;font-weight:500;letter-spacing:0.9px}
+body.google .cy-head-n{font-family:'Roboto Mono',monospace;font-weight:500}
+/* Vacantes de la sección */
+.sec-vac{
+  display:inline-flex;align-items:center;gap:4px;flex-shrink:0;
+  font-size:0.62rem;font-weight:700;padding:2px 8px;border-radius:999px;
+  background:var(--card);color:var(--tx3);
+}
+body.google .sec-vac{background:var(--g-surf-3);color:var(--tx2);font-weight:500}
+
+.c-row{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:0.52rem 1.2rem;cursor:pointer;
+  transition:background 0.1s;border-left:3px solid transparent;
+  position:relative;
+}
+.c-row:hover{background:rgba(255,255,255,0.03)}
+.c-row.sel{background:rgba(200,120,58,0.08);border-left-color:var(--accent)}
+.c-row.conf{opacity:0.3;pointer-events:none}
+
+/* Checkbox */
+.cbox{
+  width:17px;height:17px;border-radius:5px;flex-shrink:0;margin-top:1px;
+  border:2px solid var(--line3);background:transparent;
+  transition:all 0.15s;display:flex;align-items:center;justify-content:center;
+}
+.c-row.sel .cbox{background:var(--accent);border-color:var(--accent);box-shadow:0 0 10px rgba(200,120,58,0.4)}
+.c-row.sel .cbox::after{
+  content:'';display:block;width:9px;height:5.5px;
+  border-left:2.5px solid #fff;border-bottom:2.5px solid #fff;
+  transform:rotate(-45deg) translate(1px,-1px);
+}
+.c-info{flex:1;min-width:0}
+.c-name{
+  font-size:0.81rem;font-weight:600;color:var(--tx);
+  line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.c-meta{display:flex;align-items:center;gap:7px;margin-top:3px;flex-wrap:wrap}
+.c-cod{
+  font-family:'JetBrains Mono',monospace;font-size:0.63rem;font-weight:700;
+  padding:1px 6px;border-radius:4px;
+}
+.c-secs{font-size:0.67rem;color:var(--tx3)}
+.c-conf-tag{font-size:0.6rem;color:#fca5a5;background:rgba(239,68,68,0.12);padding:1px 6px;border-radius:10px;border:1px solid rgba(239,68,68,0.25)}
+.c-conf-tag-soft{color:#fcd34d;background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.35)}
+
+/* cod color by specialty */
+.cyCB .c-cod{color:#d4a030;background:rgba(212,160,48,0.15)}
+.cyIA .c-cod{color:#4a9040;background:rgba(74,144,64,0.15)}
+.cyIS .c-cod{color:#2a9888;background:rgba(42,152,136,0.15)}
+.cyIH .c-cod{color:#c86040;background:rgba(200,96,64,0.15)}
+.cyCB.sel{border-color:rgba(212,160,48,0.4);background:rgba(212,160,48,0.07)}
+.cyIA.sel{border-color:rgba(74,144,64,0.4);background:rgba(74,144,64,0.07)}
+.cyIS.sel{border-color:rgba(42,152,136,0.4);background:rgba(42,152,136,0.07)}
+.cyIH.sel{border-color:rgba(200,96,64,0.4);background:rgba(200,96,64,0.07)}
+.cyCB .cy-pill{color:#fbbf24;border-color:rgba(251,191,36,0.3);background:rgba(251,191,36,0.1)}
+.cyIA .cy-pill{color:#34d399;border-color:rgba(52,211,153,0.3);background:rgba(52,211,153,0.1)}
+.cyIS .cy-pill{color:#22d3ee;border-color:rgba(34,211,238,0.3);background:rgba(34,211,238,0.1)}
+.cyIH .cy-pill{color:#f472b6;border-color:rgba(244,114,182,0.3);background:rgba(244,114,182,0.1)}
+
+/* ═══ RIGHT PANEL ═════════════════════════════════════ */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+/* Topbar */
+.topbar{
+  display:flex;align-items:center;gap:8px;flex-shrink:0;
+  padding:0.65rem 1.4rem;
+  background:transparent;border-bottom:none;min-height:56px;
+}
+.tags-zone{flex:1;display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0}
+.ph{font-size:0.8rem;color:var(--tx4);font-style:italic}
+.tag{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 10px;border-radius:20px;
+  font-size:0.69rem;font-weight:700;font-family:'JetBrains Mono',monospace;
+  cursor:default;border:1.5px solid;
+}
+.tag-x{
+  width:15px;height:15px;border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-style:normal;font-size:0.72rem;opacity:0.6;transition:opacity 0.15s;
+}
+.tag-x:hover{opacity:1}
+.action-btns{
+  display:flex;align-items:center;gap:8px;flex-shrink:0;
+  padding:7px 10px;border-radius:14px;border:1px solid var(--line2);
+  background:var(--float-btn-bg);
+  box-shadow:var(--float-btn-shadow);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:8px 16px;border-radius:9px;border:1.5px solid;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:0.8rem;font-weight:700;
+  cursor:pointer;transition:all 0.18s;white-space:nowrap;
+}
+.btn-clear{background:rgba(239,68,68,0.1);color:#fca5a5;border-color:rgba(239,68,68,0.3)}
+.btn-clear:hover{background:rgba(239,68,68,0.22);border-color:rgba(239,68,68,0.5)}
+/* btn-dl: sigue el acento del tema activo */
+.btn-dl{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;border-color:transparent;
+  box-shadow:0 2px 20px var(--glow),0 0 0 1px rgba(255,255,255,0.1) inset;
+}
+.btn-dl:hover{
+  filter:brightness(1.12);
+  box-shadow:0 4px 28px var(--glow),0 0 0 1px rgba(255,255,255,0.15) inset;
+  transform:translateY(-1px);
+}
+.btn-dl svg{filter:drop-shadow(0 0 4px rgba(255,255,255,0.4))}
+
+/* btn-cal: color complementario por tema para contrastar con btn-dl */
+/* Ámbar (default): azul */
+.btn-cal{
+  background:linear-gradient(135deg,#1a73e8,#0f5bba);
+  color:#fff;border-color:transparent;
+  box-shadow:0 2px 20px rgba(26,115,232,0.4),0 0 0 1px rgba(255,255,255,0.1) inset;
+}
+.btn-cal:hover{
+  filter:brightness(1.12);
+  box-shadow:0 4px 28px rgba(26,115,232,0.55),0 0 0 1px rgba(255,255,255,0.15) inset;
+  transform:translateY(-1px);
+}
+/* Grafito: violeta (contrasta con el azul del acento) */
+body.stitch-dark .btn-cal{
+  background:linear-gradient(135deg,#7c3aed,#5b21b6);
+  box-shadow:0 2px 20px rgba(124,58,237,0.4),0 0 0 1px rgba(255,255,255,0.1) inset;
+}
+body.stitch-dark .btn-cal:hover{box-shadow:0 4px 28px rgba(124,58,237,0.55),0 0 0 1px rgba(255,255,255,0.15) inset}
+/* Crema: teal (contrasta con el amber del acento) */
+body.light .btn-cal{
+  background:linear-gradient(135deg,#0d9488,#0f766e);
+  box-shadow:0 2px 20px rgba(13,148,136,0.35),0 0 0 1px rgba(255,255,255,0.15) inset;
+}
+body.light .btn-cal:hover{box-shadow:0 4px 28px rgba(13,148,136,0.5),0 0 0 1px rgba(255,255,255,0.2) inset}
+/* Glacial: cian (contrasta con el azul oscuro del acento) */
+body.stitch-light .btn-cal{
+  background:linear-gradient(135deg,#0891b2,#0e7490);
+  box-shadow:0 2px 20px rgba(8,145,178,0.35),0 0 0 1px rgba(255,255,255,0.15) inset;
+}
+body.stitch-light .btn-cal:hover{box-shadow:0 4px 28px rgba(8,145,178,0.5),0 0 0 1px rgba(255,255,255,0.2) inset}
+
+/* Conflict alert */
+.conf-bar{
+  display:none;align-items:center;gap:9px;
+  margin:0.5rem 1.4rem 0;padding:10px 14px;border-radius:9px;
+  background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.22);
+  font-size:0.75rem;color:#fca5a5;flex-shrink:0;
+}
+.conf-bar.on{display:flex}
+
+/* Schedule area */
+.sched-area{flex:1;overflow:auto;padding:1.6rem;background:var(--bg)}
+.sched-area::-webkit-scrollbar{width:5px;height:5px}
+.sched-area::-webkit-scrollbar-thumb{background:var(--card2);border-radius:3px}
+
+/* Empty state */
+.empty{
+  height:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:1.2rem;text-align:center;
+}
+.empty-box{
+  width:80px;height:80px;border-radius:20px;
+  background:var(--surface);border:1.5px solid var(--line2);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 40px rgba(200,120,58,0.1);
+}
+.empty h3{font-size:1rem;font-weight:700;color:var(--tx2)}
+.empty p{font-size:0.8rem;color:var(--tx3);line-height:1.7;max-width:240px}
+
+/* Stats */
+.stats{
+  display:flex;align-items:center;gap:2rem;padding:0.55rem 1.4rem;
+  background:transparent;border-top:none;flex-shrink:0;flex-wrap:wrap;
+}
+.stat{display:flex;align-items:center;gap:7px;font-size:0.72rem;color:var(--tx3)}
+.stat-n{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:0.8rem;color:var(--accent3)}
+
+/* Score pill */
+.score-pill{
+  position:relative;display:inline-flex;align-items:center;gap:6px;
+  padding:4px 11px 4px 8px;border-radius:999px;cursor:pointer;
+  background:rgba(240,200,80,0.1);border:1px solid rgba(240,200,80,0.28);
+  color:#f0c870;font-size:0.71rem;font-weight:600;
+  transition:background 0.15s,box-shadow 0.15s;user-select:none;
+}
+.score-pill:hover{background:rgba(240,200,80,0.18);box-shadow:0 2px 12px rgba(240,200,80,0.18)}
+.score-pill-val{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:0.8rem}
+.score-pop{
+  background:var(--float-bg);border:1px solid var(--line2);border-radius:10px;
+  padding:12px 15px;box-shadow:var(--float-shadow);
+  min-width:200px;max-width:calc(100vw - 16px);box-sizing:border-box;
+}
+.score-pop-count{font-weight:700;font-size:0.78rem;color:#f0c870;margin-bottom:5px}
+.score-pop-note{color:var(--tx3);font-size:0.67rem;line-height:1.5;max-width:220px}
+
+/* ═══ SCHEDULE TABLE ══════════════════════════════════ */
+/* Suelo de ancho del horario. Por debajo de ~760px las celdas con dos
+   cursos a la misma hora dejan menos de 70px a cada uno y palabras como
+   «SOCIOCULTURAL» ya no caben enteras; se prefiere desplazamiento lateral
+   antes que partirlas. */
+.sched-wrap{min-width:780px}
+.sched-hdr{
+  display:flex;align-items:center;gap:12px;margin-bottom:1.3rem;
+}
+.sched-hdr-title{
+  font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;
+  letter-spacing:2.5px;text-transform:uppercase;
+  background:linear-gradient(90deg,#c8783a,#8a7a2a,#4a8a30);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.sched-hdr-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(200,120,58,0.4),transparent)}
+.sched-hdr-badge{
+  font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:700;
+  padding:3px 9px;border-radius:20px;
+  background:rgba(200,120,58,0.15);border:1px solid rgba(200,120,58,0.3);
+  color:var(--accent3);letter-spacing:1px;
+}
+
+/* Cada día toma el ancho que pide su contenido: los que tienen nombres
+   largos o celdas compartidas salen más anchos que los de nombres cortos.
+   El tope de `.blk-name` evita que un solo nombre estire la columna. */
+table.sch{width:100%;border-collapse:separate;border-spacing:0}
+table.sch th{padding:0;text-align:center;position:sticky;top:0;z-index:10;background:transparent}
+table.sch th:first-child{width:56px}
+
+.dhead{
+  margin:0 2px 5px;padding:10px 4px 9px;
+  border-radius:10px 10px 0 0;text-align:center;
+  font-size:0.68rem;font-family:'JetBrains Mono',monospace;font-weight:700;
+  letter-spacing:0.8px;text-transform:uppercase;color:var(--tx2);
+  background:var(--surface2);border:1.5px solid var(--line2);border-bottom:none;
+}
+.dhead.now{
+  color:var(--tx);
+  background:linear-gradient(180deg,var(--glow),transparent);
+  border-color:var(--accent);
+}
+
+table.sch td{height:46px;padding:2px;vertical-align:top}
+table.sch td:first-child{
+  font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:600;
+  color:var(--accent);text-align:right;padding-right:10px;padding-top:6px;vertical-align:top;
+}
+
+/* Hour stripe alternating */
+table.sch tbody tr:nth-child(odd) td:not(:first-child) .cell-mt{background:rgba(255,255,255,0.018)}
+table.sch tbody tr:nth-child(even) td:not(:first-child) .cell-mt{background:rgba(255,255,255,0.008)}
+.cell-mt{width:100%;height:100%;border-radius:5px;transition:background 0.1s}
+table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
+
+/* Course block in schedule */
+/* La altura es un mínimo, no un tope: el nombre del curso se muestra
+   entero y la fila crece si hace falta, en lugar de recortarlo. */
+.blk{
+  width:100%;min-height:100%;border-radius:7px;padding:5px 8px;
+  display:flex;flex-direction:column;justify-content:center;
+  border-left:3px solid;position:relative;
+  cursor:pointer;transition:filter 0.12s,transform 0.12s;
+}
+.blk:hover{filter:brightness(1.18);transform:scale(1.025)}
+.blk::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.04),transparent);
+  pointer-events:none;
+}
+.blk-cod{font-family:'JetBrains Mono',monospace;font-size:0.63rem;font-weight:800;line-height:1.2;color:inherit}
+.blk-secc{font-weight:400;opacity:0.6}
+.blk-type{
+  font-size:0.52rem;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;
+  padding:1px 5px;border-radius:3px;display:inline-block;margin-top:2px;width:fit-content;
+  background:rgba(255,255,255,0.12);
+  /* «TEORÍA» y «PRÁCTICA» nunca se parten: al generar el PDF, html2canvas
+     no respeta `width:fit-content` y las cortaba a mitad. */
+  white-space:nowrap;
+}
+.blk-room{font-size:0.55rem;opacity:0.55;margin-top:1px;line-height:1.1;color:inherit}
+
+/* Nombre mode */
+/* Sin límite de líneas: el nombre se ve completo, envolviendo lo que haga falta */
+.blk-name{
+  font-size:0.58rem;font-weight:700;line-height:1.15;
+  overflow-wrap:break-word;hyphens:auto;
+  /* Tope de ancho pedido: sin él, un nombre largo en una sola línea
+     reclamaría toda la columna y estiraría el horario a lo ancho. */
+  max-width:19ch;
+}
+.blk-cod-sm{
+  font-family:'JetBrains Mono',monospace;font-size:0.49rem;font-weight:700;
+  opacity:0.6;margin-top:2px;line-height:1.1;
+}
+.cell-blocks .blk .blk-name{font-size:0.5rem;-webkit-line-clamp:1}
+.cell-blocks .blk .blk-cod-sm{font-size:0.42rem}
+
+/* Toggle nombre/código button */
+.btn-names{
+  background:var(--surface);border-color:var(--line2);color:var(--tx2);
+  font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.3px;
+}
+.btn-names.active{border-color:var(--accent);color:var(--accent3);background:rgba(200,120,58,0.1)}
+
+/* Side-by-side conflict blocks */
+/* Los cursos que coinciden en la misma hora van SIEMPRE uno al lado del
+   otro, nunca apilados: si se apilaran parecerían estar en horas distintas.
+   Por eso no se permite el salto de línea y pueden encogerse sin tope. */
+.cell-blocks{display:flex;flex-wrap:nowrap;gap:2px;min-height:100%;width:100%;align-items:stretch}
+/* `flex:1` daba a cada píldora la mitad exacta aunque una necesitara más.
+   Con base automática el reparto sigue lo que ocupa cada contenido, y el
+   mínimo evita que la más corta se quede sin espacio legible. */
+.cell-blocks .blk{flex:1 1 auto;width:auto;min-width:0;padding:3px 5px}
+/* Al compartir celda hay la mitad de ancho: se reduce la letra para que las
+   palabras largas quepan enteras en vez de partirse a mitad */
+.cell-blocks .blk .blk-name{font-size:0.5rem;line-height:1.1}
+.cell-blocks .blk .blk-cod{font-size:0.54rem}
+.cell-blocks .blk .blk-type{font-size:0.46rem;padding:1px 3px}
+.cell-blocks .blk .blk-room{display:none}
+
+/* 8 earthy warm palettes */
+.p0{background:rgba(200,100,50,0.22);border-left-color:#c86432;color:#f4c4a0}
+.p1{background:rgba(70,140,60,0.20);border-left-color:#46883c;color:#a0d090}
+.p2{background:rgba(200,160,30,0.20);border-left-color:#c8a01e;color:#f0d470}
+.p3{background:rgba(180,80,40,0.20);border-left-color:#b45028;color:#f4a080}
+.p4{background:rgba(120,140,40,0.20);border-left-color:#788c28;color:#c8d870}
+.p5{background:rgba(40,140,110,0.20);border-left-color:#288c6e;color:#80d0b8}
+.p6{background:rgba(180,130,30,0.20);border-left-color:#b4821e;color:#e8cc7a}
+.p7{background:rgba(80,130,50,0.20);border-left-color:#508232;color:#b0d490}
+
+/* ═══ LEGEND ══════════════════════════════════════════ */
+.sched-legend{
+  display:flex;flex-wrap:wrap;gap:6px 18px;
+  margin-top:14px;padding:10px 14px;
+  border-radius:8px;
+  background:rgba(255,255,255,0.035);
+  border:1px solid rgba(255,255,255,0.07);
+}
+body.light .sched-legend{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.08)}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:0.65rem}
+.leg-dot{
+  width:10px;height:10px;border-radius:2px;flex-shrink:0;
+  border-left-width:3px;border-left-style:solid;
+}
+.leg-cod{font-family:'JetBrains Mono',monospace;font-weight:700;opacity:0.9}
+.leg-name{opacity:0.6;white-space:nowrap}
+
+/* ═══ MODAL ═══════════════════════════════════════════ */
+.overlay{
+  position:fixed;inset:0;z-index:500;
+  /* Solo un desenfoque leve: el fondo no se oscurece, la ventana se
+     despega por su propia sombra. Igual en todos los temas. */
+  background:transparent;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
+  display:flex;align-items:center;justify-content:center;padding:1rem;
+}
+.modal{
+  background:var(--surface2);border:1.5px solid var(--line2);
+  border-radius:16px;width:100%;max-width:500px;max-height:86vh;overflow-y:auto;
+  box-shadow:0 40px 100px rgba(0,0,0,0.8),0 0 0 1px rgba(200,120,58,0.1);
+}
+.modal::-webkit-scrollbar{width:3px}
+.modal::-webkit-scrollbar-thumb{background:var(--card2);border-radius:2px}
+.modal-top{
+  padding:1.3rem 1.5rem 1rem;border-bottom:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:flex-start;
+  position:sticky;top:0;background:var(--surface2);z-index:2;
+}
+.modal-ttl{font-size:0.95rem;font-weight:800;color:var(--tx);line-height:1.3}
+.modal-sub{font-size:0.7rem;color:var(--tx3);margin-top:3px}
+.modal-x{
+  width:30px;height:30px;border-radius:8px;flex-shrink:0;margin-left:12px;
+  background:var(--card);border:none;color:var(--tx2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all 0.15s;
+}
+.modal-x:hover{background:var(--card2);color:var(--tx)}
+.modal-body{padding:1rem 1.5rem 1.5rem}
+
+/* ── Announcement modal ─────────────────────────────────── */
+.ann-overlay{
+  position:fixed;inset:0;z-index:600;
+  background:transparent;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
+  display:flex;align-items:center;justify-content:center;padding:1rem;
+}
+.ann-modal{
+  background:var(--surface2);border:1.5px solid var(--line2);
+  border-radius:16px;width:100%;max-width:540px;max-height:88vh;
+  overflow-y:auto;display:flex;flex-direction:column;
+  box-shadow:0 40px 100px rgba(0,0,0,0.8),0 0 0 1px rgba(200,120,58,0.1);
+}
+body.stitch-dark .ann-modal,body.stitch-light .ann-modal{backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px)}
+.ann-modal::-webkit-scrollbar{width:3px}
+.ann-modal::-webkit-scrollbar-thumb{background:var(--card2);border-radius:2px}
+.ann-top{
+  padding:1.3rem 1.5rem 1rem;border-bottom:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:center;
+  position:sticky;top:0;z-index:2;
+  background:var(--surface2);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.ann-title{display:flex;align-items:center;gap:9px;font-size:0.95rem;font-weight:800;color:var(--tx)}
+.ann-title svg{color:var(--accent2);flex-shrink:0}
+.ann-x{
+  width:30px;height:30px;border-radius:8px;flex-shrink:0;margin-left:12px;
+  background:var(--card);border:none;color:var(--tx2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all 0.15s;
+}
+.ann-x:hover{background:var(--card2);color:var(--tx)}
+.ann-body{padding:1.4rem 1.5rem;flex:1;min-width:0}
+.ann-body h1{font-size:1.1rem;font-weight:800;color:var(--tx);margin:0 0 0.55em;line-height:1.3}
+.ann-body h2{font-size:0.92rem;font-weight:700;color:var(--tx);margin:1.1em 0 0.35em;line-height:1.3}
+.ann-body h3{font-size:0.82rem;font-weight:700;color:var(--tx2);margin:0.9em 0 0.3em;line-height:1.3}
+.ann-body p{font-size:0.83rem;color:var(--tx2);line-height:1.7;margin:0 0 0.65em}
+.ann-body ul,.ann-body ol{padding-left:1.4em;margin:0 0 0.65em}
+.ann-body li{font-size:0.83rem;color:var(--tx2);line-height:1.65;margin-bottom:0.2em}
+.ann-body hr{border:none;border-top:1px solid var(--line2);margin:1.1em 0}
+.ann-body a{color:var(--accent2);text-decoration:none}
+.ann-body a:hover{text-decoration:underline}
+.ann-body code{font-family:'JetBrains Mono',monospace;font-size:0.77rem;background:var(--card);padding:1px 5px;border-radius:4px;color:var(--tx2)}
+.ann-body strong{font-weight:700;color:var(--tx)}
+.ann-body em{font-style:italic}
+.ann-body del{text-decoration:line-through;opacity:0.55}
+.ann-body blockquote{border-left:3px solid var(--accent2);margin:0.6em 0;padding:0.35em 0 0.35em 0.9em;color:var(--tx3);font-style:italic;font-size:0.83rem}
+.ann-body img{max-width:100%;border-radius:8px;margin:6px 0;display:block}
+.ann-foot{
+  padding:1rem 1.5rem;border-top:1px solid var(--line);
+  display:flex;align-items:center;justify-content:flex-end;gap:0.8rem;
+  position:sticky;bottom:0;
+  background:var(--surface2);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.ann-btn-skip{
+  padding:8px 18px;border-radius:8px;border:1.5px solid var(--line2);
+  background:transparent;color:var(--tx3);font-size:0.78rem;font-weight:600;
+  cursor:pointer;transition:all 0.15s;
+}
+.ann-btn-skip:hover{background:var(--card);color:var(--tx2)}
+.ann-btn-ok{
+  padding:8px 22px;border-radius:8px;border:1.5px solid var(--accent2);
+  background:rgba(100,150,255,0.1);color:var(--accent2);font-size:0.78rem;font-weight:700;
+  cursor:pointer;transition:all 0.15s;
+}
+body.dark .ann-btn-ok,body.stitch-dark .ann-btn-ok{background:rgba(79,142,247,0.12);border-color:var(--accent2);color:var(--accent2)}
+.ann-btn-ok:hover{background:rgba(100,150,255,0.2)}
+
+/* Section card */
+.sec{
+  background:var(--surface);border:1.5px solid var(--line2);border-radius:11px;
+  padding:12px 15px;margin-bottom:9px;cursor:pointer;transition:all 0.15s;
+}
+.sec:hover{border-color:var(--accent2);background:var(--surface2);transform:translateY(-1px);box-shadow:0 4px 20px rgba(200,120,58,0.15)}
+.sec.conf{opacity:0.4;pointer-events:none}
+.sec.soft-conf{border-color:rgba(245,158,11,0.35);background:rgba(245,158,11,0.04)}
+.sec.soft-conf:hover{border-color:rgba(245,158,11,0.6);box-shadow:0 4px 20px rgba(245,158,11,0.15)}
+.sec-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.sec-name{font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:800;color:var(--accent3)}
+.sec-conf{font-size:0.62rem;color:#fca5a5;background:rgba(239,68,68,0.12);padding:2px 8px;border-radius:5px;border:1px solid rgba(239,68,68,0.25)}
+.sec-warn{color:#fcd34d;background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.35)}
+.sec-doc{font-size:0.68rem;color:var(--tx3);margin-bottom:7px;line-height:1.4}
+.sec-docs{margin-bottom:7px}
+.sec-docs .sec-doc{margin-bottom:4px}
+.sec-docs .sec-doc:last-child{margin-bottom:0}
+.doc-role{
+  font-size:0.57rem;font-weight:800;letter-spacing:0.02em;flex-shrink:0;
+  padding:2px 7px;border-radius:4px;
+  background:var(--card2);color:var(--tx3);border:1px solid var(--line2);
+}
+.ses{display:flex;align-items:center;gap:7px;padding:3px 0;font-size:0.71rem;color:var(--tx2)}
+.ses-T{background:rgba(200,150,40,0.2);color:#f0c870;font-size:0.59rem;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0}
+.ses-P{background:rgba(70,140,60,0.2);color:#98d888;font-size:0.59rem;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0}
+.ses-L{background:rgba(200,100,50,0.2);color:#f4b090;font-size:0.59rem;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0}
+.ses-S{background:rgba(40,140,110,0.2);color:#70d0b0;font-size:0.59rem;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0}
+
+/* Session edit rows */
+.ses-edit{display:flex;align-items:center;gap:5px;padding:5px 0;border-bottom:1px solid var(--line1);flex-wrap:wrap}
+.ses-edit:last-child{border-bottom:none}
+.ses-edit select,.ses-edit input{
+  background:var(--surface);border:1px solid var(--line2);color:var(--tx);
+  border-radius:6px;padding:4px 5px;font-size:0.75rem;
+  font-family:'Plus Jakarta Sans',sans-serif;outline:none;
+}
+.ses-edit select:focus,.ses-edit input:focus{border-color:var(--accent)}
+.ses-edit input[type="number"]{width:46px;text-align:center}
+.ses-edit input[type="text"]{width:62px}
+.ses-edit-sep{color:var(--tx3);font-size:0.8rem;flex-shrink:0}
+.ses-edit-del{
+  background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);
+  color:#f87171;border-radius:6px;padding:3px 8px;cursor:pointer;
+  font-size:0.85rem;line-height:1;flex-shrink:0;transition:background 0.15s;
+}
+.ses-edit-del:hover{background:rgba(239,68,68,0.22)}
+
+/* Teacher rating */
+.rate-star{display:inline-flex;align-items:center;gap:3px;font-size:0.72rem;color:#f0c870;font-weight:700;flex-shrink:0}
+.rate-count{color:var(--tx3);font-size:0.67rem;flex-shrink:0}
+.rate-btn{
+  background:transparent;border:1px solid var(--line3);color:var(--tx3);
+  border-radius:20px;padding:2px 9px;font-size:0.68rem;font-weight:600;
+  cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;
+  transition:all 0.15s;white-space:nowrap;flex-shrink:0;
+}
+.rate-btn:hover{border-color:var(--accent);color:var(--accent)}
+.star-inp{color:var(--tx3);transition:color 0.12s,transform 0.1s;line-height:1;cursor:pointer;user-select:none}
+.star-inp.on{color:#f0c870}
+
+/* ── Light themes: fix label contrast ── */
+body.light .ses-T,body.stitch-light .ses-T{color:#7a5400;background:rgba(160,100,0,0.13)}
+body.light .ses-P,body.stitch-light .ses-P{color:#286020;background:rgba(40,110,20,0.13)}
+body.light .ses-L,body.stitch-light .ses-L{color:#904010;background:rgba(160,70,20,0.13)}
+body.light .ses-S,body.stitch-light .ses-S{color:#0e6850;background:rgba(20,100,70,0.13)}
+body.light .sec-conf,body.stitch-light .sec-conf{color:#a81818;background:rgba(180,20,20,0.1);border-color:rgba(180,20,20,0.25)}
+body.light .sec-warn,body.stitch-light .sec-warn{color:#7a5200;background:rgba(160,100,0,0.12);border-color:rgba(160,100,0,0.3)}
+body.light .c-conf-tag,body.stitch-light .c-conf-tag{color:#a81818;background:rgba(180,20,20,0.1);border-color:rgba(180,20,20,0.25)}
+body.light .c-conf-tag-soft,body.stitch-light .c-conf-tag-soft{color:#7a5200;background:rgba(160,100,0,0.12);border-color:rgba(160,100,0,0.3)}
+
+/* ═══ MOBILE ══════════════════════════════════════════ */
+.mob-tabs{display:none}
+
+@media(max-width:720px){
+  /* Use dynamic viewport height so browser chrome doesn't shift layout */
+  body{height:100dvh}
+  /* Fill gesture-nav area below viewport with tab bar color so it blends */
+  html{background:var(--panel)}
+
+  /* Header compact — respects status bar in standalone/PWA mode */
+  header{
+    height:calc(52px + env(safe-area-inset-top,0px));
+    padding:env(safe-area-inset-top,0px) 0.9rem 0;
+    border-radius:0;margin:0;border-left:none;border-right:none;border-top:none;
+    box-shadow:none;
+  }
+  .header-mid{display:none}
+  .logo-sub{display:none}
+  .logo-gem{width:55px;height:32px;font-size:13px}
+  .logo-text{font-size:0.88rem}
+  #theme-label{display:none}
+  .hbtn{padding:7px 9px}
+
+  /* Layout: panels fill space between header and tab bar */
+  .app{overflow:hidden}
+  .sidebar{
+    width:100%;position:absolute;
+    top:calc(52px + env(safe-area-inset-top,0px));left:0;right:0;
+    bottom:calc(52px + var(--sab,0px));
+    border-right:none;z-index:50;display:none;
+  }
+  .sidebar.mob-active{display:flex}
+  /* Cancel floating sidebar on mobile for all themes */
+  .sidebar{
+    margin:0;border-radius:0;border:none;
+    box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;
+    background:var(--panel);
+  }
+  .main{
+    position:absolute;
+    top:calc(52px + env(safe-area-inset-top,0px));left:0;right:0;
+    bottom:calc(52px + var(--sab,0px));
+    display:none;flex-direction:column;overflow:hidden;
+  }
+  .main.mob-active{display:flex}
+
+  /* Prevent inner scroll from propagating to page (hides tab bar) */
+  .course-scroll{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+  .sched-area{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+
+  /* Fix iOS zoom on input focus: font-size must be >= 16px */
+  .search-box input{font-size:16px}
+
+  /* Tab bar: always visible, respects home-indicator area */
+  .mob-tabs{
+    display:flex;position:fixed;bottom:0;left:0;right:0;
+    height:calc(52px + var(--sab,0px));
+    padding-bottom:var(--sab,0px);
+    background:var(--panel);border-top:1.5px solid var(--line2);z-index:9999;
+  }
+  .mob-tab{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:3px;font-size:0.6rem;font-weight:700;font-family:'JetBrains Mono',monospace;
+    letter-spacing:0.8px;text-transform:uppercase;color:var(--tx3);
+    background:none;border:none;cursor:pointer;transition:color 0.15s;
+    /* Larger tap target */
+    -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  }
+  .mob-tab.on{color:var(--accent3)}
+  .toast{
+    bottom:calc(52px + var(--sab,0px) + 14px);
+    right:1rem;left:1rem;
+    justify-content:center;
+    z-index:99999;
+  }
+  .mob-tab.on svg{color:var(--accent3)}
+  .mob-tab svg{transition:color 0.15s}
+
+  /* Topbar compact */
+  .topbar{padding:0.45rem 0.75rem;min-height:44px;gap:6px}
+  .tags-zone{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}
+  .tags-zone::-webkit-scrollbar{display:none}
+  .action-btns .btn-clear{display:none!important}
+
+  /* Stats compact */
+  .stats{flex-wrap:wrap;gap:0.25rem 0.8rem;padding:0.35rem 0.75rem}
+  .stat{font-size:0.64rem}
+
+  /* Schedule area */
+  .sched-area{padding:0.7rem 0.5rem}
+
+  /* Chips bar scrollable */
+  .chips-bar{flex-wrap:nowrap;overflow-x:auto;padding:0.5rem 0.9rem}
+  .chips-bar::-webkit-scrollbar{display:none}
+
+  /* Sidebar top padding */
+  .sidebar-top{padding:0.8rem 0.9rem 0.7rem}
+
+  /* Buttons in header smaller */
+  .btn{padding:6px 12px;font-size:0.75rem}
+}
+
+/* ═══ TOAST ════════════════════════════════════════════ */
+.toast{
+  position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;
+  display:flex;align-items:center;gap:10px;
+  padding:12px 18px;border-radius:12px;font-size:0.81rem;font-weight:600;
+  background:var(--card2);border:1.5px solid var(--line2);color:var(--tx);
+  box-shadow:0 8px 32px rgba(0,0,0,0.5);
+  transform:translateY(80px);opacity:0;
+  transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+.toast.on{transform:translateY(0);opacity:1}
+.tdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.toast.ok .tdot{background:#10b981;box-shadow:0 0 10px rgba(16,185,129,0.7)}
+.toast.er .tdot{background:#f43f5e;box-shadow:0 0 10px rgba(244,63,94,0.7)}
+.toast.warn .tdot{background:#f59e0b;box-shadow:0 0 10px rgba(245,158,11,0.7)}
+
+/* ═══ MOVIMIENTO ═══════════════════════════════════════════
+   Sistema compartido por todos los temas. Las curvas son las de
+   Material 3: entradas que desaceleran y nada que rebote sin razón.
+   El tema Google añade encima su onda al pulsar. */
+
+/* ── Transiciones de estado ─────────────────────────────── */
+.hbtn,.btn,.chip,.sec,.tag,.score-pill,.modal-x,.ann-x,
+.rate-btn,.ann-btn-ok,.ann-btn-skip,.upload-btn,.mob-tab{
+  transition:background var(--dur) var(--ease),
+             color var(--dur) var(--ease),
+             border-color var(--dur) var(--ease),
+             box-shadow var(--dur) var(--ease),
+             transform var(--dur-fast) var(--ease-out);
+}
+/* Al pulsar, todo lo pulsable se hunde un punto */
+.hbtn:active,.btn:active,.chip:active,.sec:active,.modal-x:active,
+.ann-x:active,.rate-btn:active,.ann-btn-ok:active,.ann-btn-skip:active{
+  transform:scale(0.96);
+}
+.c-row{transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease)}
+.cbox{transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease)}
+.search-box{transition:border-color var(--dur) var(--ease),background var(--dur) var(--ease),box-shadow var(--dur) var(--ease)}
+.blk{transition:transform var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease),filter var(--dur-fast) var(--ease)}
+.tag-x{transition:opacity var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease-out)}
+.tag-x:hover{transform:scale(1.25)}
+
+/* ── Entradas ───────────────────────────────────────────── */
+@keyframes fx-fade{from{opacity:0}to{opacity:1}}
+@keyframes fx-dialog{
+  from{opacity:0;transform:scale(0.9) translateY(8px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+@keyframes fx-pop{
+  from{opacity:0;transform:scale(0.82)}
+  to{opacity:1;transform:scale(1)}
+}
+@keyframes fx-rise{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes fx-drop{
+  from{opacity:0;transform:translateY(-10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes fx-slide-left{
+  from{opacity:0;transform:translateX(-14px)}
+  to{opacity:1;transform:translateX(0)}
+}
+
+/* Diálogos: el velo se funde y la ventana entra escalando */
+.overlay,.ann-overlay{animation:fx-fade 0.16s var(--ease) both}
+.modal,.ann-modal{animation:fx-dialog 0.26s var(--ease) both}
+/* Bloques del horario y etiquetas: aparición breve al redibujarse */
+.blk{animation:fx-pop 0.18s var(--ease-out) both}
+.tag{animation:fx-pop 0.18s var(--ease-out) both}
+/* Secciones del diálogo, escalonadas: guían la lectura de arriba abajo */
+.sec{animation:fx-rise 0.26s var(--ease-out) both}
+.sec:nth-child(2){animation-delay:0.04s}
+.sec:nth-child(3){animation-delay:0.08s}
+.sec:nth-child(4){animation-delay:0.12s}
+.sec:nth-child(n+5){animation-delay:0.16s}
+/* Aviso emergente y marco, al cargar */
+header{animation:fx-drop 0.4s var(--ease-out) both}
+.sidebar{animation:fx-slide-left 0.42s var(--ease-out) both;animation-delay:0.06s}
+.conf-bar.on{animation:fx-drop 0.24s var(--ease-out) both}
+.empty{animation:fx-fade 0.35s var(--ease) both}
+
+/* ── Cambio de tema ─────────────────────────────────────
+   Durante el cambio se funden los colores; la clase la pone y quita
+   applyTheme(), así el resto del tiempo nada va más lento. */
+body.theming,
+body.theming header,body.theming .sidebar,body.theming .main,
+body.theming .c-row,body.theming .btn,body.theming .hbtn,body.theming .chip,
+body.theming .blk,body.theming .dhead,body.theming .cell-mt,body.theming .modal,
+body.theming .toast,body.theming .sec,body.theming .tag,body.theming .conf-bar,
+body.theming .search-box,body.theming .stats,body.theming .sched-legend,
+body.theming .c-cod,body.theming .cbox,body.theming .sched-area{
+  transition:background-color 0.38s var(--ease),
+             color 0.38s var(--ease),
+             border-color 0.38s var(--ease);
+}
+/* Nada debe animarse mientras se captura el PDF */
+body.exporting *,body.exporting *::before,body.exporting *::after{
+  animation:none !important;transition:none !important;
+}
+/* Y el horario se ajusta a su contenido solo durante la captura: en
+   pantalla se estira para llenar la ventana, lo cual está bien, pero en el
+   PDF ese ancho sobrante no aporta nada y encoge el texto al escalar. */
+body.exporting .sched-wrap{min-width:0;width:max-content;max-width:none}
+body.exporting table.sch{width:auto}
+/* Al exportar, las columnas toman el ancho que pide su contenido, así que
+   toda palabra cabe entera y no hace falta permitir cortes. Se prohíben
+   explícitamente porque html2canvas parte por cualquier letra al llegar al
+   final de la línea, y salían cosas como «AT/MOSFÉRICO» o «AUTO/MATIZADA». */
+body.exporting .blk-name{overflow-wrap:normal;word-break:normal;hyphens:none}
+body.exporting .blk-cod,body.exporting .blk-room{white-space:nowrap}
+
+/* ── Menos movimiento ───────────────────────────────────
+   Se respeta la preferencia del sistema en todos los temas. */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:0.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:0.01ms !important;
+    scroll-behavior:auto !important;
+  }
+  .blk:hover,.btn:active,.hbtn:active,.chip:active,.sec:active,.tag-x:hover{transform:none}
+}

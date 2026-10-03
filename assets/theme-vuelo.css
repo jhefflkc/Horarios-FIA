@@ -1,0 +1,725 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   Tema «Vuelo» — claro y oscuro
+   ───────────────────────────────────────────────────────────────────────
+   Inspirado en una estética de objeto físico: listas agrupadas al estilo
+   iOS, tarjetas de papel con grano, cuero/ante con costuras, texto en
+   relieve y bajorrelieve, vidrio esmerilado y cifras en serif editorial.
+
+   Estructura:
+     1. Tokens por modo (body.vuelo-claro / body.vuelo-oscuro)
+     2. Puente con las variables de styles.css
+     3. Materiales (texturas y recetas reutilizables)
+     4. Componentes, de arriba abajo
+     5. Móvil
+     6. Exportación a PDF (html2canvas)
+
+   Todas las reglas cuelgan de `body.vuelo` (la clase de familia que pone
+   applyTheme), así ganan a styles.css sin !important y no tocan los temas
+   anteriores, que siguen ahí desactivados.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+
+/* ── 1. Tokens ──────────────────────────────────────────────────────── */
+
+body.vuelo{
+  /* Tipografías */
+  --v-serif:"Newsreader","Source Serif 4",Georgia,"Times New Roman",serif;
+  --v-sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",system-ui,sans-serif;
+  --v-cond:"Barlow Condensed","Arial Narrow",sans-serif;
+  --v-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+
+  /* Geometría */
+  --v-r-xl:26px;       /* paneles y ventanas */
+  --v-r-lg:18px;       /* tarjetas */
+  --v-r-md:12px;       /* bloques del horario */
+  --v-r-sm:8px;
+  --v-pill:999px;
+
+  /* Movimiento: el de la base (curvas de Material) ya es suave */
+}
+
+/* OSCURO — carbón cálido con brillo ámbar y un toque de cielo abajo */
+body.vuelo-oscuro{
+  --v-bg:#313133;
+  --v-bg-deep:#2c2c2e;
+  --v-glow-warm:rgba(205,150,60,0.11);
+  --v-glow-cool:rgba(52,88,120,0.45);
+
+  --v-surface:rgba(58,58,60,0.55);         /* tarjeta agrupada sobre el fondo */
+  --v-surface-solid:#363638;
+  --v-surface-2:rgba(255,255,255,0.055);    /* relleno de controles */
+  --v-surface-3:rgba(255,255,255,0.09);
+  --v-sunken:#242425;                        /* carpeta, billetes */
+  --v-hair:rgba(255,255,255,0.09);          /* separadores */
+  --v-edge:rgba(255,255,255,0.10);           /* borde de tarjeta */
+  --v-edge-hi:rgba(255,255,255,0.12);       /* filo de luz superior */
+
+  --v-tx:#f9f8f8;
+  --v-tx-2:#a8a7a3;
+  --v-tx-3:#9e9d99;
+  --v-tx-4:#6e6d6d;
+
+  --v-accent:#9bb4ca;        /* azul polvo de la tarjeta, aclarado */
+  --v-accent-strong:#c9d8e6;
+  --v-accent-ink:#152434;    /* texto sobre el acento */
+  --v-card-a:#5f86ab;        /* tarjeta «Flyer»: zona profunda */
+  --v-card-b:#a9c2d8;        /* zona clara */
+
+  --v-amber:#eecb9a;  --v-amber-bg:#574429;
+  --v-slate:#d6dcff;  --v-slate-bg:#484b66;
+  --v-sage:#aedfb7;   --v-sage-bg:#354f3a;
+  --v-rose:#ffc0ba;   --v-rose-bg:#5f3d3b;
+
+  --v-shadow:0 18px 50px rgba(0,0,0,0.38),0 2px 8px rgba(0,0,0,0.22);
+  --v-shadow-sm:0 6px 18px rgba(0,0,0,0.28),0 1px 3px rgba(0,0,0,0.2);
+  --v-glass-blur:saturate(150%) blur(26px);
+
+  --v-emboss:0 1px 0 rgba(255,255,255,0.08),0 -1px 0 rgba(0,0,0,0.65);   /* bajorrelieve */
+  --v-deboss-ink:#1d1d1e;
+
+  --v-grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.22 0 0 0 -0.06'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  color-scheme:dark;
+}
+
+/* CLARO — papel niebla, vidrio blanco y azul polvo */
+body.vuelo-claro{
+  --v-bg:#eef1f4;
+  --v-bg-deep:#e2e6eb;
+  --v-glow-warm:rgba(236,222,200,0.55);
+  --v-glow-cool:rgba(124,155,183,0.22);
+
+  --v-surface:rgba(255,255,255,0.68);
+  --v-surface-solid:#fafbfc;
+  --v-surface-2:rgba(30,45,65,0.045);
+  --v-surface-3:rgba(30,45,65,0.075);
+  --v-sunken:#e3e8ed;
+  --v-hair:rgba(38,56,74,0.09);
+  --v-edge:rgba(255,255,255,0.75);
+  --v-edge-hi:rgba(255,255,255,0.9);
+
+  --v-tx:#1d2327;
+  --v-tx-2:#4d575a;
+  --v-tx-3:#5a6469;
+  --v-tx-4:#9aa4aa;
+
+  --v-accent:#466580;
+  --v-accent-strong:#3f5f7b;
+  --v-accent-ink:#ffffff;
+  --v-card-a:#7fa2c4;
+  --v-card-b:#dfe8f1;
+
+  --v-amber:#73521f;  --v-amber-bg:#faead6;
+  --v-slate:#40436d;  --v-slate-bg:#dcdff8;
+  --v-sage:#33633e;   --v-sage-bg:#dff3e2;
+  --v-rose:#87423e;   --v-rose-bg:#ffe5e2;
+
+  --v-shadow:0 18px 44px rgba(40,55,75,0.13),0 2px 8px rgba(40,55,75,0.07);
+  --v-shadow-sm:0 6px 16px rgba(40,55,75,0.10),0 1px 3px rgba(40,55,75,0.07);
+  --v-glass-blur:saturate(160%) blur(26px);
+
+  --v-emboss:0 1px 0 rgba(255,255,255,0.85),0 -1px 0 rgba(40,60,85,0.16);
+  --v-deboss-ink:#c9d0d8;
+
+  --v-grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.12 0 0 0 0 0.16 0 0 0 0 0.22 0.26 0 0 0 -0.08'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  color-scheme:light;
+}
+
+
+/* ── 2. Puente con styles.css ───────────────────────────────────────── */
+/* Los componentes base leen estas variables; apuntarlas a los tokens hace
+   que todo lo que no se reestiliza abajo herede ya la paleta nueva. */
+body.vuelo{
+  --bg:var(--v-bg);
+  --panel:var(--v-bg);
+  --surface:var(--v-surface-2);
+  --surface2:var(--v-surface-solid);
+  --card:var(--v-surface-3);
+  --card2:var(--v-surface-3);
+  --line:var(--v-hair);
+  --line2:var(--v-hair);
+  --line3:var(--v-edge);
+  --tx:var(--v-tx);
+  --tx2:var(--v-tx-2);
+  --tx3:var(--v-tx-3);
+  --tx4:var(--v-tx-4);
+  --accent:var(--v-accent);
+  --accent2:var(--v-accent);
+  --accent3:var(--v-accent-strong);
+  --glow:transparent;
+  --float-bg:var(--v-surface);
+  --float-shadow:var(--v-shadow);
+  --float-btn-bg:var(--v-surface);
+  --float-btn-shadow:var(--v-shadow-sm);
+
+  font-family:var(--v-sans);
+  color:var(--v-tx);
+  background-color:var(--v-bg);
+  /* El fondo: un brillo cálido a la derecha y un cielo frío abajo a la
+     izquierda, como el papel tapiz que asoma tras las tarjetas */
+  background-image:
+    radial-gradient(60% 55% at 92% 48%,var(--v-glow-warm) 0%,transparent 70%),
+    radial-gradient(55% 45% at 0% 100%,var(--v-glow-cool) 0%,transparent 72%),
+    linear-gradient(180deg,var(--v-bg) 0%,var(--v-bg-deep) 100%);
+  background-attachment:fixed;
+  -webkit-font-smoothing:antialiased;
+}
+body.vuelo-claro{
+  background-image:
+    radial-gradient(60% 55% at 92% 40%,var(--v-glow-warm) 0%,transparent 70%),
+    radial-gradient(70% 55% at 0% 100%,var(--v-glow-cool) 0%,transparent 72%),
+    radial-gradient(90% 60% at 30% -10%,rgba(255,255,255,0.9) 0%,transparent 60%),
+    linear-gradient(180deg,var(--v-bg) 0%,var(--v-bg-deep) 100%);
+}
+
+
+/* ── 3. Materiales ──────────────────────────────────────────────────── */
+/* Vidrio: superficie translúcida, desenfoque, borde fino y filo de luz */
+body.vuelo header,
+body.vuelo .sidebar,
+body.vuelo .action-btns,
+body.vuelo .modal,
+body.vuelo .score-pop,
+body.vuelo .toast{
+  background:var(--v-surface);
+  -webkit-backdrop-filter:var(--v-glass-blur);backdrop-filter:var(--v-glass-blur);
+  border:1px solid var(--v-edge);
+  box-shadow:inset 0 1px 0 var(--v-edge-hi),var(--v-shadow);
+}
+
+
+/* ── 4. Componentes ─────────────────────────────────────────────────── */
+
+/* Cabecera */
+body.vuelo header{
+  border-radius:var(--v-r-xl);
+  height:64px;
+}
+body.vuelo header::after{display:none}
+/* La insignia es un parche de ante con costura, como la cartera */
+body.vuelo .logo-gem{
+  position:relative;border-radius:14px;
+  background:linear-gradient(160deg,#c3cfda,#a7b7c6);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.55),inset 0 -1px 2px rgba(60,80,100,0.25),0 3px 10px rgba(0,0,0,0.18);
+}
+body.vuelo-oscuro .logo-gem{background:linear-gradient(160deg,#55697d,#3d4e5f)}
+body.vuelo .logo-gem::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:var(--v-grain);opacity:0.9;
+}
+body.vuelo .logo-gem::after{
+  content:'';position:absolute;inset:3.5px;border-radius:10px;pointer-events:none;
+  border:1.2px dashed rgba(255,255,255,0.6);
+}
+body.vuelo-oscuro .logo-gem::after{border-color:rgba(220,232,244,0.45)}
+body.vuelo .logo-text{
+  font-family:var(--v-serif);font-weight:600;font-size:1.32rem;letter-spacing:-0.01em;
+  color:var(--v-tx);line-height:1;
+}
+body.vuelo .logo-text span{color:var(--v-tx-3);font-weight:400}
+body.vuelo .logo-sub{
+  font-family:var(--v-sans);font-size:0.62rem;font-weight:600;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--v-tx-3);margin-top:4px;
+}
+body.vuelo .header-mid{
+  font-family:var(--v-serif);font-style:italic;font-size:0.92rem;letter-spacing:0;
+  color:var(--v-tx-3);
+}
+/* Botón de tema: píldora esmerilada como «Currently on Home» */
+body.vuelo .hbtn{
+  border-radius:var(--v-pill);border:1px solid var(--v-edge);
+  background:var(--v-surface-2);color:var(--v-tx-2);
+  font-family:var(--v-sans);font-weight:600;font-size:0.8rem;padding:8px 16px;
+  box-shadow:inset 0 1px 0 var(--v-edge-hi);
+}
+body.vuelo .hbtn:hover{background:var(--v-surface-3);color:var(--v-tx)}
+
+/* Panel lateral: la tarjeta agrupada de «PREFERENCES» */
+body.vuelo .sidebar{border-radius:var(--v-r-xl)}
+body.vuelo .sidebar-top{border-bottom:1px solid var(--v-hair);padding:1.2rem 1.15rem 1rem}
+body.vuelo .sidebar-label{
+  background:none;-webkit-text-fill-color:currentColor;color:var(--v-tx-3);
+  font-family:var(--v-sans);font-size:0.68rem;font-weight:700;letter-spacing:0.09em;
+}
+body.vuelo .search-box{
+  border:none;border-radius:12px;background:var(--v-surface-2);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,0.06);
+}
+body.vuelo .search-box:focus-within{background:var(--v-surface-3);box-shadow:0 0 0 3px color-mix(in srgb,var(--v-accent) 28%,transparent)}
+body.vuelo .search-box input{font-family:var(--v-sans);font-size:0.9rem}
+body.vuelo .upload-row{
+  border:1px dashed var(--v-edge);border-radius:12px;background:transparent;
+  font-family:var(--v-sans);color:var(--v-tx-3);
+}
+body.vuelo-claro .upload-row{border-color:rgba(30,45,65,0.18)}
+body.vuelo .upload-row:hover{background:var(--v-surface-2);color:var(--v-tx-2);border-color:var(--v-accent)}
+
+/* Píldoras de facultad: chips tintados */
+body.vuelo #faculty-selector button,
+body.vuelo #faculty-selector .chip{
+  border-radius:var(--v-pill)!important;border:none!important;
+  background:var(--v-surface-2)!important;color:var(--v-tx-2)!important;
+  font-family:var(--v-sans)!important;font-weight:600!important;
+}
+
+/* Filas de curso: lista agrupada con separadores insertados y chevron */
+body.vuelo .course-scroll{padding:0.35rem 0 1rem}
+body.vuelo .c-row{
+  border-left:none;margin:0 0.6rem;padding:0.72rem 2.1rem 0.72rem 0.75rem;
+  border-radius:14px;gap:12px;align-items:center;
+}
+body.vuelo .c-row + .c-row::before{
+  content:'';position:absolute;top:0;left:2.75rem;right:0.75rem;height:1px;background:var(--v-hair);
+}
+body.vuelo .c-row:hover::before,body.vuelo .c-row:hover + .c-row::before,
+body.vuelo .c-row.sel::before,body.vuelo .c-row.sel + .c-row::before{opacity:0}
+body.vuelo .c-row::after{
+  content:'';position:absolute;right:0.95rem;top:50%;width:7px;height:7px;
+  border-right:1.6px solid var(--v-tx-4);border-top:1.6px solid var(--v-tx-4);
+  transform:translateY(-50%) rotate(45deg);
+}
+body.vuelo .c-row:hover{background:var(--v-surface-2)}
+body.vuelo .c-row.sel{background:color-mix(in srgb,var(--v-accent) 16%,transparent)}
+body.vuelo .c-row.sel::after{border-color:var(--v-accent)}
+body.vuelo .c-row.conf{opacity:0.4}
+/* Casilla redonda, como en las listas de iOS */
+body.vuelo .cbox{
+  width:20px;height:20px;border-radius:50%;margin-top:0;
+  border:1.6px solid var(--v-tx-4);background:transparent;
+}
+body.vuelo .c-row.sel .cbox{background:var(--v-accent);border-color:var(--v-accent);box-shadow:none}
+body.vuelo .c-row.sel .cbox::after{border-color:var(--v-accent-ink);width:8px;height:4.5px;border-width:0 0 2px 2px}
+body.vuelo .c-name{
+  font-family:var(--v-sans);font-size:0.86rem;font-weight:500;letter-spacing:0.005em;color:var(--v-tx);
+}
+body.vuelo .c-meta{gap:8px;margin-top:4px}
+body.vuelo .c-cod{
+  font-family:var(--v-mono);font-size:0.66rem;font-weight:600;letter-spacing:0.02em;
+  padding:1px 7px;border-radius:6px;background:var(--v-surface-2)!important;color:var(--v-tx-2)!important;
+}
+body.vuelo .c-row.sel .c-cod{background:color-mix(in srgb,var(--v-accent) 20%,transparent)!important;color:var(--v-accent-strong)!important}
+body.vuelo .c-secs{font-family:var(--v-sans);font-size:0.72rem;color:var(--v-tx-3)}
+
+/* Badges condensados, como «IN PROGRESS» */
+body.vuelo .c-conf-tag,body.vuelo .c-conf-tag-soft,
+body.vuelo .sec-conf,body.vuelo .sec-warn,
+body.vuelo .blk-type,body.vuelo .doc-role,
+body.vuelo .ses-T,body.vuelo .ses-P,body.vuelo .ses-L,body.vuelo .ses-S{
+  font-family:var(--v-cond);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;
+  border:none;border-radius:6px;
+}
+body.vuelo .c-conf-tag,body.vuelo .sec-conf{
+  font-size:0.66rem;padding:2px 8px;background:var(--v-rose-bg);color:var(--v-rose);
+}
+body.vuelo .c-conf-tag-soft,body.vuelo .sec-warn{background:var(--v-amber-bg);color:var(--v-amber)}
+
+/* Cabeceras de ciclo (cuando el interruptor esté activo) */
+body.vuelo .cy-head{
+  background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;
+  font-family:var(--v-sans);font-size:0.66rem;letter-spacing:0.09em;color:var(--v-tx-3);
+  padding:1rem 1.35rem 0.4rem;position:static;
+}
+body.vuelo .cy-head-n{font-family:var(--v-mono);background:var(--v-surface-2);color:var(--v-tx-3)}
+
+/* Zona principal */
+body.vuelo .topbar{padding:0.8rem 1.4rem 0.5rem}
+body.vuelo .ph{font-family:var(--v-serif);font-style:italic;font-size:0.95rem;color:var(--v-tx-3)}
+/* Etiquetas de cursos elegidos: chips tintados como Focus/Research/Write.
+   El color llega en línea desde render.js (palHex); aquí se quita el borde
+   y se da la forma. */
+body.vuelo .tag{
+  border-color:transparent!important;border-radius:var(--v-pill);
+  padding:6px 8px 6px 12px;gap:6px;
+  font-family:var(--v-mono);font-size:0.72rem;font-weight:600;
+}
+body.vuelo .tag-x{opacity:0.55;font-size:0.85rem}
+
+/* Grupo de acciones */
+body.vuelo .action-btns{border-radius:var(--v-pill);padding:6px;gap:6px}
+body.vuelo .btn{
+  font-family:var(--v-sans);font-weight:600;font-size:0.8rem;letter-spacing:0;
+  border-radius:var(--v-pill);padding:9px 16px;border:1px solid transparent;
+  box-shadow:none;filter:none;
+}
+body.vuelo .btn:hover{transform:none;filter:none}
+body.vuelo .btn-names,body.vuelo .btn-cal{
+  background:var(--v-surface-2);color:var(--v-tx-2);border-color:var(--v-hair);
+  box-shadow:inset 0 1px 0 var(--v-edge-hi);
+}
+body.vuelo .btn-names{font-family:var(--v-sans)}
+body.vuelo .btn-names:hover,body.vuelo .btn-cal:hover{background:var(--v-surface-3);color:var(--v-tx);box-shadow:inset 0 1px 0 var(--v-edge-hi)}
+body.vuelo .btn-names.active{background:color-mix(in srgb,var(--v-accent) 18%,transparent);color:var(--v-accent-strong);border-color:transparent}
+body.vuelo .btn-clear{background:var(--v-rose-bg);color:var(--v-rose);border-color:transparent}
+body.vuelo .btn-clear:hover{background:color-mix(in srgb,var(--v-rose) 22%,transparent)}
+/* Acción principal: una tarjeta «Flyer» en miniatura — papel azul polvo
+   con barrido claro y el texto en relieve */
+body.vuelo .btn-dl{
+  position:relative;overflow:hidden;color:#fff;
+  /* Azul de la tarjeta, oscurecido lo justo para que el texto blanco pase
+     de 4.5:1 en el centro (≈ #4b739b); el barrido claro queda en la
+     esquina, lejos del texto */
+  background:
+    radial-gradient(90% 120% at 108% -10%,rgba(255,255,255,0.42) 0%,rgba(255,255,255,0) 50%),
+    linear-gradient(120deg,#3f658c 0%,#4f77a0 60%,#6a8fb5 115%);
+  border-color:rgba(255,255,255,0.35);
+  text-shadow:0 1px 1px rgba(30,55,85,0.35);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.45),0 4px 14px rgba(60,95,135,0.28);
+}
+/* En oscuro el botón principal es la barra de progreso de la referencia:
+   crema → azul pálido con su halo, y tinta oscura (≥ 9:1) */
+body.vuelo-oscuro .btn-dl{
+  color:#1f2a31;text-shadow:0 1px 0 rgba(255,255,255,0.35);
+  background:linear-gradient(90deg,#e6ded3 0%,#dcdbd6 25%,#cdd7d8 55%,#b9cfda 100%);
+  border-color:rgba(255,255,255,0.5);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.7),0 0 22px 2px rgba(214,228,234,0.22);
+}
+body.vuelo-oscuro .btn-dl:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,0.8),0 0 28px 4px rgba(214,228,234,0.32)}
+body.vuelo .btn-dl::after{
+  content:'';position:absolute;inset:0;pointer-events:none;background:var(--v-grain);opacity:0.55;
+}
+body.vuelo .btn-dl svg{filter:none}
+body.vuelo .btn-dl:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,0.5),0 6px 20px rgba(60,95,135,0.36)}
+
+/* Aviso de cruce: un billete con su sello */
+body.vuelo .conf-bar{
+  position:relative;margin:0.4rem 1.4rem 0;padding:11px 16px 11px 94px;
+  border-radius:16px;border:1px solid var(--v-hair);
+  background:var(--v-surface);-webkit-backdrop-filter:var(--v-glass-blur);backdrop-filter:var(--v-glass-blur);
+  color:var(--v-tx-2);font-family:var(--v-sans);font-size:0.8rem;
+  box-shadow:inset 0 1px 0 var(--v-edge-hi);
+}
+body.vuelo .conf-bar svg{display:none}
+body.vuelo .conf-bar::before{
+  content:'CRUCE';position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  font-family:var(--v-cond);font-weight:700;font-size:0.72rem;letter-spacing:0.08em;
+  padding:3px 10px;border-radius:6px;background:var(--v-rose-bg);color:var(--v-rose);
+}
+/* el corte del billete */
+body.vuelo .conf-bar::after{
+  content:'';position:absolute;left:84px;top:8px;bottom:8px;border-left:1.5px dashed var(--v-hair);
+}
+
+/* Área del horario */
+body.vuelo .sched-area{background:transparent;padding:1.1rem 1.4rem 1.4rem}
+
+/* Estado vacío: la carpeta «FLIGHT LOG» con billetes asomando */
+body.vuelo .empty{gap:1.1rem}
+body.vuelo .empty-box{
+  position:relative;width:250px;height:160px;border:none;border-radius:22px;
+  background:var(--v-sunken);box-shadow:inset 0 1px 0 var(--v-edge-hi),var(--v-shadow-sm);
+  overflow:hidden;
+}
+body.vuelo .empty-box svg{display:none}
+body.vuelo .empty-box::before{
+  /* dos billetes apilados */
+  content:'';position:absolute;left:26px;right:30px;top:18px;height:70px;border-radius:12px;
+  background:var(--v-surface-solid);
+  box-shadow:10px 12px 0 -2px var(--v-surface-solid),0 1px 0 var(--v-edge-hi) inset,0 4px 10px rgba(0,0,0,0.12);
+  transform:rotate(-2deg);
+}
+body.vuelo .empty-box::after{
+  /* frente de la carpeta con su solapa y el rótulo en bajorrelieve */
+  content:'HORARIO';position:absolute;left:0;right:0;bottom:0;height:92px;
+  display:flex;align-items:flex-end;padding:0 0 16px 22px;box-sizing:border-box;
+  font-family:var(--v-sans);font-weight:800;font-size:1.65rem;letter-spacing:0.02em;
+  color:var(--v-deboss-ink);text-shadow:var(--v-emboss);
+  background:var(--v-sunken);border-top:1px solid var(--v-edge-hi);
+  clip-path:polygon(0 18%,52% 18%,60% 0,100% 0,100% 100%,0 100%);
+  border-radius:0 0 22px 22px;
+}
+body.vuelo-oscuro .empty-box::after{background:#262627}
+body.vuelo .empty h3{font-family:var(--v-serif);font-weight:500;font-size:1.35rem;color:var(--v-tx)}
+body.vuelo .empty p{font-family:var(--v-serif);font-size:0.95rem;color:var(--v-tx-3);max-width:280px}
+
+/* Tabla */
+body.vuelo .dhead{
+  background:transparent;border:none;border-radius:var(--v-pill);
+  font-family:var(--v-sans);font-size:0.66rem;font-weight:700;letter-spacing:0.12em;
+  color:var(--v-tx-3);padding:8px 4px 10px;margin:0 2px 4px;
+}
+body.vuelo .dhead.now{background:none;color:var(--v-tx);border:none;position:relative}
+body.vuelo .dhead.now::after{
+  content:'';position:absolute;left:50%;bottom:2px;width:5px;height:5px;margin-left:-2.5px;
+  border-radius:50%;background:var(--v-accent);
+}
+body.vuelo table.sch td:first-child{
+  font-family:var(--v-mono);font-size:0.64rem;font-weight:500;color:var(--v-tx-4);
+}
+body.vuelo .cell-mt{border-radius:10px}
+/* Huecos vacíos casi invisibles: el horario se lee por los bloques, no
+   por una rejilla gris */
+body.vuelo-claro table.sch tbody tr:nth-child(odd) td:not(:first-child) .cell-mt{background:rgba(255,255,255,0.42)}
+body.vuelo-claro table.sch tbody tr:nth-child(even) td:not(:first-child) .cell-mt{background:rgba(255,255,255,0.22)}
+body.vuelo-claro table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.7)}
+body.vuelo-oscuro table.sch tbody tr:nth-child(odd) td:not(:first-child) .cell-mt{background:rgba(255,255,255,0.03)}
+body.vuelo-oscuro table.sch tbody tr:nth-child(even) td:not(:first-child) .cell-mt{background:rgba(255,255,255,0.014)}
+body.vuelo-oscuro table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.06)}
+
+/* Bloques de curso: billetes de papel con grano. Sin borde lateral: el
+   color va en el papel mismo, como las tarjetas de las referencias. */
+body.vuelo .blk{
+  border-left:none;border-radius:var(--v-r-md);padding:7px 9px;overflow:hidden;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.22),0 1px 2px rgba(0,0,0,0.10);
+}
+body.vuelo-oscuro .blk{box-shadow:inset 0 1px 0 rgba(255,255,255,0.08),0 1px 2px rgba(0,0,0,0.3)}
+body.vuelo .blk::before{
+  inset:0;background:var(--v-grain);opacity:0.7;border-radius:inherit;
+}
+body.vuelo .blk:hover{filter:none;transform:translateY(-1px);box-shadow:var(--v-shadow-sm)}
+body.vuelo .blk-name{font-family:var(--v-sans);font-weight:700;font-size:0.6rem;letter-spacing:0.01em}
+body.vuelo .blk-cod{font-family:var(--v-mono);font-weight:700;font-size:0.66rem;letter-spacing:0.02em}
+body.vuelo .blk-cod-sm{font-family:var(--v-mono)}
+body.vuelo .blk-secc{font-weight:500;opacity:0.65}
+body.vuelo .blk-type{
+  font-size:0.58rem;padding:1px 6px;margin-top:4px;border-radius:5px;
+  background:rgba(0,0,0,0.12);color:inherit;
+}
+body.vuelo-oscuro .blk-type{background:rgba(0,0,0,0.28)}
+body.vuelo .blk-room{font-family:var(--v-mono);font-size:0.56rem;opacity:0.7}
+body.vuelo .cell-blocks{gap:3px}
+
+/* Los 8 papeles de curso: los tintes de los chips de la referencia
+   (ámbar, pizarra, salvia…) más el azul de la tarjeta, todos apagados */
+/* Claro: papel tintado (L≈0.91–0.945); tinta ≥ 7:1 sobre su fondo */
+body.vuelo-claro .p0{--v-paper:#ece0c5;--v-ink:#574514;--v-ink-edge:#9f8850}
+body.vuelo-claro .p1{--v-paper:#dcdff8;--v-ink:#40436d;--v-ink-edge:#8185bb}
+body.vuelo-claro .p2{--v-paper:#cae9e1;--v-ink:#075246;--v-ink-edge:#4f9b8b}
+body.vuelo-claro .p3{--v-paper:#e3f3d8;--v-ink:#3f552c;--v-ink-edge:#799562}
+body.vuelo-claro .p4{--v-paper:#f7d9dc;--v-ink:#693840;--v-ink-edge:#b5767f}
+body.vuelo-claro .p5{--v-paper:#dbeefc;--v-ink:#29526d;--v-ink-edge:#5c91b6}
+body.vuelo-claro .p6{--v-paper:#ffe6d6;--v-ink:#6d422a;--v-ink-edge:#b27c5e}
+body.vuelo-claro .p7{--v-paper:#f7e6fc;--v-ink:#604369;--v-ink-edge:#9f7baa}
+
+/* Oscuro: los tintes de los chips (arena, pervinca, salvia, liquen…);
+   tinta ≥ 6.3:1 sobre su fondo */
+body.vuelo-oscuro .p0{--v-paper:#574c30;--v-ink:#f0deb3;--v-ink-edge:#bba265}
+body.vuelo-oscuro .p1{--v-paper:#484b66;--v-ink:#d6dcff;--v-ink-edge:#9a9fd9}
+body.vuelo-oscuro .p2{--v-paper:#30554d;--v-ink:#b1efe0;--v-ink-edge:#65b6a5}
+body.vuelo-oscuro .p3{--v-paper:#3b4930;--v-ink:#c1d8b0;--v-ink-edge:#91b078}
+body.vuelo-oscuro .p4{--v-paper:#634347;--v-ink:#ffd2d9;--v-ink-edge:#d48e98}
+body.vuelo-oscuro .p5{--v-paper:#2d4759;--v-ink:#a9d6f7;--v-ink-edge:#72acd5}
+body.vuelo-oscuro .p6{--v-paper:#573d2e;--v-ink:#f1c5ad;--v-ink-edge:#d09574}
+body.vuelo-oscuro .p7{--v-paper:#4e3c53;--v-ink:#e4c4ee;--v-ink-edge:#bb94c7}
+
+/* Papel y tinta para todo lo que lleve clase de curso */
+body.vuelo .blk{background:var(--v-paper);color:var(--v-ink)}
+/* Las etiquetas traen color en línea (palHex); aquí manda el papel del
+   curso para que la etiqueta sea idéntica a su bloque */
+body.vuelo .tag[class*=" p"]{background:var(--v-paper)!important;color:var(--v-ink)!important}
+body.vuelo .leg-dot{background:var(--v-paper);box-shadow:inset 0 0 0 1.5px var(--v-ink-edge)}
+
+/* Leyenda */
+body.vuelo .sched-legend{
+  border:1px solid var(--v-hair);background:var(--v-surface-2);border-radius:16px;padding:12px 16px;
+}
+body.vuelo .leg-dot{border-left:none;border-radius:50%;width:10px;height:10px}
+body.vuelo .leg-cod{font-family:var(--v-mono)}
+body.vuelo .leg-name{font-family:var(--v-sans)}
+
+/* Barra inferior: cifras serif grandes con su etiqueta, como «2,628 km» */
+body.vuelo .stats{gap:0;padding:0.6rem 1.4rem 0.8rem;align-items:stretch}
+body.vuelo .stat{
+  flex-direction:column-reverse;align-items:flex-start;gap:1px;
+  padding:0 1.4rem;border-left:1px solid var(--v-hair);
+  font-family:var(--v-sans);font-size:0.68rem;color:var(--v-tx-3);
+}
+body.vuelo .stat:first-child{padding-left:0;border-left:none}
+body.vuelo .stat-colon{display:none}
+body.vuelo .stat-n{
+  font-family:var(--v-serif);font-weight:500;font-size:1.5rem;line-height:1.05;
+  color:var(--v-tx);letter-spacing:-0.01em;
+}
+body.vuelo #sc{font-size:1.05rem;padding-top:0.3rem}
+/* Score: el círculo con icono de «I · Flyer» */
+body.vuelo .score-pill{
+  align-self:center;margin-left:auto;border:1px solid var(--v-hair);
+  background:var(--v-surface-2);color:var(--v-tx-2);
+  font-family:var(--v-sans);font-weight:600;font-size:0.74rem;padding:5px 14px 5px 6px;gap:8px;
+  box-shadow:inset 0 1px 0 var(--v-edge-hi);
+}
+body.vuelo .score-pill svg{
+  box-sizing:content-box;padding:6px;border-radius:50%;
+  background:var(--v-amber-bg);color:var(--v-amber);
+}
+body.vuelo .score-pill:hover{background:var(--v-surface-3);box-shadow:inset 0 1px 0 var(--v-edge-hi)}
+body.vuelo .score-pill-val{font-family:var(--v-serif);font-size:1rem;font-weight:600;color:var(--v-tx)}
+body.vuelo .score-pop{border-radius:18px;padding:14px 16px}
+body.vuelo .score-pop-count{font-family:var(--v-serif);font-size:0.95rem;font-weight:600;color:var(--v-tx)}
+body.vuelo .score-pop-note{font-family:var(--v-sans);color:var(--v-tx-3)}
+
+/* Ventanas */
+body.vuelo .overlay,body.vuelo .ann-overlay{background:rgba(0,0,0,0.06)}
+body.vuelo-oscuro .overlay,body.vuelo-oscuro .ann-overlay{background:rgba(0,0,0,0.2)}
+body.vuelo .modal{border-radius:var(--v-r-xl);max-width:520px}
+body.vuelo-claro .modal{background:rgba(250,251,252,0.82)}
+body.vuelo-oscuro .modal{background:rgba(48,47,45,0.82)}
+body.vuelo .modal-top{
+  background:transparent;border-bottom:none;padding:1.6rem 1.6rem 0.4rem;position:relative;
+}
+/* el separador con destello «———— ✦» de la referencia */
+body.vuelo .modal-top::after{
+  content:'✦';position:absolute;left:1.6rem;bottom:-10px;
+  padding-left:62px;font-size:0.7rem;line-height:1;color:var(--v-tx-3);
+  background:linear-gradient(var(--v-tx-4),var(--v-tx-4)) left 50%/52px 1px no-repeat;
+}
+body.vuelo .modal-ttl{
+  font-family:var(--v-serif);font-weight:600;font-size:1.5rem;line-height:1.15;letter-spacing:-0.01em;color:var(--v-tx);
+}
+body.vuelo .modal-sub{font-family:var(--v-serif);font-size:0.92rem;color:var(--v-tx-3);margin-top:6px}
+body.vuelo .modal-x,body.vuelo .ann-x{
+  width:32px;height:32px;border-radius:50%;background:var(--v-surface-2);color:var(--v-tx-2);
+  box-shadow:inset 0 1px 0 var(--v-edge-hi);
+}
+body.vuelo .modal-x:hover,body.vuelo .ann-x:hover{background:var(--v-surface-3);color:var(--v-tx)}
+body.vuelo .modal-body{padding:1.5rem 1.6rem 1.6rem}
+
+/* Tarjetas de sección: filas de la lista agrupada */
+body.vuelo .sec{
+  border:1px solid var(--v-hair);border-radius:var(--v-r-lg);background:var(--v-surface-2);
+  padding:14px 16px;margin-bottom:10px;box-shadow:inset 0 1px 0 var(--v-edge-hi);
+}
+body.vuelo .sec:hover{background:var(--v-surface-3);border-color:var(--v-hair);transform:none;box-shadow:inset 0 1px 0 var(--v-edge-hi),var(--v-shadow-sm)}
+body.vuelo .sec.soft-conf{background:var(--v-amber-bg);border-color:transparent}
+body.vuelo .sec.soft-conf:hover{border-color:transparent;box-shadow:var(--v-shadow-sm)}
+body.vuelo .sec-name{font-family:var(--v-serif);font-weight:600;font-size:1.05rem;color:var(--v-tx);letter-spacing:0}
+body.vuelo .sec-vac{font-family:var(--v-sans);font-weight:600;background:var(--v-surface-3);color:var(--v-tx-2)}
+body.vuelo .sec-doc{font-family:var(--v-sans);font-size:0.76rem;color:var(--v-tx-2)}
+body.vuelo .doc-role{font-size:0.62rem;padding:1px 7px;background:var(--v-surface-3);color:var(--v-tx-3)}
+body.vuelo .ses{font-family:var(--v-sans);font-size:0.78rem;color:var(--v-tx-2);padding:4px 0}
+body.vuelo .ses-T,body.vuelo .ses-P,body.vuelo .ses-L,body.vuelo .ses-S{font-size:0.66rem;padding:2px 8px}
+body.vuelo .ses-T{background:var(--v-amber-bg);color:var(--v-amber)}
+body.vuelo .ses-P{background:var(--v-sage-bg);color:var(--v-sage)}
+body.vuelo .ses-L{background:var(--v-rose-bg);color:var(--v-rose)}
+body.vuelo .ses-S{background:var(--v-slate-bg);color:var(--v-slate)}
+body.vuelo .rate-star{color:var(--v-amber)}
+body.vuelo .rate-btn{border:1px solid var(--v-hair);background:var(--v-surface-2);color:var(--v-tx-2);font-family:var(--v-sans)}
+body.vuelo .rate-btn:hover{border-color:var(--v-accent);color:var(--v-accent-strong)}
+body.vuelo .star-inp.on{color:var(--v-amber)}
+body.vuelo .ses-edit{border-bottom-color:var(--v-hair)}
+body.vuelo .ses-edit select,body.vuelo .ses-edit input{
+  font-family:var(--v-sans);border:1px solid var(--v-hair);border-radius:8px;background:var(--v-surface-2);color:var(--v-tx);
+}
+body.vuelo .ses-edit-del{background:var(--v-rose-bg);border:none;color:var(--v-rose);border-radius:8px}
+
+/* Anuncio: la cartera de ante con costura */
+body.vuelo .ann-modal{
+  position:relative;border-radius:30px;border:none;max-width:560px;
+  background:linear-gradient(165deg,#c9d4de 0%,#aebfce 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.6),inset 0 -2px 6px rgba(60,85,110,0.2),var(--v-shadow);
+  color:#24313d;
+}
+body.vuelo-oscuro .ann-modal{
+  background:linear-gradient(165deg,#465868 0%,#344453 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.12),inset 0 -2px 6px rgba(0,0,0,0.3),var(--v-shadow);
+  color:#e8eef3;
+}
+body.vuelo .ann-modal::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:var(--v-grain);opacity:0.9;
+}
+body.vuelo .ann-modal::after{
+  content:'';position:absolute;inset:9px;border-radius:22px;pointer-events:none;
+  border:1.5px dashed rgba(255,255,255,0.55);
+}
+body.vuelo-oscuro .ann-modal::after{border-color:rgba(214,226,238,0.35)}
+body.vuelo .ann-top,body.vuelo .ann-foot{
+  background:transparent;border:none;-webkit-backdrop-filter:none;backdrop-filter:none;
+  position:relative;z-index:1;
+}
+body.vuelo .ann-top{padding:1.7rem 1.8rem 0.6rem}
+body.vuelo .ann-title{
+  font-family:var(--v-serif);font-weight:700;font-size:1rem;letter-spacing:0.16em;text-transform:uppercase;
+  color:rgba(70,95,120,0.85);text-shadow:0 1px 0 rgba(255,255,255,0.55),0 -1px 0 rgba(50,75,100,0.25);
+}
+body.vuelo-oscuro .ann-title{color:rgba(30,42,54,0.9);text-shadow:0 1px 0 rgba(255,255,255,0.12),0 -1px 0 rgba(0,0,0,0.45)}
+body.vuelo .ann-title svg{color:currentColor}
+body.vuelo .ann-x{background:rgba(255,255,255,0.35);color:#2f4152}
+body.vuelo-oscuro .ann-x{background:rgba(0,0,0,0.2);color:#dbe5ee}
+/* El texto va sobre una hoja de papel dentro de la cartera */
+body.vuelo .ann-body{
+  position:relative;z-index:1;margin:0.4rem 1.4rem;padding:1.3rem 1.4rem;border-radius:18px;
+  background:rgba(252,252,251,0.86);color:#2b2f35;
+  box-shadow:0 1px 0 rgba(255,255,255,0.7) inset,0 6px 18px rgba(40,60,85,0.18);
+}
+body.vuelo-oscuro .ann-body{background:rgba(36,38,41,0.9);color:#e9e7e2;box-shadow:0 1px 0 rgba(255,255,255,0.06) inset,0 6px 18px rgba(0,0,0,0.3)}
+body.vuelo .ann-body h1{font-family:var(--v-serif);font-weight:600;font-size:1.45rem;line-height:1.2;color:inherit}
+body.vuelo .ann-body h2{font-family:var(--v-serif);font-weight:600;font-size:1.1rem;color:inherit}
+body.vuelo .ann-body h3{font-family:var(--v-serif);color:inherit}
+body.vuelo .ann-body p,body.vuelo .ann-body li{font-family:var(--v-serif);font-size:0.98rem;line-height:1.6;color:inherit;opacity:0.86}
+body.vuelo .ann-body strong{color:inherit;opacity:1}
+body.vuelo .ann-body hr{
+  border:none;height:12px;margin:1.1em 0;
+  background:
+    linear-gradient(currentColor,currentColor) left 50%/52px 1px no-repeat;
+  opacity:0.35;position:relative;
+}
+body.vuelo .ann-body hr::after{content:'✦';position:absolute;left:62px;top:-3px;font-size:0.7rem}
+body.vuelo .ann-body code{font-family:var(--v-mono);background:rgba(0,0,0,0.06)}
+body.vuelo .ann-body a{color:var(--v-accent)}
+body.vuelo .ann-body blockquote{border-left-color:var(--v-accent);color:inherit;opacity:0.75}
+body.vuelo .ann-foot{padding:0.9rem 1.8rem 1.6rem;gap:0.6rem}
+body.vuelo .ann-btn-skip,body.vuelo .ann-btn-ok{
+  font-family:var(--v-sans);font-weight:600;font-size:0.82rem;border-radius:var(--v-pill);padding:10px 20px;border:none;
+}
+body.vuelo .ann-btn-skip{background:rgba(255,255,255,0.32);color:#2f4152}
+body.vuelo .ann-btn-skip:hover{background:rgba(255,255,255,0.5);color:#1f2d3a}
+body.vuelo .ann-btn-ok{background:#fbfbfa;color:#22303d;box-shadow:0 2px 8px rgba(40,60,85,0.2)}
+body.vuelo .ann-btn-ok:hover{background:#fff}
+body.vuelo-oscuro .ann-btn-skip{background:rgba(0,0,0,0.2);color:#dbe5ee}
+body.vuelo-oscuro .ann-btn-ok{background:#e9eef2;color:#1f2b36}
+
+/* Aviso emergente: píldora esmerilada */
+body.vuelo .toast{
+  border-radius:var(--v-pill);padding:12px 20px 12px 16px;
+  font-family:var(--v-sans);font-weight:600;font-size:0.84rem;color:var(--v-tx);
+}
+body.vuelo .toast.ok .tdot{background:var(--v-sage);box-shadow:none}
+body.vuelo .toast.er .tdot{background:var(--v-rose);box-shadow:none}
+body.vuelo .toast.warn .tdot{background:var(--v-amber);box-shadow:none}
+
+/* Barras de desplazamiento discretas */
+body.vuelo .course-scroll::-webkit-scrollbar-thumb,
+body.vuelo .sched-area::-webkit-scrollbar-thumb,
+body.vuelo .modal::-webkit-scrollbar-thumb,
+body.vuelo .ann-modal::-webkit-scrollbar-thumb{background:var(--v-surface-3);border-radius:var(--v-pill)}
+body.vuelo ::selection{background:color-mix(in srgb,var(--v-accent) 30%,transparent)}
+body.vuelo :focus-visible{outline:2px solid var(--v-accent);outline-offset:2px}
+
+
+/* ── 5. Móvil ───────────────────────────────────────────────────────── */
+@media(max-width:720px){
+  body.vuelo header{
+    border-radius:0;border-left:none;border-right:none;border-top:none;
+    box-shadow:none;height:calc(56px + env(safe-area-inset-top,0px));
+  }
+  body.vuelo .logo-text{font-size:1.12rem}
+  body.vuelo .sidebar{
+    border-radius:0;border:none;box-shadow:none;background:transparent;
+    -webkit-backdrop-filter:none;backdrop-filter:none;
+  }
+  body.vuelo .stats{padding:0.4rem 0.8rem 0.5rem;row-gap:0.4rem}
+  body.vuelo .stat{padding:0 0.8rem}
+  body.vuelo .stat-n{font-size:1.15rem}
+  body.vuelo .conf-bar{margin:0.3rem 0.75rem 0}
+  body.vuelo .sched-area{padding:0.6rem 0.5rem}
+  body.vuelo .action-btns{padding:4px}
+  body.vuelo .btn{padding:7px 12px;font-size:0.76rem}
+  /* Barra de pestañas iOS: vidrio y la activa con su píldora */
+  body.vuelo .mob-tabs{
+    background:var(--v-surface);border-top:1px solid var(--v-hair);
+    -webkit-backdrop-filter:var(--v-glass-blur);backdrop-filter:var(--v-glass-blur);
+  }
+  body.vuelo .mob-tab{
+    font-family:var(--v-sans);font-weight:600;font-size:0.64rem;letter-spacing:0.01em;
+    text-transform:none;color:var(--v-tx-3);
+  }
+  body.vuelo .mob-tab.on,body.vuelo .mob-tab.on svg{color:var(--v-accent-strong)}
+  body.vuelo .modal{max-height:88vh}
+}
+
+
+/* ── 6. Exportación a PDF ───────────────────────────────────────────── */
+/* html2canvas no entiende backdrop-filter ni las mezclas, y el grano solo
+   ensucia la impresión: durante la captura todo queda plano y nítido. */
+body.vuelo.exporting .blk::before{display:none}
+body.vuelo.exporting .blk{box-shadow:none}
+body.vuelo.exporting .cell-mt{background:transparent!important;border:1px solid var(--v-hair)}

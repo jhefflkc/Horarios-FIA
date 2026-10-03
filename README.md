@@ -9,7 +9,8 @@ GitHub Pages cada vez que haces push a `main`.
 ```
 index.html              solo el marcado de la página
 assets/
-  styles.css            todos los estilos (los temas van al principio)
+  styles.css            estructura base y los temas anteriores (desactivados)
+  theme-vuelo.css       el tema activo «Vuelo», en claro y oscuro
   data.js               GENERADO — los horarios convertidos a JavaScript
   js/
     config.js           ajustes: facultades, paleta, URL de calificaciones
@@ -27,10 +28,23 @@ data/                   los .xlsx de horarios
 docs/                   planes de estudio (referencia, no los usa la web)
 build_data.py           lee data/*.xlsx y escribe assets/data.js
 ANNOUNCE.md             el anuncio que sale al abrir la web
+respaldo/
+  temas-anteriores/     copia de los cinco temas previos y cómo recuperarlos
 ```
 
 Los `.js` se cargan como scripts normales, en el orden que aparece al final
 de `index.html`. No hay compilación ni dependencias que instalar.
+
+### Temas
+
+Solo el tema **Vuelo** está activo, en modo claro y oscuro. Quien no haya
+elegido uno sigue la preferencia de su sistema; al pulsar el botón de tema la
+elección se guarda en el navegador.
+
+Los cinco temas anteriores (Ámbar, Grafito, Crema, Glacial y Google) siguen
+en `styles.css`, solo fuera de la rotación. Para recuperarlos, añádelos a
+`THEME_ORDER` en `assets/js/config.js`; los detalles están en
+`respaldo/temas-anteriores/README.md`.
 
 ## Actualizar los horarios
 

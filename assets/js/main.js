@@ -81,12 +81,10 @@ document.addEventListener("mousemove",function(e){
 
 
 window.addEventListener("DOMContentLoaded",function(){
-  /* Google es el tema de entrada. Solo se aplica a quien no haya elegido
-     uno todavía: si hay preferencia guardada, manda esa. Se comprueba que
-     siga siendo un tema válido por si alguna vez se retira alguno. */
-  var saved=localStorage.getItem("theme");
-  if(!saved||THEME_ORDER.indexOf(saved)<0) saved=DEFAULT_THEME;
-  applyTheme(saved);
+  /* Si el usuario eligió un tema (y sigue activo), manda ese; si no, el de
+     entrada, que por defecto sigue la preferencia claro/oscuro del sistema.
+     No se guarda: solo se guarda una elección hecha con el botón. */
+  applyTheme(savedTheme()||defaultTheme(),false);
   initFacultySelector();
   switchFaculty(Object.keys(ALL_DATA)[0]);
   fetchAnnounce();
