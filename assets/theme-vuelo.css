@@ -107,7 +107,7 @@ body.vuelo-oscuro{
   --v-glass-blur:saturate(140%) blur(24px);
 
   --v-tx:#f9f8f8;     /* 12,3:1 sobre el fondo */
-  --v-tx-2:#c2c1bd;   /* 7,2:1 */
+  --v-tx-2:#d6d5d1;   /* 8,8:1: salto claro entre tx, tx-2 y tx-3 */
   --v-tx-3:#b0afab;   /* etiquetas, valores, horas: ≥4,5:1 también en tarjetas con hover */
   --v-tx-4:#6e6d6d;   /* SOLO decorativo (2,5:1) */
   --v-accent:#9bb4ca;
@@ -134,6 +134,7 @@ body.vuelo-oscuro{
   --v-deboss-ink:#1b1b1b;
   --v-deboss:0 1px 0 rgba(255,255,255,.07),0 2px 5px rgba(255,255,255,.05),0 -1px 0 rgba(0,0,0,.35);
   --v-pill-bg:rgba(236,239,240,.82); --v-pill-solid:#cacdce;
+  --v-rule:rgba(215,225,228,.75);   /* línea del separador, del tono del destello */
   --v-sparkle:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23d1dadc' d='M4 0C4.4 2.6 5.4 3.6 8 4C5.4 4.4 4.4 5.4 4 8C3.6 5.4 2.6 4.4 0 4C2.6 3.6 3.6 2.6 4 0Z'/%3E%3C/svg%3E");
 }
 
@@ -188,6 +189,7 @@ body.vuelo-claro{
   --v-deboss:0 1px 0 rgba(255,255,255,.95),0 -1px 0 rgba(30,50,70,.22);
   --v-pill-bg:rgba(255,255,255,.78); --v-pill-solid:#fbfcfc;
   --v-sparkle:var(--v-sparkle-ink);
+  --v-rule:#7a868c;
 }
 
 /* Los 8 colores de curso: papel (fondo), tinta (texto, ≥6,7:1), filo (el
@@ -297,13 +299,13 @@ body.vuelo .logo-gem{
   background:var(--v-grain-paper) 0 0/240px,var(--v-flyer);
   box-shadow:var(--v-flyer-bevel);filter:none;
 }
-body.vuelo .logo-text{font:600 18px/22px var(--v-serif);letter-spacing:0;color:var(--v-tx)}
+body.vuelo .logo-text{font:700 18px/22px var(--v-serif);letter-spacing:-.01em;color:var(--v-tx)}
 body.vuelo .logo-text span{color:var(--v-tx-3);font-weight:400}
 body.vuelo .logo-sub{
   font:italic 700 11.5px/14px var(--v-serif);letter-spacing:.005em;text-transform:none;
   color:var(--v-tx-3);margin-top:2px;
 }
-body.vuelo .header-mid{font:italic 400 15px/20px var(--v-serif);letter-spacing:0;color:var(--v-tx-2)}
+body.vuelo .header-mid{font:600 16px/20px var(--v-serif);letter-spacing:0;color:var(--v-tx)}
 /* Botón de tema: píldora como «Currently on Home» */
 body.vuelo .hbtn{
   height:36px;padding:0 14px 0 12px;gap:8px;border-radius:var(--v-pill);
@@ -318,7 +320,7 @@ body.vuelo .hbtn:hover{background:var(--v-fill-2);color:var(--v-tx)}
 body.vuelo .sidebar{border-radius:var(--v-r-xl)}
 body.vuelo .sidebar-top{padding:18px 16px 12px;border-bottom:none}
 body.vuelo .sidebar-label{
-  font:600 12px/16px var(--v-sans);letter-spacing:.03em;text-transform:uppercase;
+  font:600 13px/18px var(--v-sans);letter-spacing:.02em;text-transform:uppercase;
   color:var(--v-tx-3);background:none;-webkit-text-fill-color:currentColor;padding-left:4px;
 }
 /* El rombo de los temas anteriores pasa a ser el destello ✦ */
@@ -363,8 +365,11 @@ body.vuelo .c-row:has(+ .cy-head){border-bottom-width:1px;border-radius:0 0 18px
 body.vuelo .c-row:only-child,body.vuelo .cy-head + .c-row:last-child{border-radius:18px}
 body.vuelo .cy-head + .c-row:has(+ .cy-head){border-radius:18px}
 body.vuelo .c-row + .c-row::before{content:"";position:absolute;top:0;left:16px;right:16px;height:1px;background:var(--v-hair)}
-body.vuelo .c-row::after{
-  content:"";position:absolute;right:16px;top:50%;width:7px;height:7px;
+/* Chevrón solo donde la fila abre algo: cursos con varias secciones aún
+   sin elegir (las demás filas marcan o desmarcan directamente) */
+body.vuelo .c-row::after{display:none}
+body.vuelo .c-row.multi:not(.sel)::after{
+  display:block;content:"";position:absolute;right:16px;top:50%;width:7px;height:7px;
   border-right:1.6px solid var(--v-tx-3);border-top:1.6px solid var(--v-tx-3);
   transform:translateY(-50%) rotate(45deg);
 }
@@ -376,7 +381,6 @@ body.vuelo .c-row.sel{
   background-color:var(--v-card);border-color:var(--v-line);
   background-image:linear-gradient(var(--v-accent-soft),var(--v-accent-soft));
 }
-body.vuelo .c-row.sel::after{border-color:var(--v-accent-strong)}
 body.vuelo .c-row.sel .c-secs{color:var(--v-tx-2)}
 /* Casilla redonda, como en Recordatorios */
 body.vuelo .cbox{width:22px;height:22px;margin:0;border-radius:50%;border:1.6px solid var(--v-tx-3);background:transparent;box-shadow:none}
@@ -426,14 +430,14 @@ body.vuelo .cy-head-n::before{content:"· "}
 
 /* Barra superior y etiquetas de los cursos elegidos */
 body.vuelo .topbar{padding:14px 22px 8px;gap:10px}
-body.vuelo .ph{font:italic 400 15px/20px var(--v-serif);color:var(--v-tx-3)}
+body.vuelo .ph{font:400 15px/20px var(--v-serif);color:var(--v-tx-3)}
 /* Chip tintado como Focus/Research/Write: el papel y la tinta del curso
    (manda sobre el color en línea de render.js) con un punto en el filo */
 body.vuelo .tag{
   height:30px;padding:0 6px 0 10px;gap:6px;border-radius:var(--v-pill);
   font:600 12px/1 var(--v-mono);border:1px solid transparent;
 }
-body.vuelo .tag[class*=" p"]{background:var(--v-paper)!important;color:var(--v-ink)!important;border-color:var(--v-ring)!important}
+body.vuelo .tag[class*=" p"]{background:var(--v-paper)!important;color:var(--v-ink)!important;border-color:transparent!important}
 body.vuelo .tag::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--v-ink-edge);flex-shrink:0}
 body.vuelo .tag span{font:500 12px var(--v-sans);opacity:.88!important}
 body.vuelo .tag-x{width:18px;height:18px;font-size:13px;font-style:normal;color:inherit;opacity:1;background:rgba(0,0,0,.08)}
@@ -524,7 +528,7 @@ body.vuelo .empty h3{font:600 21px/26px var(--v-serif);color:var(--v-tx)}
 body.vuelo .empty p{font:400 15px/22px var(--v-serif);color:var(--v-tx-2);max-width:300px}
 body.vuelo .empty p::before{
   content:"";display:block;width:62px;height:8px;margin:0 auto 14px;
-  background:linear-gradient(var(--v-tx-4),var(--v-tx-4)) left 50%/46px 1px no-repeat,var(--v-sparkle) right center/8px 8px no-repeat;
+  background:linear-gradient(var(--v-rule),var(--v-rule)) left 50%/46px 1px no-repeat,var(--v-sparkle) right center/8px 8px no-repeat;
 }
 
 /* Horario: una tarjeta de papel plano */
@@ -642,14 +646,14 @@ body.vuelo .modal{
   box-shadow:inset 0 1px 0 var(--v-edge-hi),var(--v-outline),0 30px 80px -20px rgba(0,0,0,.55);
 }
 body.vuelo-claro .modal{box-shadow:inset 0 1px 0 #fff,var(--v-outline),0 30px 80px -20px rgba(30,50,70,.30)}
-body.vuelo .modal-top{background:var(--v-modal-head);border-bottom:none;padding:24px 24px 20px}
-/* el separador con destello «——— ✦» */
-body.vuelo .modal-top::after{
-  content:"";position:absolute;left:24px;bottom:6px;width:62px;height:8px;
-  background:linear-gradient(var(--v-tx-4),var(--v-tx-4)) left 50%/46px 1px no-repeat,var(--v-sparkle) right center/8px 8px no-repeat;
+body.vuelo .modal-top{background:var(--v-modal-head);border-bottom:none;padding:24px 24px 14px}
+/* el separador con destello «——— ✦», entre el titular y el texto */
+body.vuelo .modal-ttl::after{
+  content:"";display:block;width:62px;height:8px;margin:12px 0 10px;
+  background:linear-gradient(var(--v-rule),var(--v-rule)) left 50%/46px 1px no-repeat,var(--v-sparkle) right center/8px 8px no-repeat;
 }
 body.vuelo .modal-ttl{font:600 21px/26px var(--v-serif);letter-spacing:0;color:var(--v-tx)}
-body.vuelo .modal-sub{font:400 15px/22px var(--v-serif);color:var(--v-tx-2);margin-top:4px}
+body.vuelo .modal-sub{font:400 15px/22px var(--v-serif);color:var(--v-tx-2);margin-top:0}
 body.vuelo .modal-x,body.vuelo .ann-x{width:30px;height:30px;border-radius:50%;border:none;background:var(--v-fill);color:var(--v-tx-2)}
 body.vuelo .modal-x:hover{background:var(--v-fill-2);color:var(--v-tx)}
 body.vuelo .modal-body{padding:12px 24px 24px}

@@ -39,7 +39,8 @@ function drawList(){
     const isSoft=!isSel&&!isConf&&anySoftConflict(c);
     const ss=sel[c.cod];
     const meta=ss?"Secc. "+ss.secc+" \u00b7 "+ss.ss.length+" ses.":c.secs.length+(c.secs.length>1?" secc.":"\u00a0secc.");
-    h+="<div class=\"c-row cy"+c.esp+(isSel?" sel":"")+(isConf?" conf":"")+"\" data-cod=\""+c.cod+"\">";
+    /* «multi»: al pulsarla se abre la ventana de secciones (el tema muestra un chevrón) */
+    h+="<div class=\"c-row cy"+c.esp+(c.secs.length>1?" multi":"")+(isSel?" sel":"")+(isConf?" conf":"")+"\" data-cod=\""+c.cod+"\">";
     h+="<div class=\"cbox\"></div>";
     h+="<div class=\"c-info\">";
     h+="<div class=\"c-name\">"+c.curso+"</div>";
