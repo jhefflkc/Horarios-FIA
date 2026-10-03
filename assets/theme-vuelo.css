@@ -560,6 +560,8 @@ body.vuelo .sched-legend{
   border:1px solid var(--v-hair);background:var(--v-surface-2);border-radius:16px;padding:12px 16px;
 }
 body.vuelo .leg-dot{border-left:none;border-radius:50%;width:10px;height:10px}
+/* el muestrario de color de la ventana de información trae radio en línea */
+body.vuelo .sec .leg-dot{border-radius:50%!important}
 body.vuelo .leg-cod{font-family:var(--v-mono)}
 body.vuelo .leg-name{font-family:var(--v-sans);opacity:0.85}
 
