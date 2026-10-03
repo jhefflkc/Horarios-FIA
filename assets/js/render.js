@@ -109,7 +109,7 @@ function emptyFolderHTML(){
   return "<div class=\"v-folder\" aria-hidden=\"true\">"+
     "<div class=\"v-ticket\"><span class=\"v-t-date\">Semestre "+esc(getPeriod())+"</span><b class=\"v-badge\">En armado</b>"+
       "<span class=\"v-t-route\">"+plane+"<i></i><em></em><span class=\"v-t-code\">LIM</span></span></div>"+
-    "<div class=\"v-ticket v-ticket-2\"><span class=\"v-t-date\">"+esc(facultyName)+"</span></div>"+
+    "<div class=\"v-ticket v-ticket-2\"><span class=\"v-t-date\">Sin cursos a\u00fan</span></div>"+
     "<div class=\"v-folder-front\">Horario</div></div>";
 }
 

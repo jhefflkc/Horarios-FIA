@@ -761,6 +761,8 @@ body.google .sec-vac{background:var(--g-surf-3);color:var(--tx2);font-weight:500
   font-style:normal;font-size:0.72rem;opacity:0.6;transition:opacity 0.15s;
 }
 .tag-x:hover{opacity:1}
+/* envoltorio de los botones secundarios: solo el tema Vuelo lo dibuja */
+.action-seg{display:contents}
 .action-btns{
   display:flex;align-items:center;gap:8px;flex-shrink:0;
   padding:7px 10px;border-radius:14px;border:1px solid var(--line2);

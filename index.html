@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#eef1f4">
+<meta name="theme-color" content="#efeeea">
 <title>FIA-Horarios</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=Inter:opsz,wght@14..32,400..700&family=Sofia+Sans+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@500;600&family=Archivo:wdth,wght@112.5,450&display=swap" rel="stylesheet">
 <!-- Tipografías que solo usan los temas anteriores (Ámbar, Grafito, Crema,
@@ -17,10 +17,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<link rel="stylesheet" href="assets/styles.css?v=21ed0f4b">
+<link rel="stylesheet" href="assets/styles.css?v=4c9dbb14">
 <!-- Tema activo «Vuelo» (claro/oscuro). Va después de styles.css, que
      conserva los temas anteriores desactivados. -->
-<link rel="stylesheet" href="assets/theme-vuelo.css?v=21ed0f4b">
+<link rel="stylesheet" href="assets/theme-vuelo.css?v=4c9dbb14">
 </head>
 <body>
 <script>
@@ -32,7 +32,7 @@
   if(t!=="vuelo-claro"&&t!=="vuelo-oscuro")
     t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"vuelo-oscuro":"vuelo-claro";
   document.body.className="vuelo "+t;
-  document.documentElement.style.background=t==="vuelo-oscuro"?"#313133":"#eef1f4";
+  document.documentElement.style.background=t==="vuelo-oscuro"?"#313133":"#efeeea";
 })();
 </script>
 
@@ -115,6 +115,9 @@
         <span class="ph">&#8592; Selecciona cursos para armar tu horario</span>
       </div>
       <div class="action-btns">
+        <!-- action-seg agrupa los secundarios (cápsula en Vuelo); con
+             display:contents los temas anteriores no notan el envoltorio -->
+        <div class="action-seg">
         <button class="btn btn-names" id="btn-names" onclick="toggleNames()" style="display:none" title="Alternar entre código y nombre del curso" aria-label="Alternar entre código y nombre del curso">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <polyline points="4 7 4 4 20 4 20 7"/><line x1="9" x2="15" y1="20" y2="20"/>
@@ -138,6 +141,7 @@
           </svg>
           Exportar Calendario
         </button>
+        </div>
         <button class="btn btn-dl" onclick="downloadPDF()" aria-label="Descargar PDF">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -263,17 +267,17 @@
 <!-- SAB probe: used by JS to read the real env(safe-area-inset-bottom) value -->
 <div id="sab-probe" style="position:fixed;bottom:0;left:0;width:0;height:env(safe-area-inset-bottom,0px);pointer-events:none;visibility:hidden"></div>
 
-<script src="assets/data.js?v=21ed0f4b"></script>
-<script src="assets/js/config.js?v=21ed0f4b"></script>
-<script src="assets/js/state.js?v=21ed0f4b"></script>
-<script src="assets/js/courses.js?v=21ed0f4b"></script>
-<script src="assets/js/faculty.js?v=21ed0f4b"></script>
-<script src="assets/js/render.js?v=21ed0f4b"></script>
-<script src="assets/js/modals.js?v=21ed0f4b"></script>
-<script src="assets/js/ratings.js?v=21ed0f4b"></script>
-<script src="assets/js/announce.js?v=21ed0f4b"></script>
-<script src="assets/js/exports.js?v=21ed0f4b"></script>
-<script src="assets/js/theme.js?v=21ed0f4b"></script>
-<script src="assets/js/main.js?v=21ed0f4b"></script>
+<script src="assets/data.js?v=4c9dbb14"></script>
+<script src="assets/js/config.js?v=4c9dbb14"></script>
+<script src="assets/js/state.js?v=4c9dbb14"></script>
+<script src="assets/js/courses.js?v=4c9dbb14"></script>
+<script src="assets/js/faculty.js?v=4c9dbb14"></script>
+<script src="assets/js/render.js?v=4c9dbb14"></script>
+<script src="assets/js/modals.js?v=4c9dbb14"></script>
+<script src="assets/js/ratings.js?v=4c9dbb14"></script>
+<script src="assets/js/announce.js?v=4c9dbb14"></script>
+<script src="assets/js/exports.js?v=4c9dbb14"></script>
+<script src="assets/js/theme.js?v=4c9dbb14"></script>
+<script src="assets/js/main.js?v=4c9dbb14"></script>
 </body>
 </html>

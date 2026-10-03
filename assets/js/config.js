@@ -27,8 +27,8 @@ const PAL_HEX_GOOGLE={p0:"#1a73e8",p1:"#1e8e3e",p2:"#e37400",p3:"#d93025",p4:"#0
 
 /* Tema Vuelo: el color va como texto de la etiqueta, así que cada modo usa
    la versión del tono que contrasta con su fondo (ver theme-vuelo.css). */
-const PAL_HEX_VUELO_CLARO={p0:"#5a440d",p1:"#41426f",p2:"#005549",p3:"#6a353d",p4:"#0f4e69",p5:"#3c4f20",p6:"#593a61",p7:"#673b1e"};
-const PAL_HEX_VUELO_OSCURO={p0:"#f1deb3",p1:"#d9dcff",p2:"#b5ede1",p3:"#ffd0d5",p4:"#b8e8ff",p5:"#d4e8be",p6:"#f2d3f9",p7:"#ffd5bc"};
+const PAL_HEX_VUELO_CLARO={p0:"#59522d",p1:"#3f4263",p2:"#2a5b55",p3:"#433f39",p4:"#2b4f65",p5:"#2b4125",p6:"#49334f",p7:"#5b4225"};
+const PAL_HEX_VUELO_OSCURO={p0:"#ccbca2",p1:"#f3f5ff",p2:"#d9fff9",p3:"#fbf1d3",p4:"#a8c5d6",p5:"#b2c5ac",p6:"#c8bfdb",p7:"#fff1dc"};
 
 /* Paleta de etiquetas por tema; los que no figuran usan PAL_HEX */
 const PAL_HEX_BY_THEME={google:PAL_HEX_GOOGLE,"vuelo-claro":PAL_HEX_VUELO_CLARO,"vuelo-oscuro":PAL_HEX_VUELO_OSCURO};
@@ -100,8 +100,8 @@ var THEME_ICON={"vuelo-claro":"dark","vuelo-oscuro":"light",
    que el marco del PDF se pinta a mano: cada tema necesita su entrada aquí o
    el PDF saldrá con los colores de otro. */
 var PDF_THEME={
-  ["vuelo-claro"]: {canvas:"#fafbfc",outer:[238,241,244],inner:[250,251,252],pri:[29,35,39],   sec:[82,92,97]},
-  ["vuelo-oscuro"]:{canvas:"#363638",outer:[49,49,51],   inner:[54,54,56],   pri:[249,248,248],sec:[171,170,166]},
+  ["vuelo-claro"]: {canvas:"#fbfaf8",outer:[239,238,234],inner:[251,250,248],pri:[31,32,34],   sec:[95,97,100]},
+  ["vuelo-oscuro"]:{canvas:"#363638",outer:[49,49,51],   inner:[54,54,56],   pri:[249,248,248],sec:[173,172,168]},
   dark:            {canvas:"#0c0905",outer:[12,9,5],     inner:[19,14,8],    pri:[200,150,100],sec:[110,100,80]},
   ["stitch-dark"]: {canvas:"#0d0d0f",outer:[13,13,15],   inner:[17,17,19],   pri:[229,229,231],sec:[142,142,147]},
   light:           {canvas:"#fdf6ee",outer:[253,246,238],inner:[255,250,244],pri:[90,58,24],   sec:[138,98,72]},
@@ -111,5 +111,5 @@ var PDF_THEME={
 
 /* Panel colors per theme — must match CSS --panel values.
    html { background } can't inherit --panel from body, so we set it directly. */
-var THEME_PANEL={"vuelo-claro":"#eef1f4","vuelo-oscuro":"#313133",
+var THEME_PANEL={"vuelo-claro":"#efeeea","vuelo-oscuro":"#313133",
   dark:"#130e08",["stitch-dark"]:"#0d0d0f",light:"#fffaf4",["stitch-light"]:"#efefef",google:"#f0f4f9"};
