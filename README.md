@@ -1,129 +1,38 @@
 # Horarios FIA
 
-Generador de horarios para la Facultad de Ingeniería Ambiental de la UNI.
-Es una web estática: no hay servidor ni base de datos, se publica sola en
-GitHub Pages cada vez que haces push a `main`.
+Arma tu horario de la Facultad de Ingeniería Ambiental (UNI) en un minuto,
+desde el navegador y sin instalar nada.
 
-## Estructura
+**Abrir la web:** https://jhefflkc.github.io/Horarios-FIA/
 
-```
-index.html              solo el marcado de la página
-assets/
-  styles.css            estructura base y los temas anteriores (desactivados)
-  theme-vuelo.css       el tema activo «Vuelo», en claro y oscuro
-  data.js               GENERADO — los horarios convertidos a JavaScript
-  js/
-    config.js           ajustes: facultades, paleta, URL de calificaciones
-    state.js            estado en memoria (cursos cargados, selección)
-    courses.js          secciones, docentes, cruces de horario
-    faculty.js          facultad activa, periodo, subir un Excel
-    render.js           listado de cursos, etiquetas y tabla
-    modals.js           ventanas modales
-    ratings.js          calificaciones de docentes y Score
-    announce.js         anuncios (Markdown → HTML)
-    exports.js          exportar a PDF y a calendario .ics
-    theme.js            cambio de tema
-    main.js             arranque, navegación móvil, avisos
-data/                   los .xlsx de horarios
-docs/                   planes de estudio (referencia, no los usa la web)
-build_data.py           lee data/*.xlsx y escribe assets/data.js
-ANNOUNCE.md             el anuncio que sale al abrir la web
-respaldo/
-  temas-anteriores/     copia de los cinco temas previos y cómo recuperarlos
-```
+## Cómo se usa
 
-Los `.js` se cargan como scripts normales, en el orden que aparece al final
-de `index.html`. No hay compilación ni dependencias que instalar.
+1. **Busca tus cursos** en el panel de la izquierda, por nombre o código.
+2. **Elige la sección.** Si el curso tiene varias, se abre una ventana con
+   cada sección, sus docentes, horarios, aulas y vacantes.
+3. **Revisa los cruces.** Un cruce de teoría está permitido y se avisa; si una
+   práctica choca con otra, esa sección aparece bloqueada.
+4. **Mira tu horario.** Los cursos que coinciden en la misma hora se muestran
+   uno al lado del otro. Con el botón de la «T» alternas entre código y nombre
+   del curso.
+5. **Llévatelo:** descárgalo en PDF o expórtalo a tu calendario (archivo
+   `.ics` para Google Calendar, Apple Calendar u Outlook).
 
-### Temas
+## Más cosas
 
-Solo el tema **Vuelo** está activo, en modo claro y oscuro. Quien no haya
-elegido uno sigue la preferencia de su sistema; al pulsar el botón de tema la
-elección se guarda en el navegador.
+- **Calificaciones de docentes:** puedes puntuar a tus profesores y ver el
+  promedio de cada uno. El «Score» resume la valoración de los docentes de tu
+  horario. Son opiniones de estudiantes, orientativas.
+- **Editar el horario:** si una sesión cambió de hora o de aula, puedes
+  corregirla a mano desde la ventana del curso.
+- **Tema claro u oscuro:** sigue el de tu dispositivo; el botón de arriba a la
+  derecha lo cambia y la elección se recuerda.
+- **En el celular:** usa las pestañas de abajo para pasar de la lista de
+  cursos al horario. El horario se puede desplazar a los lados.
+- **Anuncios:** al abrir la web puede aparecer un aviso con novedades.
 
-Los cinco temas anteriores (Ámbar, Grafito, Crema, Glacial y Google) siguen
-en `styles.css`, solo fuera de la rotación. Para recuperarlos, añádelos a
-`THEME_ORDER` en `assets/js/config.js`; los detalles están en
-`respaldo/temas-anteriores/README.md`.
+## Avisos
 
-## Actualizar los horarios
-
-1. Nombra el Excel `{SIGLA}{AÑO}-{PERIODO}.xlsx` — por ejemplo `FIA2026-2.xlsx`
-2. Súbelo a la carpeta `data/`
-3. Borra el del periodo anterior si ya no lo necesitas
-
-Al hacer push, GitHub Actions ejecuta `build_data.py` y regenera
-`assets/data.js`. **Si subes dos periodos de la misma facultad se usa el más
-reciente** y el otro se ignora (queda anotado en el log del despliegue).
-
-Siglas reconocidas: `FIA`, `FIEECS`, `FIGMM`, `FIQT`, `FIIS`, `FIEE`, `FIPP`,
-`FIM`, `FIC`, `FC`, `FAUA`. Para añadir otra, agrégala en `FACULTY_MAP`
-(`build_data.py`) y en `FACULTY_MAP_JS` (`assets/js/config.js`).
-
-### Columnas del Excel
-
-Obligatorias: `COD` y `CURSO`. Opcionales: `SECC`, `TIPO`, `AULA`/`SALON`,
-`DOCENTE`, `CICLO`. Para el horario, o bien una columna `HORARIO` con el
-formato `MA 10-12`, o bien `DIA` + `H INI` + `H FIN`.
-
-El docente se lee **de cada fila**, así que si la teoría y el laboratorio los
-dictan personas distintas, ambas aparecen con su rol. Si dejas la celda vacía
-en las filas de práctica, ese docente no se mostrará.
-
-## Actualizar el anuncio
-
-Edita `ANNOUNCE.md` y súbelo. Se muestra al abrir la web y vuelve a aparecer
-para todos en cuanto cambie el contenido; quien pulse «Entendido» no lo verá
-otra vez hasta la próxima edición.
-
-Acepta Markdown normal: títulos, **negrita**, *cursiva*, listas, `código`,
-enlaces, citas con `>`, `---` como separador, emojis y símbolos. Para dejar un
-asterisco o guion bajo literal, escápalo: `\*así\*`.
-
-## Seguridad
-
-El repositorio es público y la web es estática, así que **todo lo que hay en
-`assets/js/` lo puede leer cualquiera** — incluida la URL del servicio de
-calificaciones. Eso no es un descuido: el navegador de cada visitante tiene
-que llamar a ese endpoint, así que la URL no puede mantenerse en secreto.
-La seguridad tiene que venir de *qué permite hacer el endpoint*, no de
-esconderlo.
-
-En el repositorio **no debe haber nunca** claves de servicio, `client_secret`,
-tokens ni archivos `.json` de credenciales de Google. Si alguna vez se sube
-uno, no basta con borrarlo: queda en el historial de git y hay que revocarlo
-en Google.
-
-Al tocar `assets/js/ratings.js`, ten presente que lo que responde el servicio
-de calificaciones es **dato ajeno**: pásalo siempre por `_avgOf()` /
-`_countOf()` antes de meterlo en `innerHTML`. Si se concatena en crudo,
-cualquiera que consiga escribir en la hoja de cálculo puede ejecutar
-JavaScript en el navegador de todos los visitantes.
-
-Recomendado en el Apps Script (esto se configura en Google, no aquí):
-
-- Que valide `action`, limite `puntuacion` al rango 1–5 y descarte cualquier
-  otro parámetro
-- Que tenga permisos solo sobre la hoja de cálculo de calificaciones
-- Idealmente, que viva en una cuenta de Google aparte de la personal
-
-El botón «Ya calificaste» solo mira `localStorage`, así que **no impide votar
-varias veces**: quien quiera puede llamar al endpoint directamente. Las
-calificaciones son orientativas, no un recuento fiable.
-
-## Probarlo en tu máquina
-
-Hace falta servirlo por HTTP (abrir el archivo directamente no carga los
-scripts ni el anuncio):
-
-```bash
-python -m http.server 8000
-# luego abre http://localhost:8000
-```
-
-Para regenerar los datos en local:
-
-```bash
-pip install openpyxl
-python build_data.py
-```
+Los horarios se toman de la programación publicada por la facultad y pueden
+cambiar. Antes de matricularte, confirma tu horario en los canales oficiales
+de la UNI.
