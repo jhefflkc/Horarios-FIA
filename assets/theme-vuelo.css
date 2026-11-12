@@ -41,7 +41,6 @@ body.vuelo{
 
   --v-r-xl:26px;--v-r-lg:18px;--v-r-md:14px;--v-r-blk:10px;--v-r-sm:6px;--v-pill:999px;
   --v-ease:cubic-bezier(.2,.7,.2,1);
-  --v-glass-blur:saturate(150%) blur(24px);   /* solo .toast y .score-pop */
 
   /* Objetos: iguales en los dos modos. La Flyer: cada curva es el borde
      de una capa translúcida, la esquina clara arriba a la derecha y un
@@ -88,7 +87,8 @@ body.vuelo{
   --v-grain-suede:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='s' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='4' seed='9' stitchTiles='stitch' result='f'/%3E%3CfeDiffuseLighting in='f' surfaceScale='1.2' lighting-color='%23fff' result='l'%3E%3CfeDistantLight azimuth='250' elevation='40'/%3E%3C/feDiffuseLighting%3E%3CfeColorMatrix in='l' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 .8 0 0 0 -.376' result='hi'/%3E%3CfeColorMatrix in='l' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -.8 0 0 0 .376' result='lo'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.045' numOctaves='2' seed='2' stitchTiles='stitch' result='m'/%3E%3CfeColorMatrix in='m' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -.12 0 0 0 .06' result='mo'/%3E%3CfeMerge%3E%3CfeMergeNode in='mo'/%3E%3CfeMergeNode in='lo'/%3E%3CfeMergeNode in='hi'/%3E%3C/feMerge%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)' opacity='.25'/%3E%3C/svg%3E");
 
   font-family:var(--v-sans);color:var(--v-tx);
-  -webkit-font-smoothing:antialiased;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  -webkit-tap-highlight-color:transparent;   /* la respuesta al toque la dan los :active del tema */
 }
 body.vuelo button,body.vuelo input,body.vuelo select,body.vuelo textarea{font-family:inherit}
 
@@ -299,7 +299,7 @@ body.vuelo .hbtn{
   border:var(--v-pill-rim);box-shadow:var(--v-pill-bevel),0 6px 16px -8px rgba(0,0,0,.35);
 }
 body.vuelo .hbtn svg{width:14px;height:14px}
-body.vuelo .hbtn:hover{background:rgba(246,248,248,.94);color:var(--v-pill-ink);border-color:rgba(255,255,255,.7)}
+@media(hover:hover){body.vuelo .hbtn:hover{background:rgba(246,248,248,.94);color:var(--v-pill-ink);border-color:rgba(255,255,255,.7)}}
 
 /* Panel lateral: el marco grande, con la lista como tarjeta agrupada */
 body.vuelo .sidebar{
@@ -319,7 +319,7 @@ body.vuelo #faculty-selector button{
   height:30px;padding:0 12px!important;border-radius:var(--v-pill)!important;border:none!important;
   background:var(--v-fill)!important;color:var(--v-tx-2)!important;font:500 13px/30px var(--v-sans)!important;letter-spacing:0!important;
 }
-body.vuelo #faculty-selector button:hover{background:var(--v-fill-2)!important;color:var(--v-tx)!important}
+@media(hover:hover){body.vuelo #faculty-selector button:hover{background:var(--v-fill-2)!important;color:var(--v-tx)!important}}
 body.vuelo #faculty-selector button.on{background:var(--v-slate-bg)!important;color:var(--v-slate)!important;font-weight:600!important}
 /* Búsqueda estilo iOS */
 body.vuelo .search-box{height:38px;padding:0 12px;border:none;border-radius:12px;background:var(--v-fill);box-shadow:none;margin-bottom:10px}
@@ -331,7 +331,8 @@ body.vuelo-oscuro .search-box input::placeholder{color:#bdbcb8}   /* tx-3 bajaba
 /* Fila «I · Flyer»: icono en círculo y texto */
 body.vuelo .upload-row{border:none;background:transparent;border-radius:12px;padding:6px;gap:10px;font:500 13px/18px var(--v-sans);color:var(--v-tx-2)}
 body.vuelo .upload-row svg{box-sizing:content-box;width:14px;height:14px;padding:7px;border-radius:50%;background:var(--v-fill-2);color:var(--v-tx)}
-body.vuelo .upload-row:hover{background:var(--v-state);color:var(--v-tx)}
+@media(hover:hover){body.vuelo .upload-row:hover{background:var(--v-state);color:var(--v-tx)}}
+body.vuelo .upload-row:active{background:var(--v-fill)}
 
 /* Lista de cursos: tarjeta agrupada inset que se desplaza con su
    contenido. Las reglas con :has() van aparte: en una lista de
@@ -355,19 +356,21 @@ body.vuelo .c-row.multi:not(.sel)::after{
 }
 body.vuelo .c-row.sel{background-image:linear-gradient(var(--v-accent-soft),var(--v-accent-soft))}
 body.vuelo .c-row.sel .c-secs,body.vuelo .c-row.sel .c-cod{color:var(--v-tx-2)}
+body.vuelo .c-row{transition:box-shadow .15s var(--v-ease)}
 @media(hover:hover){
-  body.vuelo .c-row:not(.sel):hover{background-image:linear-gradient(var(--v-state),var(--v-state))}
+  body.vuelo .c-row:not(.sel):hover{box-shadow:inset 0 0 0 100vmax var(--v-state)}
   body.vuelo .c-row:hover .c-secs,body.vuelo .c-row:hover .c-cod{color:var(--v-tx-2)}
 }
+body.vuelo .c-row:not(.sel):not(.conf):active{box-shadow:inset 0 0 0 100vmax var(--v-fill)}
 /* casilla redonda, como en Recordatorios */
 body.vuelo .cbox{width:22px;height:22px;margin:0;border-radius:50%;border:1.6px solid var(--v-tx-3);background:transparent;box-shadow:none}
 body.vuelo .c-row.sel .cbox{background:var(--v-accent);border-color:var(--v-accent);box-shadow:none}
 body.vuelo .c-row.sel .cbox::after{width:9px;height:5px;border-left:2px solid var(--v-accent-ink);border-bottom:2px solid var(--v-accent-ink)}
 /* el nombre queda en las MAYÚSCULAS de origen (en minúsculas se rompen
-   «AGUA II» y las siglas); hasta dos líneas */
+   «AGUA II» y las siglas) y se muestra siempre entero: la fila crece */
 body.vuelo .c-name{
   font:500 13.5px/18px var(--v-sans);letter-spacing:.01em;color:var(--v-tx);
-  white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  white-space:normal;overflow:visible;
 }
 body.vuelo .c-meta{gap:8px;margin-top:4px}
 /* filas monocromas como en la referencia: código en mono con un punto de
@@ -414,7 +417,8 @@ body.vuelo .tag::before{content:"";width:8px;height:8px;border-radius:50%;backgr
 body.vuelo .tag span{font:500 12px var(--v-sans);opacity:.88!important}
 body.vuelo .tag-x{width:18px;height:18px;font-size:13px;font-style:normal;color:inherit;opacity:1;background:rgba(0,0,0,.08)}
 body.vuelo-oscuro .tag-x{background:rgba(255,255,255,.12)}
-body.vuelo .tag-x:hover{background:var(--v-ring)}
+@media(hover:hover){body.vuelo .tag-x:hover{background:var(--v-ring)}}
+@media(hover:none){body.vuelo .tag-x:hover{transform:none}}   /* la base la agranda al pasar el ratón */
 
 /* Acciones: una cápsula segmentada para los secundarios (.action-seg) y,
    aparte, la tarjeta Flyer, único objeto físico de la barra */
@@ -426,15 +430,16 @@ body.vuelo .action-seg{
 body.vuelo .btn{
   height:36px;padding:0 14px;gap:7px;border-radius:var(--v-pill);border:1px solid transparent;
   font:600 14px/1 var(--v-sans);letter-spacing:-.005em;box-shadow:none;filter:none;
-  transition:background .15s var(--v-ease),box-shadow .15s var(--v-ease),transform .12s var(--v-ease);
+  transition:background-color .15s var(--v-ease),color .15s var(--v-ease),box-shadow .15s var(--v-ease),transform .12s var(--v-ease);
 }
 body.vuelo .btn svg{width:14px;height:14px}
 body.vuelo .btn:hover{transform:none;filter:none}
+body.vuelo .btn:active{transform:scale(.97)}
 body.vuelo .btn-names,body.vuelo .btn-cal{background:transparent;color:var(--v-tx-2);border-color:transparent;box-shadow:none}
-body.vuelo .btn-names:hover,body.vuelo .btn-cal:hover{background:var(--v-fill);color:var(--v-tx);box-shadow:none}
+@media(hover:hover){body.vuelo .btn-names:hover,body.vuelo .btn-cal:hover{background:var(--v-fill);color:var(--v-tx);box-shadow:none}}
 body.vuelo .btn-names.active{background:var(--v-accent-soft);color:var(--v-accent-strong);border-color:transparent}
 body.vuelo .btn-clear{background:transparent;color:var(--v-rose);border-color:transparent}
-body.vuelo .btn-clear:hover{background:var(--v-rose-bg);border-color:transparent}
+@media(hover:hover){body.vuelo .btn-clear:hover{background:var(--v-rose-bg);border-color:transparent}}
 body.vuelo .btn-dl{
   height:36px;padding:0 16px;border-radius:10px;border:none;color:var(--v-flyer-ink);text-shadow:0 1px 0 rgba(255,255,255,.45);
   background:var(--v-grain-paper) 0 0/240px,var(--v-flyer);box-shadow:var(--v-flyer-bevel);
@@ -442,6 +447,7 @@ body.vuelo .btn-dl{
 body.vuelo-claro .btn-dl{box-shadow:var(--v-flyer-bevel),0 0 0 .5px rgba(40,34,26,.18)}
 body.vuelo .btn-dl svg{filter:none}
 @media(hover:hover){body.vuelo .btn-dl:hover{transform:translateY(-1px);box-shadow:var(--v-flyer-bevel),0 10px 20px -8px rgba(30,50,75,.45)}}
+body.vuelo .btn-dl:active{transform:scale(.97)}
 
 /* Aviso de cruce: un billete perforado con el sello «AVISO» (el texto ya
    dice «Cruce de teoría»). La perforación se recorta con mask para no
@@ -605,7 +611,7 @@ body.vuelo .score-pill{
   font:600 13px/1 var(--v-sans);color:var(--v-tx-2);
 }
 body.vuelo .score-pill svg{box-sizing:content-box;width:11px;height:11px;padding:8.5px;border-radius:50%;background:var(--v-amber-bg);color:var(--v-amber)}
-body.vuelo .score-pill:hover{background:var(--v-fill-2);box-shadow:inset 0 1px 0 var(--v-edge-hi)}
+@media(hover:hover){body.vuelo .score-pill:hover{background:var(--v-fill-2);box-shadow:inset 0 1px 0 var(--v-edge-hi)}}
 body.vuelo .score-pill-val{font:600 18px/1 var(--v-serif);color:var(--v-tx)}
 body.vuelo .score-pill::before,body.vuelo .score-pill::after{content:"";position:absolute;top:50%;height:6px;margin-top:-3px;border-radius:3px;pointer-events:none}
 body.vuelo .score-pill::before{right:16px;width:64px;background:var(--v-meter-track);box-shadow:inset 0 0 0 1px var(--v-hair)}
@@ -615,7 +621,7 @@ body.vuelo .score-pill::after{
 }
 body.vuelo .score-pop{
   border-radius:var(--v-r-lg);padding:14px 16px;background:var(--v-modal);
-  -webkit-backdrop-filter:var(--v-glass-blur);backdrop-filter:var(--v-glass-blur);
+  -webkit-backdrop-filter:saturate(150%) blur(24px);backdrop-filter:saturate(150%) blur(24px);
   border:1px solid var(--v-edge);box-shadow:inset 0 1px 0 var(--v-edge-hi),var(--v-outline),var(--v-shadow-3);
 }
 body.vuelo .score-pop-count{font:600 16px/22px var(--v-serif);color:var(--v-tx)}
@@ -639,20 +645,23 @@ body.vuelo .modal-ttl::after{
 body.vuelo .modal-sub{font:400 15px/22px var(--v-serif);color:var(--v-tx-2);margin-top:0}
 body.vuelo .modal-x,body.vuelo .ann-x{width:30px;height:30px;border-radius:50%;border:none}
 body.vuelo .modal-x{background:var(--v-fill);color:var(--v-tx-2)}
-body.vuelo .modal-x:hover{background:var(--v-fill-2);color:var(--v-tx)}
+@media(hover:hover){body.vuelo .modal-x:hover{background:var(--v-fill-2);color:var(--v-tx)}}
 body.vuelo .modal-body{padding:8px 24px 24px}
 /* estilos en línea de modals.js y ratings.js */
 body.vuelo .modal-body .btn[style*="var(--surface)"]{background:var(--v-fill-2)!important;border-color:transparent!important;color:var(--v-tx)!important}
-body.vuelo .modal-body .btn[style*="var(--surface)"]:hover{background:var(--v-accent-soft)!important;color:var(--v-accent-strong)!important}
+@media(hover:hover){body.vuelo .modal-body .btn[style*="var(--surface)"]:hover{background:var(--v-accent-soft)!important;color:var(--v-accent-strong)!important}}
 body.vuelo .modal-body button[onclick^="addSesRow"]{padding:8px!important;border:1.5px dashed var(--v-field-line)!important;border-radius:12px!important;color:var(--v-tx-2)!important;font:500 14px/20px var(--v-sans)!important}
 body.vuelo .modal-body strong[style*="f0c870"]{color:var(--v-star)!important}
 
 /* Secciones: billetes sin rotación (en oscuro, más hondos que el vidrio) */
 body.vuelo .sec{
   background:var(--v-sheet);border:1px solid var(--v-line);border-radius:16px;padding:14px 16px;margin-bottom:10px;
-  box-shadow:inset 0 1px 0 var(--v-edge-hi),var(--v-shadow-1);transition:box-shadow .15s,border-color .15s;
+  box-shadow:inset 0 1px 0 var(--v-edge-hi),var(--v-shadow-1);
+  transition:box-shadow .15s var(--v-ease),border-color .15s var(--v-ease),transform .12s var(--v-ease);
 }
 body.vuelo .sec:hover{transform:none}
+body.vuelo .sec:active{transform:scale(.985)}
+body.vuelo .sec.conf:active{transform:none}
 @media(hover:hover){body.vuelo .sec:hover{border-color:var(--v-hair-strong);box-shadow:inset 0 1px 0 var(--v-edge-hi),var(--v-shadow-2)}}
 /* cruce de teoría: billete normal con costura ámbar (con relleno ámbar el
    badge se perdía y los textos secundarios bajaban de 4,5:1) */
@@ -684,7 +693,7 @@ body.vuelo .ses > span:nth-child(2){white-space:nowrap}
 body.vuelo .star-inp{min-width:28px;min-height:28px;color:var(--v-tx-3)}
 body.vuelo .star-inp.on,body.vuelo .rate-star{color:var(--v-star)}
 body.vuelo .rate-btn{height:28px;padding:0 12px;border-radius:var(--v-pill);border:1px solid var(--v-line);background:var(--v-fill);color:var(--v-tx-2);font:600 13px/1 var(--v-sans)}
-body.vuelo .rate-btn:hover{background:var(--v-accent-soft);color:var(--v-accent-strong);border-color:transparent}
+@media(hover:hover){body.vuelo .rate-btn:hover{background:var(--v-accent-soft);color:var(--v-accent-strong);border-color:transparent}}
 body.vuelo .ses-edit select,body.vuelo .ses-edit input{
   height:36px;padding:0 10px;border:1px solid var(--v-field-line);border-radius:10px;
   background:var(--v-fill);color:var(--v-tx);font:400 15px var(--v-sans);
@@ -692,6 +701,8 @@ body.vuelo .ses-edit select,body.vuelo .ses-edit input{
 /* dos filas ordenadas en rejilla: tipo, día y horas; debajo el aula, que
    ocupa todo el ancho y no se recorta, y la × */
 body.vuelo .ses-edit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 48px auto 48px;align-items:center;gap:6px;padding:8px 0;border-bottom-color:var(--v-hair)}
+body.vuelo .ses-edit input::placeholder{color:var(--v-tx-3);opacity:1}
+body.vuelo-oscuro .ses-edit input::placeholder{color:#d0d2d4}   /* tx-3 del vidrio gris se queda en 4,4:1 sobre el relleno */
 body.vuelo .ses-edit select{min-width:0;padding:0 4px 0 8px}
 body.vuelo .ses-edit input[type=number]{width:48px;padding:0 4px}
 body.vuelo .ses-edit input[type=text]{grid-column:1/5;width:auto;min-width:0;padding:0 10px}
@@ -720,7 +731,7 @@ body.vuelo .ann-title{
 }
 body.vuelo .ann-title svg{color:currentColor}
 body.vuelo .ann-x{background:rgba(255,255,255,.35);color:var(--v-suede-btn-ink)}
-body.vuelo .ann-x:hover{background:rgba(255,255,255,.55);color:var(--v-suede-btn-ink)}
+@media(hover:hover){body.vuelo .ann-x:hover{background:rgba(255,255,255,.55);color:var(--v-suede-btn-ink)}}
 body.vuelo .ann-body{
   position:relative;z-index:1;flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;overflow-wrap:anywhere;
   margin:6px 22px 0;padding:22px 24px 40px;
@@ -763,16 +774,16 @@ body.vuelo .ann-foot::after{
 }
 body.vuelo .ann-btn-skip,body.vuelo .ann-btn-ok{height:40px;padding:0 20px;border-radius:var(--v-pill);font:600 15px/1 var(--v-sans)}
 body.vuelo .ann-btn-skip{background:rgba(255,255,255,.35);color:var(--v-suede-btn-ink);border:1px solid rgba(255,255,255,.5)}
-body.vuelo .ann-btn-skip:hover{background:rgba(255,255,255,.5);color:var(--v-suede-btn-ink)}
+@media(hover:hover){body.vuelo .ann-btn-skip:hover{background:rgba(255,255,255,.5);color:var(--v-suede-btn-ink)}}
 body.vuelo .ann-btn-ok{background:#f3f5f6;color:#22303d;border:none;box-shadow:0 2px 8px rgba(40,60,85,.25)}
-body.vuelo .ann-btn-ok:hover{background:#fff}
+@media(hover:hover){body.vuelo .ann-btn-ok:hover{background:#fff}}
 body.vuelo .ann-modal :focus-visible{outline-color:var(--v-suede-btn-ink)}   /* la cartera es igual en ambos modos */
 
 /* Aviso emergente: la píldora esmerilada clara, igual en los dos modos */
 body.vuelo .toast{
   border-radius:var(--v-pill);padding:12px 20px 12px 16px;font:600 15px/20px var(--v-sans);
   background:var(--v-pill-bg);color:var(--v-pill-ink);border:var(--v-pill-rim);
-  -webkit-backdrop-filter:var(--v-glass-blur);backdrop-filter:var(--v-glass-blur);
+  -webkit-backdrop-filter:saturate(150%) blur(24px);backdrop-filter:saturate(150%) blur(24px);
   box-shadow:var(--v-pill-bevel),var(--v-pill-float);
 }
 body.vuelo .toast.ok .tdot{background:var(--v-dot-ok);box-shadow:none}
@@ -792,19 +803,21 @@ body.vuelo .modal::-webkit-scrollbar,body.vuelo .ann-body::-webkit-scrollbar{wid
 body.vuelo .course-scroll::-webkit-scrollbar-thumb,body.vuelo .sched-area::-webkit-scrollbar-thumb,
 body.vuelo .modal::-webkit-scrollbar-thumb,body.vuelo .ann-body::-webkit-scrollbar-thumb{background:var(--v-thumb);border-radius:var(--v-pill)}
 @media (prefers-reduced-motion:reduce){
-  body.vuelo .blk:hover,body.vuelo .btn-dl:hover{transform:none}
+  body.vuelo .blk:hover,body.vuelo .btn-dl:hover,body.vuelo .btn:active,body.vuelo .btn-dl:active,body.vuelo .sec:active{transform:none}
 }
 
 
 /* ── 4. Tableta y móvil ─────────────────────────────────────────────── */
+@keyframes v-sheet-in{from{transform:translateY(100%)}to{transform:none}}
+@keyframes v-sheet-out{from{transform:none}to{transform:translateY(100%)}}
 /* Entre 721 y 1100 px la barra de acciones con texto deja sin sitio a las
    etiquetas: los secundarios quedan solo con icono (llevan aria-label) */
 @media(min-width:721px) and (max-width:1100px){
   body.vuelo .btn-names,body.vuelo .btn-cal,body.vuelo .btn-clear{font-size:0;gap:0;width:36px;padding:0;justify-content:center}
 }
 @media(min-width:721px){
-  body.vuelo .topbar{flex-wrap:wrap}
-  body.vuelo .tags-zone{min-width:min(100%,330px)}
+  body.vuelo .topbar{flex-wrap:wrap;align-items:flex-start}
+  body.vuelo .tags-zone{min-width:min(100%,330px);row-gap:6px;padding-top:3px}
   body.vuelo .action-btns{margin-left:auto}
 }
 @media(min-width:721px) and (max-width:860px){
@@ -818,7 +831,7 @@ body.vuelo .modal::-webkit-scrollbar-thumb,body.vuelo .ann-body::-webkit-scrollb
   body.vuelo .header-mid{display:none}
   body.vuelo .topbar{padding:8px 22px 4px}
   body.vuelo .main{overflow-y:auto}
-  body.vuelo .sched-area{flex:1 0 auto;min-height:220px;max-height:calc(100dvh - 80px)}
+  body.vuelo .sched-area{flex:1 0 auto;min-height:220px;max-height:calc(100vh - 80px);max-height:calc(100dvh - 80px)}
 }
 
 @media(max-width:720px){
@@ -850,9 +863,16 @@ body.vuelo .modal::-webkit-scrollbar-thumb,body.vuelo .ann-body::-webkit-scrollb
   body.vuelo .conf-bar{margin:6px 12px 0;font-size:13px}
   body.vuelo .sched-area{--v-area-t:8px;--v-area-x:8px;padding-bottom:12px}
   body.vuelo .sched-wrap{border-radius:18px;padding:6px 6px 8px 0}
-  body.vuelo .stats{display:grid;grid-template-columns:repeat(3,1fr);row-gap:10px;padding:8px 12px 10px}
+  body.vuelo .stats{display:grid;grid-template-columns:auto auto 1fr;row-gap:10px;padding:8px 12px 10px}
   body.vuelo .stat{padding:0 10px;font-size:11px}
   body.vuelo .stat-n{font-size:18px;line-height:22px}
+  /* con varias especialidades el texto ocupaba 4 líneas y le quitaba alto al horario */
+  body.vuelo #sc{font:600 13px/17px var(--v-serif);padding-top:4px;text-wrap:balance}
+  /* las etiquetas se desplazan a los lados: un degradado en el borde lo indica */
+  body.vuelo .tags-zone{
+    -webkit-mask:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask:linear-gradient(90deg,#000 calc(100% - 28px),transparent);
+    padding-right:20px;
+  }
   body.vuelo .score-pill{grid-column:1/-1;justify-self:start;margin-left:0}
   /* pestañas: la píldora esmerilada «Currently on…», flotante */
   body.vuelo .mob-tabs{
@@ -867,12 +887,16 @@ body.vuelo .modal::-webkit-scrollbar-thumb,body.vuelo .ann-body::-webkit-scrollb
   body.vuelo .tag-x::before{content:"";position:absolute;inset:-13px}
   body.vuelo .modal-x,body.vuelo .ann-x{position:relative}
   body.vuelo .modal-x::before,body.vuelo .ann-x::before{content:"";position:absolute;inset:-7px}
-  body.vuelo .toast{bottom:calc(80px + env(safe-area-inset-bottom,0px))}   /* respaldo: main.js pone el valor exacto */
+  /* por encima de las ventanas (10000): los errores al editar un horario quedaban tapados por la hoja */
+  body.vuelo .toast{bottom:calc(80px + env(safe-area-inset-bottom,0px));z-index:10001}   /* bottom de respaldo: main.js pone el valor exacto */
   /* las ventanas cubren la barra de pestañas (9999), como en iOS */
   body.vuelo .overlay,body.vuelo .ann-overlay{z-index:10000}
   /* ventana como hoja inferior de iOS, con su asa */
   body.vuelo .overlay{align-items:flex-end;padding:0}
   body.vuelo .modal{max-width:none;max-height:88vh;max-height:88dvh;border-radius:26px 26px 0 0;border-bottom:none;padding-bottom:env(safe-area-inset-bottom,0px)}
+  /* la hoja sube desde abajo y baja al cerrar (antes escalaba desde el centro) */
+  body.vuelo .modal{animation:v-sheet-in .34s cubic-bezier(.32,.72,0,1) backwards}
+  body.vuelo .overlay.is-closing .modal{animation:v-sheet-out .22s var(--ease-in) forwards}
   body.vuelo .modal-top{padding-top:26px}
   body.vuelo .modal-top::before{content:"";position:absolute;top:8px;left:50%;width:36px;height:5px;margin-left:-18px;border-radius:3px;background:var(--v-tx-4)}
   body.vuelo .ann-modal{--pk:64px;border-radius:24px}
@@ -880,6 +904,25 @@ body.vuelo .modal::-webkit-scrollbar-thumb,body.vuelo .ann-body::-webkit-scrollb
   body.vuelo .ann-top{padding:22px 20px 8px}
   body.vuelo .ann-body{margin:6px 14px 0;padding:18px 18px 36px}
   body.vuelo .ann-foot{padding:34px 18px 22px calc(var(--pk) + 18px)}
+}
+/* Zoom al 200 % o móvil apaisado estrecho: el horario conserva un alto útil
+   y el resto de la columna se desplaza (antes se quedaba en 0–2 filas) */
+@media(max-width:720px) and (max-height:560px){
+  body.vuelo .main{overflow-y:auto}
+  body.vuelo .sched-area{flex:1 0 auto;min-height:220px;max-height:calc(100vh - 140px);max-height:calc(100dvh - 140px)}
+  body.vuelo .mob-tabs{height:48px;bottom:calc(6px + env(safe-area-inset-bottom,0px))}
+  body.vuelo .sidebar,body.vuelo .main{bottom:calc(60px + env(safe-area-inset-bottom,0px))}
+}
+/* Pantallas táctiles de cualquier ancho (iPhone apaisado, iPad): 16 px en
+   los campos para que iOS no amplíe la página al enfocarlos */
+@media (hover:none) and (pointer:coarse){
+  body.vuelo .search-box input,body.vuelo .ses-edit select,body.vuelo .ses-edit input,
+  body.vuelo .modal-body input{font-size:16px!important}
+}
+/* App instalada en iOS con tema claro: la barra de estado tiene letras
+   blancas (black-translucent), así que lleva detrás una franja oscura */
+@media (display-mode:standalone){
+  body.vuelo-claro::after{content:"";position:fixed;left:0;right:0;top:0;height:env(safe-area-inset-top,0px);background:#2f3133;z-index:100001;pointer-events:none}
 }
 @media(max-width:359px){
   body.vuelo .ann-btn-skip,body.vuelo .ann-btn-ok{padding:0 14px}

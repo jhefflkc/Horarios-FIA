@@ -1,6 +1,5 @@
 /* Cambio de tema y persistencia en localStorage. */
 
-var _themingTimer=null;
 var currentTheme=null;
 
 /* Todas las clases que puede dejar puesto un tema, activo o retirado, para

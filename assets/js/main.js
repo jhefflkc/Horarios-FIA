@@ -58,6 +58,62 @@ function showMobTab(tab){
 if(window.innerWidth<=720){
   document.querySelector('.sidebar').classList.add('mob-active');
 }
+/* Si la página pasa a la maqueta móvil después de cargar (redimensionar,
+   girar el móvil, zoom) y ninguna columna está activa, se muestra la que
+   toca: antes la pantalla se quedaba en blanco */
+function ensureMobPanel(){
+  if(window.innerWidth>720) return;
+  if(!document.querySelector('.sidebar.mob-active,.main.mob-active'))
+    showMobTab(document.getElementById('mob-tab-schedule').classList.contains('on')?'schedule':'courses');
+}
+window.addEventListener('resize',ensureMobPanel);
+window.addEventListener('orientationchange',function(){setTimeout(ensureMobPanel,100);});
+
+
+/* ── Ventanas: entrada y salida ──────────────────────
+   Se muestran con display:flex; al cerrar, la clase «is-closing» reproduce
+   la salida (styles.css) y después se ocultan. Con «menos movimiento» el
+   cierre es inmediato. */
+function reduceMotion(){
+  return !!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches);
+}
+function showOverlay(el){
+  clearTimeout(el._hide);
+  el.classList.remove("is-closing");
+  el.style.display="flex";
+}
+function hideOverlay(el){
+  if(el.style.display==="none"||el.classList.contains("is-closing")) return;
+  if(reduceMotion()){el.style.display="none";return;}
+  el.classList.add("is-closing");
+  el._hide=setTimeout(function(){el.classList.remove("is-closing");el.style.display="none";},240);
+}
+/* Las entradas de lo nuevo (bloques, etiquetas, barra de cruce) llevan la
+   clase «fx-in»; se retira al terminar para que no se repitan al volver a
+   mostrar su panel (pestañas del móvil) */
+document.addEventListener("animationend",function(e){
+  var t=e.target;
+  if(t.classList&&t.classList.contains("fx-in")) t.classList.remove("fx-in");
+});
+/* Safari en iOS solo aplica :active (el hundirse al pulsar) si hay un
+   oyente táctil; vacío y pasivo no frena el desplazamiento */
+document.addEventListener("touchstart",function(){},{passive:true});
+/* Esc cierra lo que esté abierto, de lo más reciente a lo más antiguo */
+document.addEventListener("keydown",function(e){
+  if(e.key!=="Escape") return;
+  var pop=document.getElementById("score-pop");
+  if(pop&&pop.style.display==="block"){pop.style.display="none";return;}
+  var m=document.getElementById("modal");
+  if(m.style.display==="flex"&&!m.classList.contains("is-closing")){modalClose();return;}
+  var a=document.getElementById("ann-overlay");
+  if(a.style.display==="flex"&&!a.classList.contains("is-closing")) closeAnnounce(false);
+});
+/* El popover del Score se coloca una sola vez: al cambiar el tamaño de la
+   ventana quedaría descolocado o fuera de pantalla, así que se cierra */
+window.addEventListener("resize",function(){
+  var pop=document.getElementById("score-pop");
+  if(pop) pop.style.display="none";
+});
 
 
 /* ms: duración (3,5 s por defecto); 0 lo deja fijo hasta el siguiente aviso */

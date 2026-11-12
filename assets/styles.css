@@ -8,8 +8,11 @@
   /* Movimiento compartido por todos los temas (curvas de Material 3) */
   --ease:cubic-bezier(0.2,0,0,1);
   --ease-out:cubic-bezier(0.05,0.7,0.1,1);
+  --ease-in:cubic-bezier(0.3,0,0.8,0.15);   /* salidas: aceleran al irse */
   --dur:0.2s;
   --dur-fast:0.12s;
+  --dur-in:0.26s;    /* entrada de ventanas */
+  --dur-out:0.16s;   /* toda salida */
   --bg:#0c0905;
   --panel:#130e08;
   --surface:#1b160f;
@@ -868,7 +871,7 @@ body.stitch-light .btn-cal:hover{box-shadow:0 4px 28px rgba(8,145,178,0.5),0 0 0
   padding:4px 11px 4px 8px;border-radius:999px;cursor:pointer;
   background:rgba(240,200,80,0.1);border:1px solid rgba(240,200,80,0.28);
   color:#f0c870;font-size:0.71rem;font-weight:600;
-  transition:background 0.15s,box-shadow 0.15s;user-select:none;
+  transition:background 0.15s,box-shadow 0.15s;-webkit-user-select:none;user-select:none;
 }
 .score-pill:hover{background:rgba(240,200,80,0.18);box-shadow:0 2px 12px rgba(240,200,80,0.18)}
 .score-pill-val{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:0.8rem}
@@ -1186,7 +1189,7 @@ body.dark .ann-btn-ok,body.stitch-dark .ann-btn-ok{background:rgba(79,142,247,0.
   transition:all 0.15s;white-space:nowrap;flex-shrink:0;
 }
 .rate-btn:hover{border-color:var(--accent);color:var(--accent)}
-.star-inp{color:var(--tx3);transition:color 0.12s,transform 0.1s;line-height:1;cursor:pointer;user-select:none}
+.star-inp{color:var(--tx3);transition:color 0.12s,transform 0.1s;line-height:1;cursor:pointer;-webkit-user-select:none;user-select:none}
 .star-inp.on{color:#f0c870}
 
 /* ── Light themes: fix label contrast ── */
@@ -1308,10 +1311,22 @@ body.light .c-conf-tag-soft,body.stitch-light .c-conf-tag-soft{color:#7a5200;bac
   padding:12px 18px;border-radius:12px;font-size:0.81rem;font-weight:600;
   background:var(--card2);border:1.5px solid var(--line2);color:var(--tx);
   box-shadow:0 8px 32px rgba(0,0,0,0.5);
-  transform:translateY(80px);opacity:0;
-  transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  /* Oculto: invisible y sin recibir toques (antes seguía ahí, transparente,
+     encima de lo que tuviera debajo). Entra desacelerando y sale rápido,
+     sin rebote. */
+  transform:translateY(12px) scale(0.98);opacity:0;visibility:hidden;pointer-events:none;
+  transition:transform var(--dur-out) var(--ease-in),opacity var(--dur-out) var(--ease-in),visibility 0s linear var(--dur-out);
 }
-.toast.on{transform:translateY(0);opacity:1}
+.toast.on{
+  transform:none;opacity:1;visibility:visible;pointer-events:auto;
+  transition:transform var(--dur-in) var(--ease-out),opacity var(--dur) var(--ease),visibility 0s;
+}
+/* Por encima de 720 px (iPhone apaisado, iPad instalado) la página llega
+   hasta el borde por viewport-fit=cover: se respeta la zona segura */
+@media(min-width:721px){
+  body{padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) 0 env(safe-area-inset-left,0px)}
+  .toast{right:calc(1.5rem + env(safe-area-inset-right,0px));bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))}
+}
 .tdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .toast.ok .tdot{background:#10b981;box-shadow:0 0 10px rgba(16,185,129,0.7)}
 .toast.er .tdot{background:#f43f5e;box-shadow:0 0 10px rgba(244,63,94,0.7)}
@@ -1343,70 +1358,70 @@ body.light .c-conf-tag-soft,body.stitch-light .c-conf-tag-soft{color:#7a5200;bac
 .tag-x{transition:opacity var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease-out)}
 .tag-x:hover{transform:scale(1.25)}
 
-/* ── Entradas ───────────────────────────────────────────── */
+/* ── Entradas y salidas ─────────────────────────────────────
+   Reglas: solo se animan transform, opacity y el desenfoque del velo;
+   entra lo nuevo y nada más (clase «fx-in», que main.js retira al
+   terminar); las entradas usan relleno «backwards» para no dejar pegado
+   su último fotograma (con «both» anulaban el :hover y el :active de los
+   bloques y secciones, y la atenuación de las secciones bloqueadas);
+   toda salida es más corta que su entrada. */
 @keyframes fx-fade{from{opacity:0}to{opacity:1}}
-@keyframes fx-dialog{
-  from{opacity:0;transform:scale(0.9) translateY(8px)}
-  to{opacity:1;transform:scale(1) translateY(0)}
+@keyframes fx-dialog{from{opacity:0;transform:scale(0.96) translateY(8px)}to{opacity:1;transform:none}}
+@keyframes fx-dialog-out{to{opacity:0;transform:scale(0.97) translateY(4px)}}
+/* El velo no se funde (su opacidad arrastraría la de la ventana): anima
+   su propio desenfoque, que sigue siendo de 5 px y sin oscurecer */
+@keyframes fx-veil{
+  from{-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0)}
+  to{-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
 }
-@keyframes fx-pop{
-  from{opacity:0;transform:scale(0.82)}
-  to{opacity:1;transform:scale(1)}
+@keyframes fx-veil-out{
+  from{-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
+  to{-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0)}
 }
-@keyframes fx-rise{
-  from{opacity:0;transform:translateY(10px)}
-  to{opacity:1;transform:translateY(0)}
-}
-@keyframes fx-drop{
-  from{opacity:0;transform:translateY(-10px)}
-  to{opacity:1;transform:translateY(0)}
-}
-@keyframes fx-slide-left{
-  from{opacity:0;transform:translateX(-14px)}
-  to{opacity:1;transform:translateX(0)}
-}
+@keyframes fx-pop{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:none}}
+@keyframes fx-pop-up{from{opacity:0;transform:translateY(4px) scale(0.97)}to{opacity:1;transform:none}}
+@keyframes fx-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fx-enter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* La barra de cruce abre su hueco: el margen parte de su alto en negativo
+   (lo calcula render.js en --conf-pull) */
+@keyframes fx-bar{from{opacity:0;margin-bottom:var(--conf-pull,0px)}to{opacity:1;margin-bottom:0}}
 
-/* Diálogos: el velo se funde y la ventana entra escalando */
-.overlay,.ann-overlay{animation:fx-fade 0.16s var(--ease) both}
-.modal,.ann-modal{animation:fx-dialog 0.26s var(--ease) both}
-/* Bloques del horario y etiquetas: aparición breve al redibujarse */
-.blk.blk-in{animation:fx-pop 0.18s var(--ease-out) both}
-.tag.tag-in{animation:fx-pop 0.18s var(--ease-out) both}
+/* Ventanas: el velo se enfoca y la ventana entra; al cerrar, lo contrario */
+.overlay,.ann-overlay{animation:fx-veil var(--dur) var(--ease) backwards}
+.modal,.ann-modal{animation:fx-dialog var(--dur-in) var(--ease-out) backwards}
+.overlay.is-closing,.ann-overlay.is-closing{animation:fx-veil-out var(--dur-out) var(--ease-in) forwards;pointer-events:none}
+.overlay.is-closing .modal,.ann-overlay.is-closing .ann-modal{animation:fx-dialog-out var(--dur-out) var(--ease-in) forwards}
+/* Bloques del horario y etiquetas: solo los nuevos */
+.blk.fx-in,.tag.fx-in{animation:fx-pop var(--dur) var(--ease-out) backwards}
 /* Secciones del diálogo, escalonadas: guían la lectura de arriba abajo */
-.sec{animation:fx-rise 0.26s var(--ease-out) both}
+.sec{animation:fx-rise var(--dur-in) var(--ease-out) backwards}
 .sec:nth-child(2){animation-delay:0.04s}
 .sec:nth-child(3){animation-delay:0.08s}
 .sec:nth-child(4){animation-delay:0.12s}
 .sec:nth-child(n+5){animation-delay:0.16s}
-/* Aviso emergente y marco, al cargar */
-header{animation:fx-drop 0.4s var(--ease-out) both}
-.sidebar{animation:fx-slide-left 0.42s var(--ease-out) both;animation-delay:0.06s}
-.conf-bar.on{animation:fx-drop 0.24s var(--ease-out) both}
-.empty{animation:fx-fade 0.35s var(--ease) both}
-
-/* ── Cambio de tema ─────────────────────────────────────
-   Durante el cambio se funden los colores; la clase la pone y quita
-   applyTheme(), así el resto del tiempo nada va más lento. */
-body.theming,
-body.theming header,body.theming .sidebar,body.theming .main,
-body.theming .c-row,body.theming .btn,body.theming .hbtn,body.theming .chip,
-body.theming .blk,body.theming .dhead,body.theming .cell-mt,body.theming .modal,
-body.theming .toast,body.theming .sec,body.theming .tag,body.theming .conf-bar,
-body.theming .search-box,body.theming .stats,body.theming .sched-legend,
-body.theming .c-cod,body.theming .cbox,body.theming .sched-area{
-  transition:background-color 0.38s var(--ease),
-             color 0.38s var(--ease),
-             border-color 0.38s var(--ease);
+/* Carga: cabecera, panel y zona principal entran juntos, con el mismo gesto */
+header{animation:fx-enter 0.32s var(--ease-out) backwards}
+.sidebar{animation:fx-enter 0.32s var(--ease-out) 0.04s backwards}
+.main{animation:fx-fade 0.32s var(--ease) 0.08s backwards}
+.conf-bar.on.fx-in{animation:fx-bar var(--dur) var(--ease-out) backwards}
+.empty{animation:fx-fade 0.35s var(--ease) backwards}
+.score-pop{transform-origin:50% 100%;animation:fx-pop-up var(--dur) var(--ease-out) backwards}
+/* Pestañas del móvil: el panel que se muestra solo se funde */
+@media(max-width:720px){
+  .sidebar.mob-active,.main.mob-active{animation:fx-fade var(--dur) var(--ease) backwards}
 }
+
+/* ── Cambio de tema ───────────────────────────────────── */
 /* Con View Transitions el cambio de tema es un fundido de dos
    instantáneas en el compositor (theme.js); sin ellas, cambio directo */
-::view-transition-old(root),::view-transition-new(root){animation-duration:.3s;animation-timing-function:cubic-bezier(.2,.7,.2,1)}
+::view-transition-old(root),::view-transition-new(root){animation-duration:0.32s;animation-timing-function:var(--ease)}
 /* Nada debe animarse en la captura del PDF. Duración cero y no
    «animation:none»: quitar el nombre de la animación y devolverlo la
    reinicia, y la cabecera, el panel y los bloques volvían a aparecer. */
 body.exporting #printable *,body.exporting #printable *::before,body.exporting #printable *::after{
   animation-duration:0s !important;animation-delay:0s !important;transition:none !important;
 }
+body.exporting .main{animation-duration:0s !important;animation-delay:0s !important}
 /* Mientras se mide la maqueta de exportación (exports.js), sin transiciones */
 body.v-measure *,body.v-measure *::before,body.v-measure *::after{transition:none !important}
 /* Y el horario se ajusta a su contenido solo durante la captura: en
@@ -1426,9 +1441,12 @@ body.exporting .blk-cod,body.exporting .blk-room{white-space:nowrap}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{
     animation-duration:0.01ms !important;
+    animation-delay:0s !important;
     animation-iteration-count:1 !important;
     transition-duration:0.01ms !important;
+    transition-delay:0s !important;
     scroll-behavior:auto !important;
   }
+  ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none !important}
   .blk:hover,.btn:active,.hbtn:active,.chip:active,.sec:active,.tag-x:hover{transform:none}
 }

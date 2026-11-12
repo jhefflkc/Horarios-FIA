@@ -113,7 +113,7 @@ function drawTags(){
   let h="";
   keys.forEach(function(cod){
     const s=sel[cod];const p=pal[cod]||"p0";const hex=palHex(p);
-    h+="<div class=\"tag "+p+(prevT[cod]!==s.secc?" tag-in":"")+"\" style=\"background:"+hex+"1e;border-color:"+hex+"50;color:"+hex+"\" data-cod=\""+cod+"\">";
+    h+="<div class=\"tag "+p+(prevT[cod]!==s.secc?" fx-in":"")+"\" style=\"background:"+hex+"1e;border-color:"+hex+"50;color:"+hex+"\" data-cod=\""+cod+"\">";
     h+=cod+" <span style=\"opacity:0.6\">"+s.secc+"</span><i class=\"tag-x\">\u00d7</i></div>";
   });
   tz.innerHTML=h;
@@ -158,7 +158,7 @@ function drawSched(){
   const dp=document.getElementById("dp");
   const prevS=_schedPrev;_schedPrev={};
   keys.forEach(function(cod){const s=sel[cod];_schedPrev[cod]=s.secc+"|"+s.ss.map(function(x){return x.t+x.d+x.h0+"-"+x.h1+x.rm;}).join(",");});
-  const blkIn=function(cod){return prevS[cod]!==_schedPrev[cod]?" blk-in":"";};
+  const blkIn=function(cod){return prevS[cod]!==_schedPrev[cod]?" fx-in":"";};
   if(!keys.length){
     /* sin cursos no puede haber cruces: el aviso se retira (antes seguía a
        la vista tras «Limpiar todo» o al cambiar de facultad) */
@@ -187,9 +187,16 @@ function drawSched(){
   });
   const ca=document.getElementById("conf");
   if(conflicts.length){
+    const nuevo=!ca.classList.contains("on");
     ca.classList.add("on");
     document.getElementById("cmsg").textContent="Cruce de teor\u00eda: "+conflicts[0]+(conflicts.length>1?" (+"+(conflicts.length-1)+" m\u00e1s)":"");
-  } else ca.classList.remove("on");
+    if(nuevo){
+      /* la barra abre su hueco poco a poco (fx-bar) en vez de empujar el
+         horario de golpe: el margen parte de su alto en negativo */
+      ca.style.setProperty("--conf-pull",-(ca.offsetHeight+parseFloat(getComputedStyle(ca).marginTop))+"px");
+      ca.classList.add("fx-in");
+    }
+  } else ca.classList.remove("on","fx-in");
 
   const allH=[];
   Object.values(sel).forEach(function(s){s.ss.forEach(function(x){allH.push(x.h0);allH.push(x.h1);});});

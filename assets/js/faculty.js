@@ -6,6 +6,9 @@ function updatePeriodUI(){
   var p=getPeriod();
   document.getElementById("period-label").innerHTML="<span class=\"lbl-glyph\">\u25c6</span> Cursos disponibles \u2014 "+p;
   document.getElementById("logo-sub-period").textContent="Horarios \u00b7 "+p;
+  /* el título central seguía diciendo «Ingeniería Ambiental» con otra facultad */
+  var hm=document.querySelector(".header-mid");
+  if(hm) hm.textContent=currentFaculty==="FIA"?"Facultad de Ingenier\u00eda Ambiental":facultyName;
   var lt=document.getElementById("logo-text-faculty");
   if(lt) lt.innerHTML=facultyLabel.replace(" \u00b7 "," <span>&middot;</span> ");
   var fs=document.getElementById("faculty-selector");
