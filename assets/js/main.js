@@ -60,7 +60,8 @@ if(window.innerWidth<=720){
 }
 
 
-function toast(msg,type){
+/* ms: duración (3,5 s por defecto); 0 lo deja fijo hasta el siguiente aviso */
+function toast(msg,type,ms){
   const t=document.getElementById("toast");
   document.getElementById("tmsg").textContent=msg;
   const tabs=document.querySelector(".mob-tabs");
@@ -72,7 +73,8 @@ function toast(msg,type){
     t.style.bottom="";
   }
   t.className="toast on "+(type||"ok");
-  clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove("on");},3500);
+  clearTimeout(t._t);
+  if(ms!==0) t._t=setTimeout(function(){t.classList.remove("on");},ms||3500);
 }
 
 

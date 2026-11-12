@@ -70,6 +70,11 @@ body.vuelo{
   --v-pocket-step:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='16'%3E%3Cpath d='M0 0C13 0 13 16 26 16H0Z'/%3E%3C/svg%3E");
   --v-pocket-curve:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='18'%3E%3Cpath d='M0 1C13 1 13 17 26 17' fill='none' stroke='%23ECF2F8' stroke-opacity='.85' stroke-width='2' stroke-dasharray='7 4'/%3E%3C/svg%3E");
   --v-stamp:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='26'%3E%3Cpath d='M5 0H16L11 26H0Z' fill='%2396ACC0' fill-opacity='.6'/%3E%3Cpath d='M5.2 .6H15.3' stroke='%23566F86' stroke-opacity='.5'/%3E%3Cpath d='M.7 25.4H10.8' stroke='%23fff' stroke-opacity='.6'/%3E%3C/svg%3E");
+  --v-pill-rim:1px solid rgba(255,255,255,.55);
+  --v-pill-bevel:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1.5px 2px rgba(40,60,70,.14);
+  --v-pill-float:0 10px 26px -10px rgba(0,0,0,.35);
+  /* separador «——— ✦» (titular de las ventanas y estado vacío) */
+  --v-rule:linear-gradient(var(--v-sep),var(--v-sep)) left center/46px 1px no-repeat,var(--v-sparkle) right center/8px 8px no-repeat;
   --v-pill-ink:#2f3739;    /* sobre la píldora esmerilada: ≥7,6:1 */
   --v-pill-ink-2:#4e575b;  /* pestaña inactiva: ≥4,6:1 */
   --v-dot-ok:#2f6a55;--v-dot-warn:#6e5419;--v-dot-er:#87423e;
@@ -90,7 +95,7 @@ body.vuelo button,body.vuelo input,body.vuelo select,body.vuelo textarea{font-fa
 /* OSCURO — carbón cálido con brillo ámbar y un cielo azul abajo */
 body.vuelo-oscuro{
   color-scheme:dark;
-  --v-bg:#313133;--v-bg-deep:#2f3133;
+  --v-bg:#313133;--v-sky:rgba(46,96,140,.45);
   --v-surface:rgba(58,58,60,.55);   /* cabecera y cápsula de acciones */
   --v-panel:rgba(58,58,60,.55);     /* panel lateral */
   --v-surface-solid:#363638;
@@ -153,7 +158,7 @@ body.vuelo-oscuro .modal,body.vuelo-oscuro .score-pop{
 /* CLARO — suelo de papel neutro, objetos fríos encima */
 body.vuelo-claro{
   color-scheme:light;
-  --v-bg:#efeeea;--v-bg-deep:#e8e6e1;
+  --v-bg:#efeeea;
   --v-surface:rgba(250,249,247,.74);
   --v-panel:rgba(236,234,229,.70);   /* la tarjeta blanca de la lista se separa (1,16:1) */
   --v-surface-solid:#f7f6f4;
@@ -203,7 +208,7 @@ body.vuelo-claro{
    modals.js, faculty.js, ratings.js y render.js). Se repite en las
    ventanas: una var() se resuelve donde se declara, así que sin esto los
    tokens locales del vidrio gris no llegarían a --tx3. */
-body.vuelo,body.vuelo .modal,body.vuelo .score-pop{
+body.vuelo{
   --bg:var(--v-bg);--panel:var(--v-bg);--surface:var(--v-fill);--surface2:var(--v-surface-solid);
   --card:var(--v-fill-2);--card2:var(--v-fill-2);
   --line:var(--v-hair);--line1:var(--v-hair);--line2:var(--v-line);--line3:var(--v-hair-strong);
@@ -212,6 +217,10 @@ body.vuelo,body.vuelo .modal,body.vuelo .score-pop{
   --float-bg:var(--v-surface-solid);--float-shadow:var(--v-shadow-3);
   --float-btn-bg:var(--v-surface-solid);--float-btn-shadow:var(--v-shadow-2);
 }
+/* en las ventanas solo hacen falta las dos que usan los estilos en línea
+   que no tapa el tema (aula de cada sesión, «Promedio actual», etiqueta de
+   las estrellas) */
+body.vuelo .modal,body.vuelo .score-pop{--tx3:var(--v-tx-3);--accent:var(--v-accent)}
 
 /* Los 8 colores de curso: papel (fondo), tinta (texto, ≥6,6:1), filo
    (punto de la etiqueta), aro (borde de 1 px) y chip (fondo del tipo de
@@ -246,7 +255,7 @@ body.vuelo-oscuro{
   background-image:
     var(--v-grain-film),
     radial-gradient(55% 38% at 92% 46%,rgba(196,150,80,.12),rgba(196,150,80,0) 70%),
-    radial-gradient(70% 30% at 0% 100%,rgba(46,96,140,.45),rgba(46,96,140,0) 72%),
+    radial-gradient(70% 30% at 0% 100%,var(--v-sky),rgba(46,96,140,0) 72%),
     linear-gradient(180deg,#313133,#33322f 60%,#2f3133);
   background-size:180px 180px,auto,auto,auto;
 }
@@ -287,8 +296,7 @@ body.vuelo .header-mid{font:600 16px/20px var(--v-serif);letter-spacing:0;color:
 body.vuelo .hbtn{
   height:36px;padding:0 14px 0 12px;gap:8px;border-radius:var(--v-pill);
   font:600 14px/1 var(--v-sans);letter-spacing:-.005em;color:var(--v-pill-ink);background:var(--v-pill-bg);
-  border:1px solid rgba(255,255,255,.55);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1.5px 2px rgba(40,60,70,.14),0 6px 16px -8px rgba(0,0,0,.35);
+  border:var(--v-pill-rim);box-shadow:var(--v-pill-bevel),0 6px 16px -8px rgba(0,0,0,.35);
 }
 body.vuelo .hbtn svg{width:14px;height:14px}
 body.vuelo .hbtn:hover{background:rgba(246,248,248,.94);color:var(--v-pill-ink);border-color:rgba(255,255,255,.7)}
@@ -315,9 +323,8 @@ body.vuelo #faculty-selector button:hover{background:var(--v-fill-2)!important;c
 body.vuelo #faculty-selector button.on{background:var(--v-slate-bg)!important;color:var(--v-slate)!important;font-weight:600!important}
 /* Búsqueda estilo iOS */
 body.vuelo .search-box{height:38px;padding:0 12px;border:none;border-radius:12px;background:var(--v-fill);box-shadow:none;margin-bottom:10px}
-body.vuelo .search-box svg{color:var(--v-tx-3)}
 body.vuelo .search-box input{font:400 15px/20px var(--v-sans);color:var(--v-tx)}
-body.vuelo .search-box input::placeholder{color:var(--v-tx-3);opacity:1}
+body.vuelo .search-box input::placeholder{opacity:1}   /* Firefox atenúa el placeholder */
 body.vuelo .search-box input:focus-visible{outline:none}
 body.vuelo .search-box:focus-within{background:var(--v-fill-2);border:none;box-shadow:0 0 0 2px var(--v-accent)}
 body.vuelo-oscuro .search-box input::placeholder{color:#bdbcb8}   /* tx-3 bajaba de 4,5:1 sobre el relleno */
@@ -332,13 +339,13 @@ body.vuelo .upload-row:hover{background:var(--v-state);color:var(--v-tx)}
 body.vuelo .course-scroll{padding:4px 12px 16px}
 body.vuelo .c-row{
   margin:0;padding:11px 34px 11px 14px;gap:12px;align-items:center;min-height:58px;
-  background-color:var(--v-card);border:solid var(--v-line);border-width:0 1px;border-radius:0;
+  background-color:var(--v-card);border-style:solid;border-color:var(--v-line);border-width:0 1px;border-radius:0;
 }
-body.vuelo .c-row:first-child,body.vuelo .cy-head + .c-row{border-top-width:1px;border-radius:18px 18px 0 0}
-body.vuelo .c-row:last-child{border-bottom-width:1px;border-radius:0 0 18px 18px}
-body.vuelo .c-row:has(+ .cy-head){border-bottom-width:1px;border-radius:0 0 18px 18px}
-body.vuelo .c-row:only-child,body.vuelo .cy-head + .c-row:last-child{border-radius:18px}
-body.vuelo .cy-head + .c-row:has(+ .cy-head){border-radius:18px}
+body.vuelo .c-row:first-child,body.vuelo .cy-head + .c-row{border-top-width:1px;border-radius:var(--v-r-lg) var(--v-r-lg) 0 0}
+body.vuelo .c-row:last-child{border-bottom-width:1px;border-radius:0 0 var(--v-r-lg) var(--v-r-lg)}
+body.vuelo .c-row:has(+ .cy-head){border-bottom-width:1px;border-radius:0 0 var(--v-r-lg) var(--v-r-lg)}
+body.vuelo .c-row:only-child,body.vuelo .cy-head + .c-row:last-child{border-radius:var(--v-r-lg)}
+body.vuelo .cy-head + .c-row:has(+ .cy-head){border-radius:var(--v-r-lg)}
 body.vuelo .c-row + .c-row::before{content:"";position:absolute;top:0;left:16px;right:16px;height:1px;background:var(--v-hair)}
 /* chevrón solo donde la fila abre algo: cursos con varias secciones aún
    sin elegir (render.js marca «multi»); las demás marcan o desmarcan */
@@ -346,7 +353,7 @@ body.vuelo .c-row.multi:not(.sel)::after{
   content:"";position:absolute;right:16px;top:50%;width:7px;height:7px;
   border-right:1.6px solid var(--v-tx-3);border-top:1.6px solid var(--v-tx-3);transform:translateY(-50%) rotate(45deg);
 }
-body.vuelo .c-row.sel{background-color:var(--v-card);background-image:linear-gradient(var(--v-accent-soft),var(--v-accent-soft));border-color:var(--v-line)}
+body.vuelo .c-row.sel{background-image:linear-gradient(var(--v-accent-soft),var(--v-accent-soft))}
 body.vuelo .c-row.sel .c-secs,body.vuelo .c-row.sel .c-cod{color:var(--v-tx-2)}
 @media(hover:hover){
   body.vuelo .c-row:not(.sel):hover{background-image:linear-gradient(var(--v-state),var(--v-state))}
@@ -455,7 +462,7 @@ body.vuelo .conf-bar::before{
 body.vuelo .conf-bar::after{content:"";position:absolute;left:84px;top:8px;bottom:8px;border-left:1.5px dashed var(--v-hair-strong)}
 
 /* Área del horario */
-body.vuelo .sched-area{background:transparent;padding:14px 22px 18px}
+body.vuelo .sched-area{--v-area-t:14px;--v-area-x:22px;background:transparent;padding:var(--v-area-t) var(--v-area-x) 18px}
 
 /* Estado vacío: la carpeta «FLIGHT LOG». render.js pone dentro dos
    billetes (periodo, sello «EN ARMADO», ruta ✈ ─── • LIM) y el frente
@@ -463,24 +470,22 @@ body.vuelo .sched-area{background:transparent;padding:14px 22px 18px}
    decorativa; el mensaje real va en h3 y p. Nunca entra en el PDF. */
 body.vuelo .empty{gap:14px}
 body.vuelo .empty-box{
-  position:relative;isolation:isolate;width:300px;height:220px;border:none;border-radius:26px;overflow:hidden;
+  position:relative;isolation:isolate;width:300px;height:220px;border:none;border-radius:var(--v-r-xl);overflow:hidden;
   background:var(--v-folder-back);
-  box-shadow:inset 0 1px 0 var(--v-folder-rim),inset 0 0 0 1px var(--v-hair),var(--v-shadow-3);
+  box-shadow:inset 0 1px 0 var(--v-folder-rim),inset 0 0 0 1px var(--v-hair),var(--v-shadow-3);flex-shrink:0;
 }
-body.vuelo .empty-box{flex-shrink:0}
 body.vuelo .empty-box > svg{display:none}
-body.vuelo .v-ticket{text-align:left}
 @media(max-height:540px){body.vuelo .empty-box{display:none}}
 body.vuelo .empty-box .v-folder{display:block;position:absolute;inset:0}
 body.vuelo .v-ticket{
-  position:absolute;left:24px;right:28px;top:18px;height:100px;box-sizing:border-box;padding:12px 16px;
+  position:absolute;left:24px;right:28px;top:18px;height:100px;box-sizing:border-box;padding:12px 16px;text-align:left;
   display:grid;grid-template-columns:1fr auto;align-content:start;row-gap:6px;
   border-radius:12px;background:var(--v-ticket);color:var(--v-ticket-ink);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.05),inset 0 0 0 1px var(--v-hair),var(--v-ticket-shadow);
   transform:rotate(-1.9deg);
 }
 body.vuelo .v-ticket-2{left:34px;right:20px;top:82px;transform:rotate(2.2deg)}
-body.vuelo .v-t-date{font:500 13px/18px var(--v-sans);font-variant-numeric:lining-nums;color:var(--v-ticket-date);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.vuelo .v-t-date{font:500 13px/18px sans-serif;font-family:var(--v-sans);font-variant-numeric:lining-nums;color:var(--v-ticket-date);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 body.vuelo .v-badge{
   justify-self:end;height:20px;padding:0 8px;border-radius:7px;
   font:700 12px/20px var(--v-cond);letter-spacing:.03em;text-transform:uppercase;
@@ -501,8 +506,7 @@ body.vuelo .v-folder-front{
 body.vuelo .empty h3{font:600 21px/26px var(--v-serif);color:var(--v-tx)}
 body.vuelo .empty p{font:400 15px/22px var(--v-serif);color:var(--v-tx-2);max-width:300px}
 body.vuelo .empty p::before{
-  content:"";display:block;width:62px;height:8px;margin:0 auto 14px;
-  background:linear-gradient(var(--v-sep),var(--v-sep)) left center/46px 1px no-repeat,var(--v-sparkle) right center/8px 8px no-repeat;
+  content:"";display:block;width:62px;height:8px;margin:0 auto 14px;background:var(--v-rule);
 }
 
 /* Horario: una tarjeta de papel plano */
@@ -512,20 +516,19 @@ body.vuelo .sched-wrap{
 }
 /* los días son fijos al desplazar: fondo opaco (sin desenfoque, que se
    repintaría en cada fotograma) para no montarse sobre los bloques */
-body.vuelo table.sch thead th{background:var(--v-wrap-solid);top:-14px}   /* -14 = relleno superior del área */
-body.vuelo table.sch td:first-child{position:sticky;left:-22px;z-index:5;background:var(--v-wrap-solid)}
-body.vuelo table.sch thead th:first-child{position:sticky;left:-22px;top:-14px;z-index:12}
-body.vuelo table.sch thead th:first-child{border-top-left-radius:14px}
-body.vuelo table.sch thead th:last-child{border-top-right-radius:14px}
+body.vuelo table.sch thead th{background:var(--v-wrap-solid);top:calc(-1*var(--v-area-t))}   /* pegados al borde del área */
+body.vuelo table.sch td:first-child{
+  position:sticky;left:calc(-1*var(--v-area-x));z-index:5;background:var(--v-wrap-solid);
+  font:500 11px/14px sans-serif;font-family:var(--v-sans);font-variant-numeric:tabular-nums;letter-spacing:.02em;
+  color:var(--v-tx-3);padding-right:10px;padding-top:6px;
+}
+body.vuelo table.sch thead th:first-child{position:sticky;left:calc(-1*var(--v-area-x));top:calc(-1*var(--v-area-t));z-index:12;border-top-left-radius:var(--v-r-md)}
+body.vuelo table.sch thead th:last-child{border-top-right-radius:var(--v-r-md)}
 body.vuelo .dhead{
   background:transparent;border:none;border-radius:var(--v-pill);margin:4px 6px 6px;padding:7px 4px;
   font:600 12px/16px var(--v-sans);letter-spacing:.03em;text-transform:uppercase;color:var(--v-tx-3);
 }
 body.vuelo .dhead.now{background:var(--v-slate-bg);color:var(--v-slate)}
-body.vuelo table.sch td:first-child{
-  font:500 11px/14px var(--v-sans);font-variant-numeric:tabular-nums;letter-spacing:.02em;
-  color:var(--v-tx-3);padding-right:10px;padding-top:6px;
-}
 /* huecos casi invisibles: el horario se lee por los bloques */
 body.vuelo .cell-mt{border-radius:8px}
 body.vuelo-oscuro table.sch tbody tr:nth-child(odd) td:not(:first-child) .cell-mt{background:rgba(255,255,255,.03)}
@@ -587,11 +590,11 @@ body.vuelo .stats{gap:0;padding:10px 22px 12px;align-items:stretch}
 body.vuelo .stat{
   flex-direction:column-reverse;align-items:flex-start;gap:2px;padding:0 22px;border-left:1px solid var(--v-hair);
   font:500 12px/16px var(--v-sans);letter-spacing:.015em;color:var(--v-tx-3);
+  justify-content:flex-end;   /* en column-reverse alinea las cifras arriba */
 }
-body.vuelo .stat{justify-content:flex-end}   /* en column-reverse alinea las cifras arriba */
 body.vuelo .stat:first-child{padding-left:0;border-left:none}
 body.vuelo .stat-colon{display:none}
-body.vuelo .stat-n{font:600 24px/26px var(--v-serif);font-variant-numeric:lining-nums proportional-nums;letter-spacing:-.02em;color:var(--v-tx)}
+body.vuelo .stat-n{font:600 24px/26px serif;font-family:var(--v-serif);font-variant-numeric:lining-nums proportional-nums;letter-spacing:-.02em;color:var(--v-tx)}
 body.vuelo #sh::after{content:"\00a0h";font:500 13px var(--v-sans);letter-spacing:0;color:var(--v-tx-3)}
 body.vuelo #sc{font:600 16px/20px var(--v-serif);padding-top:6px}
 /* Score: la fila «I · Flyer» con su medidor crema → azul (ratings.js pone
@@ -621,7 +624,6 @@ body.vuelo .score-pop-note{font:400 12.5px/18px var(--v-sans);color:var(--v-tx-3
 /* Ventanas. El velo se queda como en la base: solo el desenfoque leve de
    5 px, sin oscurecer el fondo (decisión ya tomada para todos los temas);
    por eso la ventana no lleva desenfoque propio. */
-body.vuelo .overlay,body.vuelo .ann-overlay{background:transparent}
 body.vuelo .modal{
   max-width:520px;border-radius:var(--v-r-xl);background:var(--v-modal);border:1px solid var(--v-edge);
   -webkit-backdrop-filter:none;backdrop-filter:none;
@@ -632,8 +634,7 @@ body.vuelo .modal-top{background:var(--v-modal-head);border-bottom:none;padding:
 body.vuelo .modal-ttl{font:600 21px/26px var(--v-serif);letter-spacing:0;color:var(--v-tx)}
 /* el separador «——— ✦», entre el titular y el texto, con una sola tinta */
 body.vuelo .modal-ttl::after{
-  content:"";display:block;width:62px;height:8px;margin:12px 0 10px;
-  background:linear-gradient(var(--v-sep),var(--v-sep)) left center/46px 1px no-repeat,var(--v-sparkle) right center/8px 8px no-repeat;
+  content:"";display:block;width:62px;height:8px;margin:12px 0 10px;background:var(--v-rule);
 }
 body.vuelo .modal-sub{font:400 15px/22px var(--v-serif);color:var(--v-tx-2);margin-top:0}
 body.vuelo .modal-x,body.vuelo .ann-x{width:30px;height:30px;border-radius:50%;border:none}
@@ -641,23 +642,17 @@ body.vuelo .modal-x{background:var(--v-fill);color:var(--v-tx-2)}
 body.vuelo .modal-x:hover{background:var(--v-fill-2);color:var(--v-tx)}
 body.vuelo .modal-body{padding:8px 24px 24px}
 /* estilos en línea de modals.js y ratings.js */
-body.vuelo .modal-body button,body.vuelo .modal-body input,
-body.vuelo .modal-body select,body.vuelo .modal-body textarea{font-family:var(--v-sans)!important}
 body.vuelo .modal-body .btn[style*="var(--surface)"]{background:var(--v-fill-2)!important;border-color:transparent!important;color:var(--v-tx)!important}
 body.vuelo .modal-body .btn[style*="var(--surface)"]:hover{background:var(--v-accent-soft)!important;color:var(--v-accent-strong)!important}
 body.vuelo .modal-body button[onclick^="addSesRow"]{padding:8px!important;border:1.5px dashed var(--v-field-line)!important;border-radius:12px!important;color:var(--v-tx-2)!important;font:500 14px/20px var(--v-sans)!important}
 body.vuelo .modal-body strong[style*="f0c870"]{color:var(--v-star)!important}
-body.vuelo .modal-body span[style*="JetBrains"]{font:600 12px/16px var(--v-sans)!important;letter-spacing:.03em!important}
-body.vuelo .modal-body input[style*="JetBrains"]{font-family:var(--v-mono)!important;font-weight:600!important}
-body.vuelo .modal-body input[style*="--line2"]{border-color:var(--v-field-line)!important;border-radius:10px!important}
-body.vuelo .modal-body input[style*="--line2"]:focus{border-color:var(--v-accent)!important;box-shadow:0 0 0 3px var(--v-focus)}
 
 /* Secciones: billetes sin rotación (en oscuro, más hondos que el vidrio) */
 body.vuelo .sec{
   background:var(--v-sheet);border:1px solid var(--v-line);border-radius:16px;padding:14px 16px;margin-bottom:10px;
   box-shadow:inset 0 1px 0 var(--v-edge-hi),var(--v-shadow-1);transition:box-shadow .15s,border-color .15s;
 }
-body.vuelo .sec:hover{transform:none;background:var(--v-sheet)}
+body.vuelo .sec:hover{transform:none}
 @media(hover:hover){body.vuelo .sec:hover{border-color:var(--v-hair-strong);box-shadow:inset 0 1px 0 var(--v-edge-hi),var(--v-shadow-2)}}
 /* cruce de teoría: billete normal con costura ámbar (con relleno ámbar el
    badge se perdía y los textos secundarios bajaban de 4,5:1) */
@@ -680,32 +675,28 @@ body.vuelo .ses-T{background:var(--v-fill-2);color:var(--v-tx)}
 body.vuelo .ses-P{background:var(--v-slate-bg);color:var(--v-slate)}
 body.vuelo .ses-L{background:var(--v-sage-bg);color:var(--v-sage)}
 body.vuelo .ses-S{background:var(--v-olive-bg);color:var(--v-olive)}
-body.vuelo .ses{font:400 14px/20px var(--v-sans);font-variant-numeric:tabular-nums;color:var(--v-tx-2);padding:6px 0}
-body.vuelo .ses + .ses{border-top:1px solid var(--v-hair)}
 /* el horario de la sesión no se parte; si no cabe, el aula baja entera */
-body.vuelo .ses{flex-wrap:wrap;row-gap:2px}
+body.vuelo .ses{font:400 14px/20px sans-serif;font-family:var(--v-sans);font-variant-numeric:tabular-nums;color:var(--v-tx-2);padding:6px 0;flex-wrap:wrap;row-gap:2px}
+body.vuelo .ses + .ses{border-top:1px solid var(--v-hair)}
 body.vuelo .ses > span:nth-child(2){white-space:nowrap}
 
 /* Calificar y editar */
 body.vuelo .star-inp{min-width:28px;min-height:28px;color:var(--v-tx-3)}
 body.vuelo .star-inp.on,body.vuelo .rate-star{color:var(--v-star)}
-body.vuelo .rate-count{color:var(--v-tx-3)}
 body.vuelo .rate-btn{height:28px;padding:0 12px;border-radius:var(--v-pill);border:1px solid var(--v-line);background:var(--v-fill);color:var(--v-tx-2);font:600 13px/1 var(--v-sans)}
 body.vuelo .rate-btn:hover{background:var(--v-accent-soft);color:var(--v-accent-strong);border-color:transparent}
-body.vuelo .ses-edit{gap:6px;padding:8px 0;border-bottom-color:var(--v-hair)}
 body.vuelo .ses-edit select,body.vuelo .ses-edit input{
   height:36px;padding:0 10px;border:1px solid var(--v-field-line);border-radius:10px;
   background:var(--v-fill);color:var(--v-tx);font:400 15px var(--v-sans);
 }
 /* dos filas ordenadas en rejilla: tipo, día y horas; debajo el aula, que
    ocupa todo el ancho y no se recorta, y la × */
-body.vuelo .ses-edit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 48px auto 48px;align-items:center}
+body.vuelo .ses-edit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 48px auto 48px;align-items:center;gap:6px;padding:8px 0;border-bottom-color:var(--v-hair)}
 body.vuelo .ses-edit select{min-width:0;padding:0 4px 0 8px}
 body.vuelo .ses-edit input[type=number]{width:48px;padding:0 4px}
 body.vuelo .ses-edit input[type=text]{grid-column:1/5;width:auto;min-width:0;padding:0 10px}
-body.vuelo .ses-edit-del{grid-column:5;justify-self:stretch}
 body.vuelo .ses-edit select:focus,body.vuelo .ses-edit input:focus{outline:none;box-shadow:0 0 0 3px var(--v-focus);border-color:var(--v-accent)}
-body.vuelo .ses-edit-del{height:36px;padding:0 12px;border:none;border-radius:10px;background:var(--v-rose-bg);color:var(--v-rose)}
+body.vuelo .ses-edit-del{grid-column:5;justify-self:stretch;height:36px;padding:0 12px;border:none;border-radius:10px;background:var(--v-rose-bg);color:var(--v-rose)}
 
 /* Anuncio: la cartera de ante, igual en los dos modos, con el bolsillo
    delante y la hoja (la Flyer clara) asomando. La costura queda fija y lo
@@ -780,9 +771,9 @@ body.vuelo .ann-modal :focus-visible{outline-color:var(--v-suede-btn-ink)}   /* 
 /* Aviso emergente: la píldora esmerilada clara, igual en los dos modos */
 body.vuelo .toast{
   border-radius:var(--v-pill);padding:12px 20px 12px 16px;font:600 15px/20px var(--v-sans);
-  background:var(--v-pill-bg);color:var(--v-pill-ink);border:1px solid rgba(255,255,255,.55);
+  background:var(--v-pill-bg);color:var(--v-pill-ink);border:var(--v-pill-rim);
   -webkit-backdrop-filter:var(--v-glass-blur);backdrop-filter:var(--v-glass-blur);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1.5px 2px rgba(40,60,70,.14),0 10px 26px -10px rgba(0,0,0,.35);
+  box-shadow:var(--v-pill-bevel),var(--v-pill-float);
 }
 body.vuelo .toast.ok .tdot{background:var(--v-dot-ok);box-shadow:none}
 body.vuelo .toast.warn .tdot{background:var(--v-dot-warn);box-shadow:none}
@@ -831,14 +822,7 @@ body.vuelo .modal::-webkit-scrollbar-thumb,body.vuelo .ann-body::-webkit-scrollb
 }
 
 @media(max-width:720px){
-  body.vuelo-oscuro{
-    background-image:
-      var(--v-grain-film),
-      radial-gradient(55% 38% at 92% 46%,rgba(196,150,80,.12),rgba(196,150,80,0) 70%),
-      radial-gradient(70% 30% at 0% 100%,rgba(46,96,140,.30),rgba(46,96,140,0) 72%),
-      linear-gradient(180deg,#313133,#33322f 60%,#2f3133);
-    background-size:180px 180px,auto,auto,auto;
-  }
+  body.vuelo-oscuro{--v-sky:rgba(46,96,140,.30)}   /* cielo más tenue en pantalla pequeña */
   /* cabecera a todo el ancho; respeta la barra de estado de la app instalada */
   body.vuelo header{
     margin:0;border-radius:0;border-width:0 0 1px;border-color:var(--v-hair);box-shadow:none;
@@ -853,8 +837,7 @@ body.vuelo .modal::-webkit-scrollbar-thumb,body.vuelo .ann-body::-webkit-scrollb
   body.vuelo .sidebar,body.vuelo .main{bottom:calc(78px + env(safe-area-inset-bottom,0px))}
   body.vuelo .sidebar-top{padding:14px 16px 10px}
   /* 16 px en los campos para que iOS no haga zoom */
-  body.vuelo .search-box input,body.vuelo .ses-edit select,body.vuelo .ses-edit input,
-  body.vuelo .modal-body input{font-size:16px!important}
+  body.vuelo .search-box input,body.vuelo .ses-edit select,body.vuelo .ses-edit input{font-size:16px}
   body.vuelo .topbar{padding:8px 12px;gap:8px}
   /* «← Selecciona cursos…» no cabe junto a los botones y ya lo explica el estado vacío */
   body.vuelo .tags-zone .ph{display:none}
@@ -865,12 +848,8 @@ body.vuelo .modal::-webkit-scrollbar-thumb,body.vuelo .ann-body::-webkit-scrollb
   body.vuelo .action-btns .btn-dl{font-size:0;gap:0;padding:0 12px}
   body.vuelo .action-btns .btn-dl::after{content:"PDF";font:600 13px/1 var(--v-sans);margin-left:6px}
   body.vuelo .conf-bar{margin:6px 12px 0;font-size:13px}
-  body.vuelo .sched-area{padding:8px 8px 12px}
+  body.vuelo .sched-area{--v-area-t:8px;--v-area-x:8px;padding-bottom:12px}
   body.vuelo .sched-wrap{border-radius:18px;padding:6px 6px 8px 0}
-  /* días, horas y esquina fijos pegados al borde (relleno del área: 8 px) */
-  body.vuelo table.sch thead th{top:-8px}
-  body.vuelo table.sch td:first-child{left:-8px}
-  body.vuelo table.sch thead th:first-child{left:-8px;top:-8px}
   body.vuelo .stats{display:grid;grid-template-columns:repeat(3,1fr);row-gap:10px;padding:8px 12px 10px}
   body.vuelo .stat{padding:0 10px;font-size:11px}
   body.vuelo .stat-n{font-size:18px;line-height:22px}
@@ -878,13 +857,11 @@ body.vuelo .modal::-webkit-scrollbar-thumb,body.vuelo .ann-body::-webkit-scrollb
   /* pestañas: la píldora esmerilada «Currently on…», flotante */
   body.vuelo .mob-tabs{
     left:16px;right:16px;bottom:calc(10px + env(safe-area-inset-bottom,0px));height:58px;padding:5px;gap:4px;
-    border-radius:var(--v-pill);background:var(--v-pill-bg);border:1px solid rgba(255,255,255,.55);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1.5px 2px rgba(40,60,70,.14),0 10px 26px -10px rgba(0,0,0,.35);
+    border-radius:var(--v-pill);background:var(--v-pill-bg);border:var(--v-pill-rim);box-shadow:var(--v-pill-bevel),var(--v-pill-float);
   }
   body.vuelo .mob-tab{border-radius:var(--v-pill);gap:2px;font:600 11px/14px var(--v-sans);letter-spacing:0;text-transform:none;color:var(--v-pill-ink-2)}
   body.vuelo .mob-tab svg{width:20px;height:20px;color:inherit}
   body.vuelo .mob-tab.on{background:rgba(47,55,57,.10);color:var(--v-pill-ink)}
-  body.vuelo .mob-tab.on svg{color:inherit}
   body.vuelo .mob-tab:focus-visible{outline-color:var(--v-pill-ink)}
   body.vuelo .tag-x{position:relative}
   body.vuelo .tag-x::before{content:"";position:absolute;inset:-13px}
@@ -917,20 +894,17 @@ body.vuelo .modal::-webkit-scrollbar-thumb,body.vuelo .ann-body::-webkit-scrollb
    Todo plano dentro de #printable: la profundidad queda en los bordes. */
 body.vuelo.exporting #printable,body.vuelo.exporting #printable *,
 body.vuelo.exporting #printable *::before,body.vuelo.exporting #printable *::after{
-  box-shadow:none!important;text-shadow:none!important;filter:none!important;
-  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
-  mix-blend-mode:normal!important;background-blend-mode:normal!important;
-  font-stretch:100%!important;font-variant-numeric:normal!important;font-feature-settings:normal!important;
-  transition:none!important;animation-duration:0s!important;animation-delay:0s!important;
-}
+  box-shadow:none;text-shadow:none;filter:none;-webkit-backdrop-filter:none;backdrop-filter:none;
+  mix-blend-mode:normal;background-blend-mode:normal;
+  font-stretch:100%;font-variant-numeric:normal;font-feature-settings:normal;
+}   /* transiciones y animaciones: ya las para styles.css («body.exporting #printable *») */
 /* html2canvas mide la línea base de cada familia con su peso normal (la
    cara 500 de la mono) y dibujaba la 600 entre 3 y 7 px más arriba */
 body.vuelo.exporting #printable .blk-cod,body.vuelo.exporting #printable .blk-cod-sm,
-body.vuelo.exporting #printable .blk-room{font-weight:500!important}
-body.vuelo.exporting .sched-wrap{background:var(--v-export-bg)!important;border-color:transparent}
-body.vuelo.exporting table.sch thead th{background:transparent!important}
+body.vuelo.exporting #printable .blk-room{font-weight:500}
+body.vuelo.exporting .sched-wrap{background:var(--v-export-bg);border-color:transparent}
+body.vuelo.exporting table.sch thead th{background:transparent}   /* exports.js ya los deja en position:static */
 body.vuelo.exporting table.sch td:first-child,
-body.vuelo.exporting table.sch th:first-child{position:static!important;background:transparent!important}
-body.vuelo.exporting table.sch thead th{top:0!important}
-body.vuelo.exporting .dhead.now{background:transparent!important;color:var(--v-tx-3)!important}
-body.vuelo.exporting .blk{transform:none!important}
+body.vuelo.exporting table.sch th:first-child{position:static;background:transparent}
+body.vuelo.exporting .dhead.now{background:transparent;color:var(--v-tx-3)}
+body.vuelo.exporting .blk{transform:none!important}   /* !important: gana al relleno de la animación fx-pop */

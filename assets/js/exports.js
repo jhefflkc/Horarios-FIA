@@ -1,5 +1,24 @@
 /* Exportar el horario a PDF y a calendario (.ics). */
 
+/* Librerías del CDN bajo demanda: en <head> bloqueaban el primer pintado
+   (469 kB comprimidos) aunque solo hacen falta al exportar o cargar Excel. */
+var LIBS={
+  xlsx:"https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js",
+  jspdf:"https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+  html2canvas:"https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+};
+var _libLoads={};
+function loadLib(k){
+  if(!_libLoads[k]) _libLoads[k]=new Promise(function(ok,ko){
+    var s=document.createElement("script");s.src=LIBS[k];
+    s.onload=function(){ok();};
+    s.onerror=function(){delete _libLoads[k];s.remove();ko(new Error("no se pudo descargar "+k+" (¿sin conexión?)"));};
+    document.head.appendChild(s);
+  });
+  return _libLoads[k];
+}
+function loadPdfLibs(){return Promise.all([loadLib("html2canvas"),loadLib("jspdf")]);}
+
 function downloadPDF(){
   const el=document.getElementById("printable");
   if(!el){toast("Primero selecciona cursos para generar el horario","er");return;}
@@ -11,7 +30,9 @@ function downloadPDF(){
   const bgInner=pdfC.inner;
   const txtPri=pdfC.pri;
   const txtSec=pdfC.sec;
-  toast("Generando PDF\u2026","ok");
+  if(downloadPDF._busy) return;   /* un segundo toque no lanza otro PDF */
+  downloadPDF._busy=true;
+  toast("Generando PDF\u2026","ok",0);   /* fijo hasta terminar */
   /* La maqueta de exportación (clase «exporting»: horario compacto y plano,
      sin cabecera fija ni leyenda) se aplica solo a la copia del documento
      que dibuja html2canvas, así la pantalla no cambia mientras se genera. */
@@ -40,7 +61,7 @@ function downloadPDF(){
      usa html2canvas para medir la línea base de la mono. */
   const fonts=document.fonts?Promise.all([document.fonts.ready,
     document.fonts.load('500 10px "IBM Plex Mono"',"A0").catch(function(){})]):Promise.resolve();
-  fonts.then(function(){
+  Promise.all([fonts,loadPdfLibs()]).then(function(){
     return html2canvas(el,{backgroundColor:bgCanvas,scale:sc,useCORS:true,logging:false,scrollX:0,scrollY:0,onclone:prepare});
   }).then(function(canvas){
     const W=canvas.width/sc, H=canvas.height/sc;
@@ -60,8 +81,9 @@ function downloadPDF(){
     /* "FAST": la imagen va comprimida (antes pesaba 15–40 MB) */
     pdf.addImage(canvas.toDataURL("image/png"),"PNG",28,64,W,H,undefined,"FAST");
     pdf.save("horario-"+facultyLabel.split(" \u00b7 ")[0].toLowerCase()+"-"+getPeriod()+".pdf");
+    downloadPDF._busy=false;
     toast("\u2713 PDF descargado correctamente","ok");
-  }).catch(function(e){toast("Error al generar: "+e.message,"er");});
+  }).catch(function(e){downloadPDF._busy=false;toast("Error al generar: "+e.message,"er");});
 }
 
 

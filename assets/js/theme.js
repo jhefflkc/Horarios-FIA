@@ -13,11 +13,17 @@ function _allThemeClasses(){
 /* Aplica un tema. `persist` solo es true cuando el usuario lo elige con el
    botón: así quien nunca lo ha tocado sigue la preferencia del sistema. */
 function applyTheme(t,persist){
-  /* Funde los colores mientras dura el cambio; fuera de esa ventana la
-     clase se retira para no ralentizar el resto de interacciones. */
-  document.body.classList.add("theming");
-  clearTimeout(_themingTimer);
-  _themingTimer=setTimeout(function(){document.body.classList.remove("theming");},450);
+  /* Fundido de la página entera en el compositor cuando hay View
+     Transitions; sin ellas (o con «menos movimiento»), cambio directo. La
+     transición CSS de colores («theming») recalculaba ~600 elementos en
+     cada fotograma y mezclaba estados: texto claro sobre filas aún blancas. */
+  var fade=typeof document.startViewTransition==="function"&&currentTheme&&currentTheme!==t&&
+    !(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches);
+  currentTheme=t;   /* ya, para que dos toques seguidos alternen dos veces */
+  if(fade){document.startViewTransition(function(){_setTheme(t,persist);});return;}
+  _setTheme(t,persist);
+}
+function _setTheme(t,persist){
   _allThemeClasses().forEach(function(x){document.body.classList.remove(x);});
   if(t!=="dark") document.body.classList.add(t);
   if(THEME_FAMILY[t]) document.body.classList.add(THEME_FAMILY[t]);

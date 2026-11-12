@@ -980,7 +980,6 @@ table.sch tbody tr:hover .cell-mt{background:rgba(255,255,255,0.04)}
   font-family:'JetBrains Mono',monospace;font-size:0.49rem;font-weight:700;
   opacity:0.6;margin-top:2px;line-height:1.1;
 }
-.cell-blocks .blk .blk-name{font-size:0.5rem;-webkit-line-clamp:1}
 .cell-blocks .blk .blk-cod-sm{font-size:0.42rem}
 
 /* Toggle nombre/código button */
@@ -1371,8 +1370,8 @@ body.light .c-conf-tag-soft,body.stitch-light .c-conf-tag-soft{color:#7a5200;bac
 .overlay,.ann-overlay{animation:fx-fade 0.16s var(--ease) both}
 .modal,.ann-modal{animation:fx-dialog 0.26s var(--ease) both}
 /* Bloques del horario y etiquetas: aparición breve al redibujarse */
-.blk{animation:fx-pop 0.18s var(--ease-out) both}
-.tag{animation:fx-pop 0.18s var(--ease-out) both}
+.blk.blk-in{animation:fx-pop 0.18s var(--ease-out) both}
+.tag.tag-in{animation:fx-pop 0.18s var(--ease-out) both}
 /* Secciones del diálogo, escalonadas: guían la lectura de arriba abajo */
 .sec{animation:fx-rise 0.26s var(--ease-out) both}
 .sec:nth-child(2){animation-delay:0.04s}
@@ -1399,6 +1398,9 @@ body.theming .c-cod,body.theming .cbox,body.theming .sched-area{
              color 0.38s var(--ease),
              border-color 0.38s var(--ease);
 }
+/* Con View Transitions el cambio de tema es un fundido de dos
+   instantáneas en el compositor (theme.js); sin ellas, cambio directo */
+::view-transition-old(root),::view-transition-new(root){animation-duration:.3s;animation-timing-function:cubic-bezier(.2,.7,.2,1)}
 /* Nada debe animarse en la captura del PDF. Duración cero y no
    «animation:none»: quitar el nombre de la animación y devolverlo la
    reinicia, y la cabecera, el panel y los bloques volvían a aparecer. */

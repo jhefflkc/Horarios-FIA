@@ -118,5 +118,6 @@ function loadExcel(event){
       toast("\u2713 "+rows.length+" sesiones cargadas","ok");
     }catch(e){toast("Error: "+e.message,"er");}
   };
-  reader.readAsBinaryString(file);
+  loadLib("xlsx").then(function(){reader.readAsBinaryString(file);},
+    function(e){toast("Error: "+e.message,"er");});
 }
