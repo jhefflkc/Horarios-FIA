@@ -135,7 +135,7 @@ function openRatingModal(cod,di){
   /* Sin hueco entre estrellas y con la salida en el contenedor: antes, al
      pasar por los 12 px vacíos se apagaban todas y parpadeaban */
   h+="<div id=\"star-inp\" style=\"display:flex;justify-content:center;gap:0;font-size:2.4rem;margin-bottom:8px\" onmouseleave=\"hoverStar(0)\">";
-  for(var i=1;i<=5;i++) h+="<span class=\"star-inp\" data-v=\""+i+"\" onclick=\"selectStar("+i+")\" onmouseover=\"hoverStar("+i+")\" style=\"padding:0 6px\">&#9734;</span>";
+  for(var i=1;i<=5;i++) h+="<span class=\"star-inp\" data-v=\""+i+"\" role=\"button\" tabindex=\"0\" aria-label=\""+i+(i===1?" estrella":" estrellas")+"\" onfocus=\"hoverStar("+i+")\" onblur=\"hoverStar(0)\" onclick=\"selectStar("+i+")\" onmouseover=\"hoverStar("+i+")\" style=\"padding:0 6px\">&#9734;</span>";
   h+="</div>";
   h+="<div id=\"star-lbl\" style=\"font-size:0.78rem;color:var(--accent);font-weight:700;height:1.3em;margin-bottom:16px\"></div>";
   h+="</div>";

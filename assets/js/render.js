@@ -16,7 +16,10 @@ function _courseRowHTML(c){
     const ss=sel[c.cod];
     const meta=ss?"Secc. "+ss.secc+" \u00b7 "+ss.ss.length+" ses.":c.secs.length+(c.secs.length>1?" secc.":"\u00a0secc.");
     /* «multi»: al pulsarla se abre la ventana de secciones (el tema muestra un chevrón) */
-    let h="<div class=\"c-row cy"+c.esp+(c.secs.length>1?" multi":"")+(isSel?" sel":"")+(isConf?" conf":"")+"\" data-cod=\""+c.cod+"\">";
+    /* Con teclado: cada fila es una casilla que se alcanza con Tab y se
+       marca con Enter o Espacio (main.js); las bloqueadas quedan fuera */
+    let h="<div class=\"c-row cy"+c.esp+(c.secs.length>1?" multi":"")+(isSel?" sel":"")+(isConf?" conf":"")+"\" data-cod=\""+c.cod+"\""+
+      " role=\"checkbox\" aria-checked=\""+(isSel?"true":"false")+"\""+(isConf?" aria-disabled=\"true\"":" tabindex=\"0\"")+">";
     h+="<div class=\"cbox\"></div>";
     h+="<div class=\"c-info\">";
     h+="<div class=\"c-name\">"+c.curso+"</div>";
@@ -54,7 +57,10 @@ function drawList(){
       list.forEach(function(c,i){
         if(_listRowHTML[c.cod]===html[i]) return;
         const t=document.createElement("template");t.innerHTML=html[i];
-        el.children[i].replaceWith(t.content.firstChild);
+        const row=t.content.firstChild,old=el.children[i];
+        const hadFocus=document.activeElement===old;
+        old.replaceWith(row);
+        if(hadFocus&&row.focus) row.focus({preventScroll:true});   /* el foco sigue en la fila repintada */
         _listRowHTML[c.cod]=html[i];
       });
       return;
@@ -114,7 +120,7 @@ function drawTags(){
   keys.forEach(function(cod){
     const s=sel[cod];const p=pal[cod]||"p0";const hex=palHex(p);
     h+="<div class=\"tag "+p+(prevT[cod]!==s.secc?" fx-in":"")+"\" style=\"background:"+hex+"1e;border-color:"+hex+"50;color:"+hex+"\" data-cod=\""+cod+"\">";
-    h+=cod+" <span style=\"opacity:0.6\">"+s.secc+"</span><i class=\"tag-x\">\u00d7</i></div>";
+    h+=cod+" <span style=\"opacity:0.6\">"+s.secc+"</span><button type=\"button\" class=\"tag-x\" aria-label=\"Quitar "+cod+"\">\u00d7</button></div>";
   });
   tz.innerHTML=h;
   tz.querySelectorAll(".tag").forEach(function(t){
@@ -222,7 +228,7 @@ function drawSched(){
       if(!arr||!arr.length){h+="<td><div class=\"cell-mt\"></div></td>";return;}
       if(arr.length===1){
         const c=arr[0];
-        h+="<td><div class=\"blk "+c.p+blkIn(c.cod)+"\" data-cod=\""+c.cod+"\" onclick=\"blkInfo(event)\">";
+        h+="<td><div class=\"blk "+c.p+blkIn(c.cod)+"\" data-cod=\""+c.cod+"\" onclick=\"blkInfo(event)\" role=\"button\" tabindex=\"0\" aria-label=\""+c.cod+" secci\u00f3n "+c.sec+": ver informaci\u00f3n\">";
         if(showNames){
           const cn=(sel[c.cod]||{}).curso||c.cod;
           h+="<div class=\"blk-name\">"+cn+"</div>";
@@ -236,7 +242,7 @@ function drawSched(){
       } else {
         h+="<td><div class=\"cell-blocks\">";
         arr.forEach(function(c){
-          h+="<div class=\"blk "+c.p+blkIn(c.cod)+"\" data-cod=\""+c.cod+"\" onclick=\"blkInfo(event)\">";
+          h+="<div class=\"blk "+c.p+blkIn(c.cod)+"\" data-cod=\""+c.cod+"\" onclick=\"blkInfo(event)\" role=\"button\" tabindex=\"0\" aria-label=\""+c.cod+" secci\u00f3n "+c.sec+": ver informaci\u00f3n\">";
           if(showNames){
             const cn=(sel[c.cod]||{}).curso||c.cod;
             h+="<div class=\"blk-name\">"+cn+"</div>";

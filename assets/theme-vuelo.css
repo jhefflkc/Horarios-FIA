@@ -797,6 +797,10 @@ body.vuelo .toast.er .tdot{background:var(--v-dot-er);box-shadow:none}
 /* Detalles globales */
 body.vuelo ::selection{background:var(--v-select)}
 body.vuelo :focus-visible{outline:2px solid var(--v-accent);outline-offset:2px}
+/* filas y bloques: el anillo va por dentro (por fuera lo taparían sus vecinos) */
+body.vuelo .c-row:focus-visible{outline-offset:-2px}
+body.vuelo .blk:focus-visible{outline-offset:-2px;outline-color:var(--v-ink)}
+body.vuelo .modal:focus-visible,body.vuelo .ann-modal:focus-visible{outline:none}
 body.vuelo .course-scroll,body.vuelo .sched-area,body.vuelo .modal,body.vuelo .ann-body{scrollbar-width:thin;scrollbar-color:var(--v-thumb) transparent}
 body.vuelo .course-scroll::-webkit-scrollbar,body.vuelo .sched-area::-webkit-scrollbar,
 body.vuelo .modal::-webkit-scrollbar,body.vuelo .ann-body::-webkit-scrollbar{width:6px;height:6px}

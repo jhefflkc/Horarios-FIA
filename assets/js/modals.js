@@ -21,7 +21,7 @@ function openModal(c){
   c.secs.forEach(function(sec,i){
     const cf=checkSectionConflict(sec);
     const isPractice=cf.hasPractice;const isTheory=!cf.hasPractice&&cf.hasTheory;
-    h+="<div class=\"sec"+(isPractice?" conf":isTheory?" soft-conf":"")+"\" data-i=\""+i+"\">";
+    h+="<div class=\"sec"+(isPractice?" conf":isTheory?" soft-conf":"")+"\" data-i=\""+i+"\" role=\"button\""+(isPractice?" aria-disabled=\"true\"":" tabindex=\"0\"")+">";
     h+="<div class=\"sec-top\"><span class=\"sec-name\">Secci\u00f3n "+sec.secc+"</span>";
     h+="<span style=\"display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap\">";
     h+=_vacHTML(sec);

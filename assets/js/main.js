@@ -52,6 +52,8 @@ function showMobTab(tab){
     tSched.classList.add('on');
     tCourses.classList.remove('on');
   }
+  tCourses.setAttribute('aria-selected',tab==='courses'?'true':'false');
+  tSched.setAttribute('aria-selected',tab==='courses'?'false':'true');
 }
 
 /* Init mobile panels */
@@ -79,11 +81,25 @@ function reduceMotion(){
 }
 function showOverlay(el){
   clearTimeout(el._hide);
+  var abierta=el.style.display==="flex"&&!el.classList.contains("is-closing");
   el.classList.remove("is-closing");
   el.style.display="flex";
+  /* El foco entra en la ventana y, al cerrarla, vuelve a donde estaba */
+  if(!abierta) el._prev=document.activeElement;
+  var d=el.querySelector("[role=dialog]");
+  if(d&&!d.contains(document.activeElement)) d.focus({preventScroll:true});
+}
+function _restoreFocus(el){
+  var p=el._prev;el._prev=null;
+  if(!p||p===document.body||!p.focus) return;
+  /* si la fila de origen se repintó, se busca la nueva por su código */
+  if(!document.contains(p)&&p.dataset&&p.dataset.cod&&window.CSS&&CSS.escape)
+    p=document.querySelector('.c-row[data-cod="'+CSS.escape(p.dataset.cod)+'"]');
+  if(p&&document.contains(p)) p.focus({preventScroll:true});
 }
 function hideOverlay(el){
   if(el.style.display==="none"||el.classList.contains("is-closing")) return;
+  _restoreFocus(el);
   if(reduceMotion()){el.style.display="none";return;}
   el.classList.add("is-closing");
   el._hide=setTimeout(function(){el.classList.remove("is-closing");el.style.display="none";},240);
@@ -98,15 +114,39 @@ document.addEventListener("animationend",function(e){
 /* Safari en iOS solo aplica :active (el hundirse al pulsar) si hay un
    oyente táctil; vacío y pasivo no frena el desplazamiento */
 document.addEventListener("touchstart",function(){},{passive:true});
-/* Esc cierra lo que esté abierto, de lo más reciente a lo más antiguo */
+/* ── Teclado ─────────────────────────────────────────
+   Esc cierra lo que esté abierto; Enter y Espacio activan lo que no es un
+   botón nativo (filas, bloques, secciones, estrellas, Score, cargar
+   Excel); y con una ventana abierta, Tab no sale de ella. */
+function _openOverlay(){
+  var a=document.getElementById("ann-overlay"),m=document.getElementById("modal");
+  if(a.style.display==="flex"&&!a.classList.contains("is-closing")) return a;
+  if(m.style.display==="flex"&&!m.classList.contains("is-closing")) return m;
+  return null;
+}
 document.addEventListener("keydown",function(e){
-  if(e.key!=="Escape") return;
-  var pop=document.getElementById("score-pop");
-  if(pop&&pop.style.display==="block"){pop.style.display="none";return;}
-  var m=document.getElementById("modal");
-  if(m.style.display==="flex"&&!m.classList.contains("is-closing")){modalClose();return;}
-  var a=document.getElementById("ann-overlay");
-  if(a.style.display==="flex"&&!a.classList.contains("is-closing")) closeAnnounce(false);
+  var o;
+  if(e.key==="Escape"){
+    var pop=document.getElementById("score-pop");
+    if(pop&&pop.style.display==="block"){pop.style.display="none";return;}
+    o=_openOverlay();
+    if(o) (o.id==="modal"?modalClose():closeAnnounce(false));
+    return;
+  }
+  var t=e.target;
+  if((e.key==="Enter"||e.key===" ")&&t&&t.matches&&t.matches(".c-row,.sec,.blk,.score-pill,.star-inp,.upload-row")){
+    if(t.getAttribute("aria-disabled")==="true") return;
+    e.preventDefault();t.click();
+    return;
+  }
+  if(e.key==="Tab"&&(o=_openOverlay())){
+    var f=[].filter.call(o.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])'),
+      function(x){return !x.disabled&&x.offsetParent!==null;});
+    if(!f.length){e.preventDefault();return;}
+    var first=f[0],last=f[f.length-1],act=document.activeElement;
+    if(!o.contains(act)||(!e.shiftKey&&act===last)){e.preventDefault();first.focus();}
+    else if(e.shiftKey&&(act===first||f.indexOf(act)<0)){e.preventDefault();last.focus();}
+  }
 });
 /* El popover del Score se coloca una sola vez: al cambiar el tamaño de la
    ventana quedaría descolocado o fuera de pantalla, así que se cierra */

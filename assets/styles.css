@@ -759,6 +759,8 @@ body.google .sec-vac{background:var(--g-surf-3);color:var(--tx2);font-weight:500
   cursor:default;border:1.5px solid;
 }
 .tag-x{
+  /* es un <button>: se le quitan el borde, el relleno y la letra del navegador */
+  border:none;padding:0;background:none;color:inherit;font-family:inherit;font-weight:inherit;line-height:1;
   width:15px;height:15px;border-radius:50%;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   font-style:normal;font-size:0.72rem;opacity:0.6;transition:opacity 0.15s;
@@ -1050,6 +1052,7 @@ body.light .sched-legend{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.0
   border-radius:16px;width:100%;max-width:500px;max-height:86vh;overflow-y:auto;
   box-shadow:0 40px 100px rgba(0,0,0,0.8),0 0 0 1px rgba(200,120,58,0.1);
 }
+.modal:focus,.ann-modal:focus{outline:none}   /* reciben el foco al abrirse, sin anillo */
 .modal::-webkit-scrollbar{width:3px}
 .modal::-webkit-scrollbar-thumb{background:var(--card2);border-radius:2px}
 .modal-top{
