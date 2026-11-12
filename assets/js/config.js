@@ -25,13 +25,10 @@ const PAL_HEX={p0:"#c86432",p1:"#46883c",p2:"#c8a01e",p3:"#b45028",p4:"#788c28",
    matices que los bloques pastel del horario, pero legibles. */
 const PAL_HEX_GOOGLE={p0:"#1a73e8",p1:"#1e8e3e",p2:"#e37400",p3:"#d93025",p4:"#007b83",p5:"#9334e6",p6:"#e8710a",p7:"#00796b"};
 
-/* Tema Vuelo: el color va como texto de la etiqueta, así que cada modo usa
-   la versión del tono que contrasta con su fondo (ver theme-vuelo.css). */
-const PAL_HEX_VUELO_CLARO={p0:"#59522d",p1:"#3f4263",p2:"#2a5b55",p3:"#433f39",p4:"#2b4f65",p5:"#2b4125",p6:"#49334f",p7:"#5b4225"};
-const PAL_HEX_VUELO_OSCURO={p0:"#ccbca2",p1:"#f3f5ff",p2:"#d9fff9",p3:"#fbf1d3",p4:"#a8c5d6",p5:"#b2c5ac",p6:"#c8bfdb",p7:"#fff1dc"};
-
-/* Paleta de etiquetas por tema; los que no figuran usan PAL_HEX */
-const PAL_HEX_BY_THEME={google:PAL_HEX_GOOGLE,"vuelo-claro":PAL_HEX_VUELO_CLARO,"vuelo-oscuro":PAL_HEX_VUELO_OSCURO};
+/* Paleta de etiquetas por tema; los que no figuran usan PAL_HEX. El tema
+   Vuelo no necesita entrada: theme-vuelo.css pinta las etiquetas con los
+   tokens --v-paper/--v-ink/--v-ring de cada curso por encima del color en línea. */
+const PAL_HEX_BY_THEME={google:PAL_HEX_GOOGLE};
 
 /* Color de una etiqueta según el tema activo */
 function palHex(p){

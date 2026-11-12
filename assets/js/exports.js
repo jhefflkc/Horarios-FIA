@@ -1,17 +1,29 @@
 /* Exportar el horario a PDF y a calendario (.ics). */
 
+/* Librerías del CDN bajo demanda: en <head> bloqueaban el primer pintado
+   (469 kB comprimidos) aunque solo hacen falta al exportar o cargar Excel. */
+var LIBS={
+  xlsx:"https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js",
+  jspdf:"https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+  html2canvas:"https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+};
+var _libLoads={};
+function loadLib(k){
+  if(!_libLoads[k]) _libLoads[k]=new Promise(function(ok,ko){
+    var s=document.createElement("script");s.src=LIBS[k];
+    s.onload=function(){ok();};
+    s.onerror=function(){delete _libLoads[k];s.remove();ko(new Error("no se pudo descargar "+k+" (¿sin conexión?)"));};
+    document.head.appendChild(s);
+  });
+  return _libLoads[k];
+}
+function loadPdfLibs(){return Promise.all([loadLib("html2canvas"),loadLib("jspdf")]);}
+
 function downloadPDF(){
-  const el=document.getElementById("printable");
-  if(!el){toast("Primero selecciona cursos para generar el horario","er");return;}
-  /* El tema que se ve en pantalla manda. No basta con lo guardado: en modo
-     automático no se guarda nada y el PDF salía con el marco de otro tema. */
-  const pdfC=PDF_THEME[currentTheme]||PDF_THEME[defaultTheme()]||PDF_THEME[THEME_ORDER[0]];
-  const bgCanvas=pdfC.canvas;
-  const bgOuter=pdfC.outer;
-  const bgInner=pdfC.inner;
-  const txtPri=pdfC.pri;
-  const txtSec=pdfC.sec;
-  toast("Generando PDF\u2026","ok");
+  if(!document.getElementById("printable")){toast("Primero selecciona cursos para generar el horario","er");return;}
+  if(downloadPDF._busy) return;   /* un segundo toque no lanza otro PDF */
+  downloadPDF._busy=true;
+  toast("Generando PDF\u2026","ok",0);   /* fijo hasta terminar */
   /* La maqueta de exportación (clase «exporting»: horario compacto y plano,
      sin cabecera fija ni leyenda) se aplica solo a la copia del documento
      que dibuja html2canvas, así la pantalla no cambia mientras se genera. */
@@ -23,25 +35,37 @@ function downloadPDF(){
     const lg=p.querySelector(".sched-legend");
     if(lg) lg.style.display="none";
   }
-  /* Tamaño de esa maqueta, medido sin que llegue a pintarse (la clase se
-     pone y se quita en la misma tarea; «v-measure» evita transiciones al
-     volver). Con él se limita el lienzo a 16 MP, el tope de Safari en iOS. */
-  const legend=el.querySelector(".sched-legend");
-  document.body.classList.add("v-measure","exporting");
-  if(legend) legend.style.display="none";
-  const r=el.getBoundingClientRect();
-  document.body.classList.remove("exporting");
-  if(legend) legend.style.display="";
-  void el.offsetWidth;
-  document.body.classList.remove("v-measure");
-  const sc=Math.min(2.8,Math.sqrt(16e6/Math.max(1,r.width*r.height)));
   /* Se espera a las tipografías: si alguna aún no ha cargado, la captura
      saldría con la de respaldo. La mono 500 se pide aparte porque es la que
      usa html2canvas para medir la línea base de la mono. */
   const fonts=document.fonts?Promise.all([document.fonts.ready,
     document.fonts.load('500 10px "IBM Plex Mono"',"A0").catch(function(){})]):Promise.resolve();
-  fonts.then(function(){
-    return html2canvas(el,{backgroundColor:bgCanvas,scale:sc,useCORS:true,logging:false,scrollX:0,scrollY:0,onclone:prepare});
+  let sc=1,bgOuter,bgInner,txtPri,txtSec,serif;
+  Promise.all([fonts,loadPdfLibs()]).then(function(){
+    /* Lo que depende de la pantalla se lee ahora y no antes de la espera: la
+       primera vez las librerías pueden tardar unos segundos, y si entretanto
+       se cambia un curso el horario es otro elemento (se repinta entero), y
+       si se cambia el tema, otros colores. */
+    const el=document.getElementById("printable");
+    if(!el){const e=new Error("sin cursos");e.sinCursos=true;throw e;}
+    /* El tema que se ve en pantalla manda. No basta con lo guardado: en modo
+       automático no se guarda nada y el PDF salía con el marco de otro tema. */
+    const pdfC=PDF_THEME[currentTheme]||PDF_THEME[defaultTheme()]||PDF_THEME[THEME_ORDER[0]];
+    bgOuter=pdfC.outer;bgInner=pdfC.inner;txtPri=pdfC.pri;txtSec=pdfC.sec;
+    serif=THEME_FAMILY[currentTheme]==="vuelo";   /* en Vuelo el nombre va en serif, como en la cabecera */
+    /* Tamaño de la maqueta, medido sin que llegue a pintarse (la clase se
+       pone y se quita en la misma tarea; «v-measure» evita transiciones al
+       volver). Con él se limita el lienzo a 16 MP, el tope de Safari en iOS. */
+    const legend=el.querySelector(".sched-legend");
+    document.body.classList.add("v-measure","exporting");
+    if(legend) legend.style.display="none";
+    const r=el.getBoundingClientRect();
+    document.body.classList.remove("exporting");
+    if(legend) legend.style.display="";
+    void el.offsetWidth;
+    document.body.classList.remove("v-measure");
+    sc=Math.min(2.8,Math.sqrt(16e6/Math.max(1,r.width*r.height)));
+    return html2canvas(el,{backgroundColor:pdfC.canvas,scale:sc,useCORS:true,logging:false,scrollX:0,scrollY:0,onclone:prepare});
   }).then(function(canvas){
     const W=canvas.width/sc, H=canvas.height/sc;
     /* Cabecera: título y subtítulo a tamaño legible (las unidades de jsPDF
@@ -51,8 +75,6 @@ function downloadPDF(){
     const pdf=new window.jspdf.jsPDF({orientation:W>H?"landscape":"portrait",unit:"px",format:[W+56,PH]});
     pdf.setFillColor(...bgOuter);pdf.rect(0,0,W+56,PH,"F");
     pdf.setFillColor(...bgInner);pdf.roundedRect(28,16,W,H+54,6,6,"F");
-    /* En Vuelo el nombre va en serif, como en la cabecera de la página */
-    const serif=THEME_FAMILY[currentTheme]==="vuelo";
     pdf.setTextColor(...txtPri);pdf.setFontSize(20);pdf.setFont(serif?"times":"helvetica","bold");
     pdf.text(facultyLabel,38,38);
     pdf.setTextColor(...txtSec);pdf.setFontSize(13);pdf.setFont("helvetica","normal");
@@ -60,8 +82,12 @@ function downloadPDF(){
     /* "FAST": la imagen va comprimida (antes pesaba 15–40 MB) */
     pdf.addImage(canvas.toDataURL("image/png"),"PNG",28,64,W,H,undefined,"FAST");
     pdf.save("horario-"+facultyLabel.split(" \u00b7 ")[0].toLowerCase()+"-"+getPeriod()+".pdf");
+    downloadPDF._busy=false;
     toast("\u2713 PDF descargado correctamente","ok");
-  }).catch(function(e){toast("Error al generar: "+e.message,"er");});
+  }).catch(function(e){
+    downloadPDF._busy=false;
+    toast(e&&e.sinCursos?"Primero selecciona cursos para generar el horario":"Error al generar: "+e.message,"er");
+  });
 }
 
 

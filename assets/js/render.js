@@ -1,5 +1,39 @@
 /* Pintado de la interfaz: listado de cursos, etiquetas y tabla de horario. */
 
+/* Cada fila se genera por separado; si la lista es la misma (mismo filtro y
+   mismos cursos) solo se sustituyen las filas cuyo HTML cambió. Rehacer las
+   164 filas en cada clic costaba ~55 ms de estilo+layout (CPU x4) y movía la
+   lista: el ancla de desplazamiento del navegador se perdía. */
+var _listKey=null,_listRowHTML={};
+function _courseRowHTML(c){
+    const isSel=!!sel[c.cod];
+    let isConf=false,isSoft=false;
+    if(!isSel){   /* una sola pasada: antes cada sección se comprobaba hasta 3 veces */
+      let allHard=true,anySoft=false;
+      c.secs.forEach(function(s){const cf=checkSectionConflict(s);if(!cf.hasPractice){allHard=false;if(cf.hasTheory)anySoft=true;}});
+      isConf=allHard;isSoft=!allHard&&anySoft;
+    }
+    const ss=sel[c.cod];
+    const meta=ss?"Secc. "+ss.secc+" \u00b7 "+ss.ss.length+" ses.":c.secs.length+(c.secs.length>1?" secc.":"\u00a0secc.");
+    /* «multi»: al pulsarla se abre la ventana de secciones (el tema muestra un chevrón) */
+    /* Con teclado: cada fila es una casilla que se alcanza con Tab y se
+       marca con Enter o Espacio (main.js); las bloqueadas quedan fuera */
+    let h="<div class=\"c-row cy"+c.esp+(c.secs.length>1?" multi":"")+(isSel?" sel":"")+(isConf?" conf":"")+"\" data-cod=\""+c.cod+"\""+
+      " role=\"checkbox\" aria-checked=\""+(isSel?"true":"false")+"\""+(isConf?" aria-disabled=\"true\"":" tabindex=\"0\"")+">";
+    h+="<div class=\"cbox\"></div>";
+    h+="<div class=\"c-info\">";
+    h+="<div class=\"c-name\">"+c.curso+"</div>";
+    h+="<div class=\"c-meta\"><span class=\"c-cod\">"+c.cod+"</span><span class=\"c-secs\">"+meta+"</span>";
+    if(isConf) h+="<span class=\"c-conf-tag\">práctica bloqueada</span>";
+    else if(isSoft) h+="<span class=\"c-conf-tag c-conf-tag-soft\">cruce teor\u00eda</span>";
+    h+="</div></div></div>";
+    return h;
+}
+document.getElementById("clist").addEventListener("click",function(e){
+  const r=e.target.closest(".c-row");
+  if(r) toggle(r.dataset.cod,e.target.closest(".cbox")!==null);
+});
+
 function drawList(){
   const q=document.getElementById("q").value.toLowerCase().trim();
   const list=courses.filter(function(c){
@@ -7,6 +41,7 @@ function drawList(){
   });
   const el=document.getElementById("clist");
   if(!list.length){
+    _listKey=null;
     var emptyMsg="Sin resultados";
     el.innerHTML="<div style=\"padding:2rem;text-align:center;color:var(--tx4);font-size:0.8rem\">"+emptyMsg+"</div>";
     return;
@@ -15,6 +50,27 @@ function drawList(){
      interruptor apagado va todo en una sola lista, sin cabeceras.
      Un ciclo fuera de 1–10 (o ausente) significa que el Excel no lo trae y
      no se pudo deducir del código: van juntos al final. */
+  if(!GROUP_BY_CYCLE){
+    const key=list.map(function(c){return c.cod;}).join(",");
+    const html=list.map(_courseRowHTML);
+    if(key===_listKey&&el.children.length===list.length){
+      list.forEach(function(c,i){
+        if(_listRowHTML[c.cod]===html[i]) return;
+        const t=document.createElement("template");t.innerHTML=html[i];
+        const row=t.content.firstChild,old=el.children[i];
+        const hadFocus=document.activeElement===old;
+        old.replaceWith(row);
+        if(hadFocus&&row.focus) row.focus({preventScroll:true});   /* el foco sigue en la fila repintada */
+        _listRowHTML[c.cod]=html[i];
+      });
+      return;
+    }
+    _listKey=key;_listRowHTML={};
+    list.forEach(function(c,i){_listRowHTML[c.cod]=html[i];});
+    el.innerHTML=html.join("");
+    return;
+  }
+  _listKey=null;
   const grupos={};
   list.forEach(function(c){
     if(!GROUP_BY_CYCLE){(grupos["todos"]=grupos["todos"]||[]).push(c);return;}
@@ -33,27 +89,10 @@ function drawList(){
       h+="<div class=\"cy-head\">"+(k==="otros"?"Otros cursos":"Ciclo "+k)+
          "<span class=\"cy-head-n\">"+grupos[k].length+"</span></div>";
     }
-    grupos[k].forEach(function(c){
-    const isSel=!!sel[c.cod];
-    const isConf=!isSel&&allHardConflict(c);
-    const isSoft=!isSel&&!isConf&&anySoftConflict(c);
-    const ss=sel[c.cod];
-    const meta=ss?"Secc. "+ss.secc+" \u00b7 "+ss.ss.length+" ses.":c.secs.length+(c.secs.length>1?" secc.":"\u00a0secc.");
-    /* «multi»: al pulsarla se abre la ventana de secciones (el tema muestra un chevrón) */
-    h+="<div class=\"c-row cy"+c.esp+(c.secs.length>1?" multi":"")+(isSel?" sel":"")+(isConf?" conf":"")+"\" data-cod=\""+c.cod+"\">";
-    h+="<div class=\"cbox\"></div>";
-    h+="<div class=\"c-info\">";
-    h+="<div class=\"c-name\">"+c.curso+"</div>";
-    h+="<div class=\"c-meta\"><span class=\"c-cod\">"+c.cod+"</span><span class=\"c-secs\">"+meta+"</span>";
-    if(isConf) h+="<span class=\"c-conf-tag\">práctica bloqueada</span>";
-    else if(isSoft) h+="<span class=\"c-conf-tag c-conf-tag-soft\">cruce teor\u00eda</span>";
-    h+="</div></div></div>";
+    grupos[k].forEach(function(c){h+=_courseRowHTML(c);
     });
   });
   el.innerHTML=h;
-  el.querySelectorAll(".c-row").forEach(function(r){
-    r.addEventListener("click",function(e){toggle(r.dataset.cod,e.target.closest(".cbox")!==null);});
-  });
 }
 
 
@@ -64,26 +103,43 @@ function blkInfo(e){
 }
 
 
+var _tagsPrev={};
 function drawTags(){
   const keys=Object.keys(sel);
+  const prevT=_tagsPrev;_tagsPrev={};
+  keys.forEach(function(cod){_tagsPrev[cod]=sel[cod].secc;});
   const tz=document.getElementById("tags");
   const bc=document.getElementById("bclear");
   const st=document.getElementById("stats");
+  /* Quitar una etiqueta con el teclado: el foco pasa a la × que ocupa su
+     sitio (o a la última); sin etiquetas, a la fila del curso en la lista. */
+  const act=document.activeElement;
+  const fromX=act&&act.classList&&act.classList.contains("tag-x")&&tz.contains(act);
+  const xIdx=fromX?[].indexOf.call(tz.querySelectorAll(".tag-x"),act):-1;
+  const xCod=fromX&&act.parentNode.dataset?act.parentNode.dataset.cod:null;
+  const keepFocus=function(){
+    if(!fromX) return;
+    const xs=tz.querySelectorAll(".tag-x");
+    let t=xs.length?xs[Math.min(xIdx,xs.length-1)]:null;
+    if(!t&&xCod&&window.CSS&&CSS.escape) t=document.querySelector('.c-row[data-cod="'+CSS.escape(xCod)+'"]');
+    if(t) t.focus({preventScroll:true});
+  };
   if(!keys.length){
     tz.innerHTML="<span class=\"ph\">&#8592; Selecciona cursos para armar tu horario</span>";
     bc.style.display="none";st.style.display="none";
-    document.getElementById("btn-names").style.display="none";return;
+    document.getElementById("btn-names").style.display="none";keepFocus();return;
   }
   let h="";
   keys.forEach(function(cod){
     const s=sel[cod];const p=pal[cod]||"p0";const hex=palHex(p);
-    h+="<div class=\"tag "+p+"\" style=\"background:"+hex+"1e;border-color:"+hex+"50;color:"+hex+"\" data-cod=\""+cod+"\">";
-    h+=cod+" <span style=\"opacity:0.6\">"+s.secc+"</span><i class=\"tag-x\">\u00d7</i></div>";
+    h+="<div class=\"tag "+p+(prevT[cod]!==s.secc?" fx-in":"")+"\" style=\"background:"+hex+"1e;border-color:"+hex+"50;color:"+hex+"\" data-cod=\""+cod+"\">";
+    h+=cod+" <span style=\"opacity:0.6\">"+s.secc+"</span><button type=\"button\" class=\"tag-x\" aria-label=\"Quitar "+cod+"\">\u00d7</button></div>";
   });
   tz.innerHTML=h;
   tz.querySelectorAll(".tag").forEach(function(t){
     t.querySelector(".tag-x").addEventListener("click",function(e){e.stopPropagation();toggle(t.dataset.cod);});
   });
+  keepFocus();
   bc.style.display="";st.style.display="";   /* "" deja mandar al CSS (flex, o rejilla en Vuelo móvil) */
   document.getElementById("btn-names").style.display="";
   let hrs=0;
@@ -113,9 +169,16 @@ function emptyFolderHTML(){
     "<div class=\"v-folder-front\">Horario</div></div>";
 }
 
+/* Bloques que entran con animación: solo los de cursos nuevos o cuya
+   sección/sesiones cambiaron. Antes todos volvían a «aparecer» (opacidad 0)
+   en cada cambio y el horario parpadeaba entero. */
+var _schedPrev={};
 function drawSched(){
   const keys=Object.keys(sel);
   const dp=document.getElementById("dp");
+  const prevS=_schedPrev;_schedPrev={};
+  keys.forEach(function(cod){const s=sel[cod];_schedPrev[cod]=s.secc+"|"+s.ss.map(function(x){return x.t+x.d+x.h0+"-"+x.h1+x.rm;}).join(",");});
+  const blkIn=function(cod){return prevS[cod]!==_schedPrev[cod]?" fx-in":"";};
   if(!keys.length){
     /* sin cursos no puede haber cruces: el aviso se retira (antes seguía a
        la vista tras «Limpiar todo» o al cambiar de facultad) */
@@ -144,9 +207,16 @@ function drawSched(){
   });
   const ca=document.getElementById("conf");
   if(conflicts.length){
+    const nuevo=!ca.classList.contains("on");
     ca.classList.add("on");
     document.getElementById("cmsg").textContent="Cruce de teor\u00eda: "+conflicts[0]+(conflicts.length>1?" (+"+(conflicts.length-1)+" m\u00e1s)":"");
-  } else ca.classList.remove("on");
+    if(nuevo){
+      /* la barra abre su hueco poco a poco (fx-bar) en vez de empujar el
+         horario de golpe: el margen parte de su alto en negativo */
+      ca.style.setProperty("--conf-pull",-(ca.offsetHeight+parseFloat(getComputedStyle(ca).marginTop))+"px");
+      ca.classList.add("fx-in");
+    }
+  } else ca.classList.remove("on","fx-in");
 
   const allH=[];
   Object.values(sel).forEach(function(s){s.ss.forEach(function(x){allH.push(x.h0);allH.push(x.h1);});});
@@ -172,7 +242,7 @@ function drawSched(){
       if(!arr||!arr.length){h+="<td><div class=\"cell-mt\"></div></td>";return;}
       if(arr.length===1){
         const c=arr[0];
-        h+="<td><div class=\"blk "+c.p+"\" data-cod=\""+c.cod+"\" onclick=\"blkInfo(event)\">";
+        h+="<td><div class=\"blk "+c.p+blkIn(c.cod)+"\" data-cod=\""+c.cod+"\" onclick=\"blkInfo(event)\" role=\"button\" tabindex=\"0\" aria-label=\""+c.cod+" secci\u00f3n "+c.sec+": ver informaci\u00f3n\">";
         if(showNames){
           const cn=(sel[c.cod]||{}).curso||c.cod;
           h+="<div class=\"blk-name\">"+cn+"</div>";
@@ -186,7 +256,7 @@ function drawSched(){
       } else {
         h+="<td><div class=\"cell-blocks\">";
         arr.forEach(function(c){
-          h+="<div class=\"blk "+c.p+"\" data-cod=\""+c.cod+"\" onclick=\"blkInfo(event)\">";
+          h+="<div class=\"blk "+c.p+blkIn(c.cod)+"\" data-cod=\""+c.cod+"\" onclick=\"blkInfo(event)\" role=\"button\" tabindex=\"0\" aria-label=\""+c.cod+" secci\u00f3n "+c.sec+": ver informaci\u00f3n\">";
           if(showNames){
             const cn=(sel[c.cod]||{}).curso||c.cod;
             h+="<div class=\"blk-name\">"+cn+"</div>";

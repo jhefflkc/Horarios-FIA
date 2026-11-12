@@ -99,11 +99,14 @@ function fetchAnnounce(){
     .then(function(text){
       text=text.trim();if(!text)return;
       var hash=_annHash(text);
-      if(localStorage.getItem("fia_ann_seen")===hash)return;
+      /* con el almacenamiento bloqueado (Safari o Firefox sin cookies) leer
+         localStorage lanza un error y el anuncio no llegaba a mostrarse */
+      var seen=null;try{seen=localStorage.getItem("fia_ann_seen");}catch(e){}
+      if(seen===hash)return;
       document.getElementById("ann-body").innerHTML=md2html(text);
       var ol=document.getElementById("ann-overlay");
       ol.dataset.hash=hash;
-      ol.style.display="flex";
+      showOverlay(ol);
     })
     .catch(function(){/* no ANNOUNCE.md → skip silently */});
 }
@@ -114,5 +117,5 @@ function closeAnnounce(remember){
   if(remember){
     try{localStorage.setItem("fia_ann_seen",ol.dataset.hash||"");}catch(e){}
   }
-  ol.style.display="none";
+  hideOverlay(ol);
 }

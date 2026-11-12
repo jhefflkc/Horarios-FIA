@@ -132,8 +132,10 @@ function openRatingModal(cod,di){
   if(rAvg!==null) h+="<div style=\"text-align:center;margin-bottom:10px;font-size:0.77rem;color:var(--tx3)\">Promedio actual: <strong style=\"color:#f0c870\">&#9733; "+rAvg+"</strong> <span style=\"color:var(--tx3)\">("+_countOf(r)+" votos)</span></div>";
   h+="<div style=\"text-align:center;padding:10px 0 4px\">";
   h+="<div style=\"font-size:0.78rem;color:var(--tx3);margin-bottom:16px\">&#191;C&#243;mo calificar&#237;as al docente?</div>";
-  h+="<div id=\"star-inp\" style=\"display:flex;justify-content:center;gap:12px;font-size:2.4rem;margin-bottom:8px\">";
-  for(var i=1;i<=5;i++) h+="<span class=\"star-inp\" data-v=\""+i+"\" onclick=\"selectStar("+i+")\" onmouseover=\"hoverStar("+i+")\" onmouseout=\"hoverStar(0)\">&#9734;</span>";
+  /* Sin hueco entre estrellas y con la salida en el contenedor: antes, al
+     pasar por los 12 px vacíos se apagaban todas y parpadeaban */
+  h+="<div id=\"star-inp\" style=\"display:flex;justify-content:center;gap:0;font-size:2.4rem;margin-bottom:8px\" onmouseleave=\"hoverStar(0)\">";
+  for(var i=1;i<=5;i++) h+="<span class=\"star-inp\" data-v=\""+i+"\" role=\"button\" tabindex=\"0\" aria-label=\""+i+(i===1?" estrella":" estrellas")+"\" onfocus=\"hoverStar("+i+")\" onblur=\"hoverStar(0)\" onclick=\"selectStar("+i+")\" onmouseover=\"hoverStar("+i+")\" style=\"padding:0 6px\">&#9734;</span>";
   h+="</div>";
   h+="<div id=\"star-lbl\" style=\"font-size:0.78rem;color:var(--accent);font-weight:700;height:1.3em;margin-bottom:16px\"></div>";
   h+="</div>";
@@ -143,7 +145,7 @@ function openRatingModal(cod,di){
   h+="<svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z\"/></svg> Enviar calificaci&#243;n</button>";
   h+="</div>";
   body.innerHTML=h;
-  document.getElementById("modal").style.display="flex";
+  showOverlay(document.getElementById("modal"));
 }
 
 

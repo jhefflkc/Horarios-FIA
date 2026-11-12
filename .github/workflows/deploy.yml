@@ -34,11 +34,19 @@ jobs:
       - name: Generar assets/data.js desde los .xlsx
         run: python build_data.py
 
+      # Solo se publica lo que usa la web. Antes se subía el repositorio
+      # entero, y el README, los Excel, el respaldo y los scripts quedaban
+      # accesibles también en la dirección de la página.
+      - name: Preparar la carpeta publicada
+        run: |
+          mkdir -p _site
+          cp -r index.html ANNOUNCE.md assets _site/
+
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: _site
 
       - id: deployment
         uses: actions/deploy-pages@v4

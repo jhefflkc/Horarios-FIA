@@ -52,15 +52,142 @@ function showMobTab(tab){
     tSched.classList.add('on');
     tCourses.classList.remove('on');
   }
+  tCourses.setAttribute('aria-selected',tab==='courses'?'true':'false');
+  tSched.setAttribute('aria-selected',tab==='courses'?'false':'true');
 }
 
 /* Init mobile panels */
 if(window.innerWidth<=720){
   document.querySelector('.sidebar').classList.add('mob-active');
 }
+/* Si la página pasa a la maqueta móvil después de cargar (redimensionar,
+   girar el móvil, zoom) y ninguna columna está activa, se muestra la que
+   toca: antes la pantalla se quedaba en blanco */
+function ensureMobPanel(){
+  if(window.innerWidth>720) return;
+  if(!document.querySelector('.sidebar.mob-active,.main.mob-active'))
+    showMobTab(document.getElementById('mob-tab-schedule').classList.contains('on')?'schedule':'courses');
+}
+window.addEventListener('resize',ensureMobPanel);
+window.addEventListener('orientationchange',function(){setTimeout(ensureMobPanel,100);});
 
 
-function toast(msg,type){
+/* ── Ventanas: entrada y salida ──────────────────────
+   Se muestran con display:flex; al cerrar, la clase «is-closing» reproduce
+   la salida (styles.css) y después se ocultan. Con «menos movimiento» el
+   cierre es inmediato. */
+function reduceMotion(){
+  return !!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches);
+}
+function showOverlay(el){
+  clearTimeout(el._hide);
+  if(el._done){el.removeEventListener("animationend",el._done);el._done=null;}
+  var abierta=el.style.display==="flex"&&!el.classList.contains("is-closing");
+  el.classList.remove("is-closing");
+  el.style.display="flex";
+  /* El foco entra en la ventana y, al cerrarla, vuelve a donde estaba. Si se
+     reabre antes de devolverlo, se conserva el origen que ya tenía. */
+  if(!abierta&&!el._prev) el._prev=document.activeElement;
+  var d=el.querySelector("[role=dialog]");
+  if(d&&!d.contains(document.activeElement)) d.focus({preventScroll:true});
+}
+/* Devuelve el foco al control que abrió la ventana. Se hace al acabar la
+   tarea en curso: quien cierra suele repintar justo después (quitar un curso,
+   guardar un horario editado) y el control de origen puede haber sido
+   sustituido; entonces se busca el nuevo por el código de su curso. */
+function _restoreFocus(el){
+  var p=el._prev;
+  if(!p) return;
+  setTimeout(function(){
+    if(el._prev!==p) return;
+    var o=_openOverlay();
+    if(o===el) return;            /* se reabrió: el origen sirve para el próximo cierre */
+    el._prev=null;
+    if(o||p===document.body||!p.focus) return;   /* con otra ventana abierta, el foco es suyo */
+    if(!document.contains(p)){
+      var cod=p.dataset&&p.dataset.cod,q=null;
+      if(cod&&window.CSS&&CSS.escape){
+        var s='[data-cod="'+CSS.escape(cod)+'"]';
+        if(p.classList.contains("blk")) q=document.querySelector("#printable .blk"+s);
+        if(!q||q.offsetParent===null) q=document.querySelector(".c-row"+s);
+      }
+      p=q;
+    }
+    if(p&&document.contains(p)) p.focus({preventScroll:true});
+  },0);
+}
+/* La ventana se oculta cuando termina su animación de salida, no a un plazo
+   fijo: si el equipo va cargado la animación empieza tarde y un temporizador
+   la cortaba a medias. El plazo queda solo como red por si no llega a correr. */
+function hideOverlay(el){
+  if(el.style.display==="none"||el.classList.contains("is-closing")) return;
+  _restoreFocus(el);
+  if(reduceMotion()){el.style.display="none";return;}
+  var d=el.querySelector("[role=dialog]");
+  el._done=function(e){
+    if(e&&(e.target!==d||!/-out$/.test(e.animationName))) return;
+    clearTimeout(el._hide);
+    el.removeEventListener("animationend",el._done);el._done=null;
+    el.classList.remove("is-closing");el.style.display="none";
+  };
+  el.addEventListener("animationend",el._done);
+  el.classList.add("is-closing");
+  el._hide=setTimeout(el._done,600);
+}
+/* Las entradas de lo nuevo (bloques, etiquetas, barra de cruce) llevan la
+   clase «fx-in»; se retira al terminar para que no se repitan al volver a
+   mostrar su panel (pestañas del móvil) */
+document.addEventListener("animationend",function(e){
+  var t=e.target;
+  if(t.classList&&t.classList.contains("fx-in")) t.classList.remove("fx-in");
+});
+/* Safari en iOS solo aplica :active (el hundirse al pulsar) si hay un
+   oyente táctil; vacío y pasivo no frena el desplazamiento */
+document.addEventListener("touchstart",function(){},{passive:true});
+/* ── Teclado ─────────────────────────────────────────
+   Esc cierra lo que esté abierto; Enter y Espacio activan lo que no es un
+   botón nativo (filas, bloques, secciones, estrellas, Score, cargar
+   Excel); y con una ventana abierta, Tab no sale de ella. */
+function _openOverlay(){
+  var a=document.getElementById("ann-overlay"),m=document.getElementById("modal");
+  if(a.style.display==="flex"&&!a.classList.contains("is-closing")) return a;
+  if(m.style.display==="flex"&&!m.classList.contains("is-closing")) return m;
+  return null;
+}
+document.addEventListener("keydown",function(e){
+  var o;
+  if(e.key==="Escape"){
+    var pop=document.getElementById("score-pop");
+    if(pop&&pop.style.display==="block"){pop.style.display="none";return;}
+    o=_openOverlay();
+    if(o) (o.id==="modal"?modalClose():closeAnnounce(false));
+    return;
+  }
+  var t=e.target;
+  if((e.key==="Enter"||e.key===" ")&&t&&t.matches&&t.matches(".c-row,.sec,.blk,.score-pill,.star-inp,.upload-row")){
+    if(t.getAttribute("aria-disabled")==="true") return;
+    e.preventDefault();t.click();
+    return;
+  }
+  if(e.key==="Tab"&&(o=_openOverlay())){
+    var f=[].filter.call(o.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])'),
+      function(x){return !x.disabled&&x.offsetParent!==null;});
+    if(!f.length){e.preventDefault();return;}
+    var first=f[0],last=f[f.length-1],act=document.activeElement;
+    if(!o.contains(act)||(!e.shiftKey&&act===last)){e.preventDefault();first.focus();}
+    else if(e.shiftKey&&(act===first||f.indexOf(act)<0)){e.preventDefault();last.focus();}
+  }
+});
+/* El popover del Score se coloca una sola vez: al cambiar el tamaño de la
+   ventana quedaría descolocado o fuera de pantalla, así que se cierra */
+window.addEventListener("resize",function(){
+  var pop=document.getElementById("score-pop");
+  if(pop) pop.style.display="none";
+});
+
+
+/* ms: duración (3,5 s por defecto); 0 lo deja fijo hasta el siguiente aviso */
+function toast(msg,type,ms){
   const t=document.getElementById("toast");
   document.getElementById("tmsg").textContent=msg;
   const tabs=document.querySelector(".mob-tabs");
@@ -72,7 +199,8 @@ function toast(msg,type){
     t.style.bottom="";
   }
   t.className="toast on "+(type||"ok");
-  clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove("on");},3500);
+  clearTimeout(t._t);
+  if(ms!==0) t._t=setTimeout(function(){t.classList.remove("on");},ms||3500);
 }
 
 

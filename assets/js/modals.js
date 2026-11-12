@@ -21,7 +21,7 @@ function openModal(c){
   c.secs.forEach(function(sec,i){
     const cf=checkSectionConflict(sec);
     const isPractice=cf.hasPractice;const isTheory=!cf.hasPractice&&cf.hasTheory;
-    h+="<div class=\"sec"+(isPractice?" conf":isTheory?" soft-conf":"")+"\" data-i=\""+i+"\">";
+    h+="<div class=\"sec"+(isPractice?" conf":isTheory?" soft-conf":"")+"\" data-i=\""+i+"\" role=\"button\""+(isPractice?" aria-disabled=\"true\"":" tabindex=\"0\"")+">";
     h+="<div class=\"sec-top\"><span class=\"sec-name\">Secci\u00f3n "+sec.secc+"</span>";
     h+="<span style=\"display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap\">";
     h+=_vacHTML(sec);
@@ -50,17 +50,27 @@ function openModal(c){
   body.querySelectorAll(".sec").forEach(function(el){
     el.addEventListener("click",function(){pick(c.secs[parseInt(el.dataset.i)],c.cod,true);});
   });
-  document.getElementById("modal").style.display="flex";
+  showOverlay(document.getElementById("modal"));
 }
 
 
 function modalClose(){
   if(_pendingCod&&_pendingSec){sel[_pendingCod]=_pendingSec;_pendingCod=null;_pendingSec=null;sync();}
   _selectedRating=0;_ratingTeacher=null;
-  document.getElementById("modal").style.display="none";
+  hideOverlay(document.getElementById("modal"));
 }
 
-function closeModal(e){if(e.target===document.getElementById("modal")) modalClose();}
+/* Solo cierra un clic que empieza y termina en el velo: arrastrar desde
+   dentro (por ejemplo al seleccionar texto) y soltar fuera cerraba la
+   ventana y se perdían los cambios sin guardar */
+["modal","ann-overlay"].forEach(function(id){
+  var o=document.getElementById(id);
+  if(o) o.addEventListener("pointerdown",function(e){o._downOnVeil=(e.target===o);});
+});
+function closeModal(e){
+  var o=document.getElementById("modal");
+  if(e.target===o&&o._downOnVeil) modalClose();
+}
 
 
 function openPeriodModal(){
@@ -104,7 +114,7 @@ function openPeriodModal(){
       "</div>"+
     "</div>"+
     "<button class=\"btn btn-dl\" style=\"width:100%;justify-content:center\" onclick=\"savePeriod()\">Guardar</button>";
-  document.getElementById("modal").style.display="flex";
+  showOverlay(document.getElementById("modal"));
   setTimeout(function(){document.getElementById("p-faculty").focus();},100);
 }
 
@@ -171,7 +181,7 @@ function openInfoModal(cod){
   h+="<svg width=\"13\" height=\"13\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\"><path d=\"M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7\"/><path d=\"M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z\"/></svg>";
   h+=" Editar horario</button>";
   body.innerHTML=h;
-  document.getElementById("modal").style.display="flex";
+  showOverlay(document.getElementById("modal"));
 }
 
 
@@ -196,7 +206,7 @@ function openEditScheduleModal(cod){
   h+=" Guardar cambios</button>";
   h+="</div>";
   body.innerHTML=h;
-  document.getElementById("modal").style.display="flex";
+  showOverlay(document.getElementById("modal"));
 }
 
 
@@ -261,7 +271,7 @@ function saveEditedSchedule(){
   sel[cod].ss=newSS;
   _rebuildDocs(sel[cod]);
   _editingCod=null;
-  document.getElementById("modal").style.display="none";
+  hideOverlay(document.getElementById("modal"));
   sync();
   toast("Horario actualizado","ok");
 }
@@ -269,7 +279,7 @@ function saveEditedSchedule(){
 
 function removeFromInfo(cod){
   delete sel[cod];delete pal[cod];
-  document.getElementById("modal").style.display="none";
+  hideOverlay(document.getElementById("modal"));
   sync();
 }
 

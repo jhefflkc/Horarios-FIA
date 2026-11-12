@@ -80,12 +80,12 @@ function pick(sec,cod,stayOnCourses){
   var cf=checkSectionConflict(sec);
   if(cf.hasPractice){
     toast("No se puede agregar "+cod+": cruza práctica con "+cf.practiceWith.join(", "),"er");
-    document.getElementById("modal").style.display="none";
+    hideOverlay(document.getElementById("modal"));
     return;
   }
   if(!pal[cod]){pal[cod]=PAL[palIdx%PAL.length];palIdx++;}
   sel[cod]=sec;
-  document.getElementById("modal").style.display="none";
+  hideOverlay(document.getElementById("modal"));
   if(window.innerWidth<=720&&!stayOnCourses) showMobTab('schedule');
   if(cf.hasTheory) toast("Cruce de teoría con "+cf.theoryWith.join(", ")+" — aparecerán juntos","warn");
   sync();
