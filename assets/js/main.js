@@ -81,28 +81,58 @@ function reduceMotion(){
 }
 function showOverlay(el){
   clearTimeout(el._hide);
+  if(el._done){el.removeEventListener("animationend",el._done);el._done=null;}
   var abierta=el.style.display==="flex"&&!el.classList.contains("is-closing");
   el.classList.remove("is-closing");
   el.style.display="flex";
-  /* El foco entra en la ventana y, al cerrarla, vuelve a donde estaba */
-  if(!abierta) el._prev=document.activeElement;
+  /* El foco entra en la ventana y, al cerrarla, vuelve a donde estaba. Si se
+     reabre antes de devolverlo, se conserva el origen que ya tenía. */
+  if(!abierta&&!el._prev) el._prev=document.activeElement;
   var d=el.querySelector("[role=dialog]");
   if(d&&!d.contains(document.activeElement)) d.focus({preventScroll:true});
 }
+/* Devuelve el foco al control que abrió la ventana. Se hace al acabar la
+   tarea en curso: quien cierra suele repintar justo después (quitar un curso,
+   guardar un horario editado) y el control de origen puede haber sido
+   sustituido; entonces se busca el nuevo por el código de su curso. */
 function _restoreFocus(el){
-  var p=el._prev;el._prev=null;
-  if(!p||p===document.body||!p.focus) return;
-  /* si la fila de origen se repintó, se busca la nueva por su código */
-  if(!document.contains(p)&&p.dataset&&p.dataset.cod&&window.CSS&&CSS.escape)
-    p=document.querySelector('.c-row[data-cod="'+CSS.escape(p.dataset.cod)+'"]');
-  if(p&&document.contains(p)) p.focus({preventScroll:true});
+  var p=el._prev;
+  if(!p) return;
+  setTimeout(function(){
+    if(el._prev!==p) return;
+    var o=_openOverlay();
+    if(o===el) return;            /* se reabrió: el origen sirve para el próximo cierre */
+    el._prev=null;
+    if(o||p===document.body||!p.focus) return;   /* con otra ventana abierta, el foco es suyo */
+    if(!document.contains(p)){
+      var cod=p.dataset&&p.dataset.cod,q=null;
+      if(cod&&window.CSS&&CSS.escape){
+        var s='[data-cod="'+CSS.escape(cod)+'"]';
+        if(p.classList.contains("blk")) q=document.querySelector("#printable .blk"+s);
+        if(!q||q.offsetParent===null) q=document.querySelector(".c-row"+s);
+      }
+      p=q;
+    }
+    if(p&&document.contains(p)) p.focus({preventScroll:true});
+  },0);
 }
+/* La ventana se oculta cuando termina su animación de salida, no a un plazo
+   fijo: si el equipo va cargado la animación empieza tarde y un temporizador
+   la cortaba a medias. El plazo queda solo como red por si no llega a correr. */
 function hideOverlay(el){
   if(el.style.display==="none"||el.classList.contains("is-closing")) return;
   _restoreFocus(el);
   if(reduceMotion()){el.style.display="none";return;}
+  var d=el.querySelector("[role=dialog]");
+  el._done=function(e){
+    if(e&&(e.target!==d||!/-out$/.test(e.animationName))) return;
+    clearTimeout(el._hide);
+    el.removeEventListener("animationend",el._done);el._done=null;
+    el.classList.remove("is-closing");el.style.display="none";
+  };
+  el.addEventListener("animationend",el._done);
   el.classList.add("is-closing");
-  el._hide=setTimeout(function(){el.classList.remove("is-closing");el.style.display="none";},240);
+  el._hide=setTimeout(el._done,600);
 }
 /* Las entradas de lo nuevo (bloques, etiquetas, barra de cruce) llevan la
    clase «fx-in»; se retira al terminar para que no se repitan al volver a

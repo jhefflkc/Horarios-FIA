@@ -111,10 +111,23 @@ function drawTags(){
   const tz=document.getElementById("tags");
   const bc=document.getElementById("bclear");
   const st=document.getElementById("stats");
+  /* Quitar una etiqueta con el teclado: el foco pasa a la × que ocupa su
+     sitio (o a la última); sin etiquetas, a la fila del curso en la lista. */
+  const act=document.activeElement;
+  const fromX=act&&act.classList&&act.classList.contains("tag-x")&&tz.contains(act);
+  const xIdx=fromX?[].indexOf.call(tz.querySelectorAll(".tag-x"),act):-1;
+  const xCod=fromX&&act.parentNode.dataset?act.parentNode.dataset.cod:null;
+  const keepFocus=function(){
+    if(!fromX) return;
+    const xs=tz.querySelectorAll(".tag-x");
+    let t=xs.length?xs[Math.min(xIdx,xs.length-1)]:null;
+    if(!t&&xCod&&window.CSS&&CSS.escape) t=document.querySelector('.c-row[data-cod="'+CSS.escape(xCod)+'"]');
+    if(t) t.focus({preventScroll:true});
+  };
   if(!keys.length){
     tz.innerHTML="<span class=\"ph\">&#8592; Selecciona cursos para armar tu horario</span>";
     bc.style.display="none";st.style.display="none";
-    document.getElementById("btn-names").style.display="none";return;
+    document.getElementById("btn-names").style.display="none";keepFocus();return;
   }
   let h="";
   keys.forEach(function(cod){
@@ -126,6 +139,7 @@ function drawTags(){
   tz.querySelectorAll(".tag").forEach(function(t){
     t.querySelector(".tag-x").addEventListener("click",function(e){e.stopPropagation();toggle(t.dataset.cod);});
   });
+  keepFocus();
   bc.style.display="";st.style.display="";   /* "" deja mandar al CSS (flex, o rejilla en Vuelo móvil) */
   document.getElementById("btn-names").style.display="";
   let hrs=0;

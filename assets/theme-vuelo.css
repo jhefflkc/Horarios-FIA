@@ -329,7 +329,8 @@ body.vuelo .search-box input:focus-visible{outline:none}
 body.vuelo .search-box:focus-within{background:var(--v-fill-2);border:none;box-shadow:0 0 0 2px var(--v-accent)}
 body.vuelo-oscuro .search-box input::placeholder{color:#bdbcb8}   /* tx-3 bajaba de 4,5:1 sobre el relleno */
 /* Fila «I · Flyer»: icono en círculo y texto */
-body.vuelo .upload-row{border:none;background:transparent;border-radius:12px;padding:6px;gap:10px;font:500 13px/18px var(--v-sans);color:var(--v-tx-2)}
+body.vuelo .upload-row{border:none;background:transparent;border-radius:12px;padding:6px;gap:10px;font:500 13px/18px var(--v-sans);color:var(--v-tx-2);
+  transition:background-color var(--dur-fast) var(--ease),color var(--dur-fast) var(--ease)}   /* sin «all»: el anillo de foco aparece de una vez */
 body.vuelo .upload-row svg{box-sizing:content-box;width:14px;height:14px;padding:7px;border-radius:50%;background:var(--v-fill-2);color:var(--v-tx)}
 @media(hover:hover){body.vuelo .upload-row:hover{background:var(--v-state);color:var(--v-tx)}}
 body.vuelo .upload-row:active{background:var(--v-fill)}
@@ -690,7 +691,7 @@ body.vuelo .ses + .ses{border-top:1px solid var(--v-hair)}
 body.vuelo .ses > span:nth-child(2){white-space:nowrap}
 
 /* Calificar y editar */
-body.vuelo .star-inp{min-width:28px;min-height:28px;color:var(--v-tx-3)}
+body.vuelo .star-inp{min-width:28px;min-height:28px;color:var(--v-tx-3);border-radius:8px}
 body.vuelo .star-inp.on,body.vuelo .rate-star{color:var(--v-star)}
 body.vuelo .rate-btn{height:28px;padding:0 12px;border-radius:var(--v-pill);border:1px solid var(--v-line);background:var(--v-fill);color:var(--v-tx-2);font:600 13px/1 var(--v-sans)}
 @media(hover:hover){body.vuelo .rate-btn:hover{background:var(--v-accent-soft);color:var(--v-accent-strong);border-color:transparent}}
@@ -886,7 +887,7 @@ body.vuelo .modal::-webkit-scrollbar-thumb,body.vuelo .ann-body::-webkit-scrollb
   body.vuelo .mob-tab{border-radius:var(--v-pill);gap:2px;font:600 11px/14px var(--v-sans);letter-spacing:0;text-transform:none;color:var(--v-pill-ink-2)}
   body.vuelo .mob-tab svg{width:20px;height:20px;color:inherit}
   body.vuelo .mob-tab.on{background:rgba(47,55,57,.10);color:var(--v-pill-ink)}
-  body.vuelo .mob-tab:focus-visible{outline-color:var(--v-pill-ink)}
+  body.vuelo .mob-tab:focus-visible{outline-color:var(--v-pill-ink);outline-offset:-3px}   /* por dentro: fuera de la píldora no se vería en oscuro */
   body.vuelo .tag-x{position:relative}
   body.vuelo .tag-x::before{content:"";position:absolute;inset:-13px}
   body.vuelo .modal-x,body.vuelo .ann-x{position:relative}

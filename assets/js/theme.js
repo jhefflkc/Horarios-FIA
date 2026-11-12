@@ -1,6 +1,7 @@
 /* Cambio de tema y persistencia en localStorage. */
 
 var currentTheme=null;
+var _themeVT=null,_themeSkipAt=0;   /* fundido de tema en curso y momento en que un toque lo cortó */
 
 /* Todas las clases que puede dejar puesto un tema, activo o retirado, para
    que al cambiar no quede ninguna pegada (p.ej. «google» guardado de antes) */
@@ -19,9 +20,30 @@ function applyTheme(t,persist){
   var fade=typeof document.startViewTransition==="function"&&currentTheme&&currentTheme!==t&&
     !(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches);
   currentTheme=t;   /* ya, para que dos toques seguidos alternen dos veces */
-  if(fade){document.startViewTransition(function(){_setTheme(t,persist);});return;}
+  if(fade){
+    var vt=_themeVT=document.startViewTransition(function(){_setTheme(t,persist);});
+    var fin=function(){if(_themeVT===vt) _themeVT=null;};
+    vt.finished.then(fin,fin);
+    if(vt.ready) vt.ready.catch(function(){});   /* cortar el fundido no es un error */
+    return;
+  }
   _setTheme(t,persist);
 }
+/* Mientras dura el fundido, el navegador entrega los toques a la capa de la
+   transición y no a la página: un segundo toque al botón de tema, o a un
+   curso, se perdía durante un tercio de segundo. Al primer toque se corta el
+   fundido, y si su clic aún cae en esa capa se reenvía a lo que hay debajo. */
+document.addEventListener("pointerdown",function(){
+  if(!_themeVT) return;
+  _themeVT.skipTransition();_themeVT=null;_themeSkipAt=Date.now();
+},true);
+document.addEventListener("click",function(e){
+  if(e.target!==document.documentElement||!e.isTrusted||Date.now()-_themeSkipAt>1000) return;
+  _themeSkipAt=0;
+  var el=document.elementFromPoint(e.clientX,e.clientY);
+  if(el&&el!==document.documentElement)
+    el.dispatchEvent(new MouseEvent("click",{bubbles:true,cancelable:true,view:window,clientX:e.clientX,clientY:e.clientY}));
+},true);
 function _setTheme(t,persist){
   _allThemeClasses().forEach(function(x){document.body.classList.remove(x);});
   if(t!=="dark") document.body.classList.add(t);
